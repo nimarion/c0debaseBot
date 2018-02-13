@@ -66,10 +66,9 @@ public class CodebaseBot {
 
 
     public static void main(String... args) {
-        if(System.getenv("SENTRY_DSN") == null && System.getProperty("sentry.properties") == null){
-            System.setProperty("sentry.properties", "https://3454dcf83f3d47208654a0ac282d4d00@sentry.io/287392");
+        if(System.getenv("SENTRY_DSN") != null || System.getProperty("sentry.properties") != null){
+            Sentry.init();
         }
-        Sentry.init();
         new CodebaseBot();
     }
 
