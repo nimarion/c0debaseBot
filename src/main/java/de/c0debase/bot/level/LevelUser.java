@@ -69,7 +69,7 @@ public class LevelUser {
 
     public void setLevel(int level) {
         this.level = level;
-        CodebaseBot.getInstance().getMySQL().updateAsync("UPDATE Users SET LEVEL='" + xp + "' WHERE ID='" + id + "';");
+        CodebaseBot.getInstance().getMySQL().updateAsync("UPDATE Users SET LEVEL='" + level + "' WHERE ID='" + id + "';");
         if (level >= 3 && !CodebaseBot.getInstance().getJda().getGuilds().get(0).getRolesByName("Projekt", true).isEmpty()) {
             CodebaseBot.getInstance().getJda().getGuilds().get(0).getController().addRolesToMember(CodebaseBot.getInstance().getJda().getGuilds().get(0).getMemberById(id), CodebaseBot.getInstance().getJda().getGuilds().get(0).getRolesByName("Projekt", true).get(0)).queue();
         }
