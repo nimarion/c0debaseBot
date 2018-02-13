@@ -15,4 +15,4 @@ c0debaseBot ist ein Discord Bot für den c0debase Discord.
 
 [![Join c0debase Discord](https://discordapp.com/api/guilds/361448651748540426/embed.png?style=banner2)](https://discord.gg/BDwBeZ3)
 
-[![Docker](http://dockeri.co/image/biospheere/codebasebot)](https://registry.hub.docker.com/u/biospheere/codebasebot)
+[![Docker](http://dockeri.co/image/biospheere/codebasebot)](https://hub.docker.com/r/biospheere/codebasebot/)
