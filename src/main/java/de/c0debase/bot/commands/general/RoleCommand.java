@@ -57,7 +57,7 @@ public class RoleCommand extends Command {
         EmbedBuilder embedBuilder = getEmbed(message.getGuild(), message.getAuthor());
         embedBuilder.setTitle("Rolle(n) geupdatet");
         embedBuilder.appendDescription("Du bist " + addRoles.size() + (addRoles.size() > 1 ? " Rollen " : " Rolle ") + "beigetreten\n");
-        embedBuilder.appendDescription("Du hast " + removeRoles.size() + (removeRoles.size() == 1 ? " Rolle " : " Rollen ") + " verlassen");
+        embedBuilder.appendDescription("Du hast " + removeRoles.size() + (removeRoles.size() == 1 ? " Rolle " : " Rollen ") + "verlassen");
         message.getTextChannel().sendMessage(embedBuilder.build()).queue();
         message.getGuild().getController().addRolesToMember(message.getMember(), addRoles).queue(success -> {
             try {
