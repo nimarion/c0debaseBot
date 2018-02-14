@@ -1,7 +1,7 @@
 <configuration>
 
-    <logger name="net.dv8tion.jda" level="OFF"/>
-    <logger name="org.reflections.Reflections" level="OFF"/>
+    <logger name="net.dv8tion.jda" level="ERROR"/>
+    <logger name="org.reflections.Reflections" level="ERROR"/>
 
     <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
