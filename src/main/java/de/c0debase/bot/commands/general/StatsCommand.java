@@ -24,7 +24,7 @@ public class StatsCommand extends Command {
     public void execute(String[] args, Message msg) {
         JDA jda = msg.getJDA();
 
-        EmbedBuilder eb = new EmbedBuilder().setFooter("@" + msg.getAuthor().getName() + "#" + msg.getAuthor().getDiscriminator(), msg.getAuthor().getEffectiveAvatarUrl());
+        EmbedBuilder eb = getEmbed(msg.getGuild(), msg.getAuthor());
         eb.addField("JDA Version", JDAInfo.VERSION, true);
         eb.addField("Ping", jda.getPing() + "ms", true);
         long uptime = ManagementFactory.getRuntimeMXBean().getUptime();
@@ -36,7 +36,6 @@ public class StatsCommand extends Command {
         eb.addField("CPU Threads", String.valueOf(ManagementFactory.getOperatingSystemMXBean().getAvailableProcessors()), true);
         eb.addField("RAM Usage", (ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getUsed() + ManagementFactory.getMemoryMXBean().getNonHeapMemoryUsage().getUsed()) / 1000000 + " / " + (ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getMax() + ManagementFactory.getMemoryMXBean().getNonHeapMemoryUsage().getMax()) / 1000000 + " MB", true);
         eb.addField("Threads", String.valueOf(Thread.activeCount()), true);
-        eb.setColor(msg.getGuild().getSelfMember().getColor());
         msg.getChannel().sendMessage(eb.build()).queue();
     }
 }
