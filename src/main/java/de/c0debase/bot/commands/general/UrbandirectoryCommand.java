@@ -20,7 +20,7 @@ import java.net.URLEncoder;
 public class UrbandirectoryCommand extends Command {
 
     public UrbandirectoryCommand() {
-        super("urbandirectory", "Sucht im urban dictionary etwas für dich", Categorie.GENERAL, "ud");
+        super("urbandirectory", "Sucht im Urban Dictionary etwas für dich", Categorie.GENERAL, "ud");
     }
 
     @Override
@@ -30,8 +30,8 @@ public class UrbandirectoryCommand extends Command {
             embedBuilder.setFooter("@" + msg.getAuthor().getName() + "#" + msg.getAuthor().getDiscriminator(), msg.getAuthor().getEffectiveAvatarUrl());
             embedBuilder.setTitle("Command: " + getCommand());
             embedBuilder.setColor(msg.getGuild().getSelfMember().getColor());
-            embedBuilder.appendDescription("**Description: ** Search something in urban dictionary !\n");
-            embedBuilder.appendDescription("**Usage: ** " + "!ud [term]");
+            embedBuilder.appendDescription("**Beschreibung: ** Suche etwas im Urban Dictionary!\n");
+            embedBuilder.appendDescription("**Benutzung: ** " + "!ud [term]");
             msg.getTextChannel().sendMessage(embedBuilder.build()).queue();
         } else {
             msg.getTextChannel().sendTyping().queue();
@@ -44,9 +44,7 @@ public class UrbandirectoryCommand extends Command {
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            EmbedBuilder embedBuilder = new EmbedBuilder();
-            embedBuilder.setFooter("@" + msg.getAuthor().getName() + "#" + msg.getAuthor().getDiscriminator(), msg.getAuthor().getEffectiveAvatarUrl());
-            embedBuilder.setColor(msg.getGuild().getSelfMember().getColor());
+            EmbedBuilder embedBuilder = getEmbed(msg.getGuild(), msg.getAuthor());
             embedBuilder.setTitle("Definition: " + search);
             embedBuilder.setFooter("@" + msg.getAuthor().getName() + "#" + msg.getAuthor().getDiscriminator(), msg.getAuthor().getEffectiveAvatarUrl());
 
@@ -57,8 +55,9 @@ public class UrbandirectoryCommand extends Command {
                 embedBuilder.appendDescription(jsonResult.size() != 0 ? jsonResult.get(0).getAsJsonObject().get("definition").getAsString() : "Search term not found.");
             } catch (JsonParseException ex) {
                 embedBuilder.appendDescription("An error occurred.");
+            } finally {
+                msg.getTextChannel().sendMessage(embedBuilder.build()).queue();
             }
-            msg.getTextChannel().sendMessage(embedBuilder.build()).queue();
         }
     }
 }

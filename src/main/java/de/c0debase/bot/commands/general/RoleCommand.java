@@ -28,6 +28,8 @@ public class RoleCommand extends Command {
             embedBuilder.setFooter("!role Java,Go,Javascript", msg.getMember().getUser().getEffectiveAvatarUrl());
             embedBuilder.setTitle("Es gibt diese Rollen:");
 
+            embedBuilder.appendDescription("`!role Java,Go,C#`\n\n");
+
             for (Role role : msg.getGuild().getRoles()) {
                 if (!role.getName().equalsIgnoreCase("@everyone") && !role.getName().equalsIgnoreCase("Projekt") && PermissionUtil.canInteract(msg.getGuild().getSelfMember(), role)) {
                     embedBuilder.appendDescription("***" + role.getName() + "***" + "\n");
@@ -57,7 +59,7 @@ public class RoleCommand extends Command {
         EmbedBuilder embedBuilder = getEmbed(message.getGuild(), message.getAuthor());
         embedBuilder.setTitle("Rolle(n) geupdatet");
         embedBuilder.appendDescription("Du bist " + addRoles.size() + (addRoles.size() > 1 ? " Rollen " : " Rolle ") + "beigetreten\n");
-        embedBuilder.appendDescription("Du hast " + removeRoles.size() + (removeRoles.size() == 1 ? " Rolle " : " Rollen ") + " verlassen");
+        embedBuilder.appendDescription("Du hast " + removeRoles.size() + (removeRoles.size() == 1 ? " Rolle " : " Rollen ") + "verlassen");
         message.getTextChannel().sendMessage(embedBuilder.build()).queue();
         message.getGuild().getController().addRolesToMember(message.getMember(), addRoles).queue(success -> {
             try {
