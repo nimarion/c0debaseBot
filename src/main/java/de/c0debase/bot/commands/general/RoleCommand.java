@@ -28,6 +28,8 @@ public class RoleCommand extends Command {
             embedBuilder.setFooter("!role Java,Go,Javascript", msg.getMember().getUser().getEffectiveAvatarUrl());
             embedBuilder.setTitle("Es gibt diese Rollen:");
 
+            embedBuilder.appendDescription("`!role Java,Go,C#`\n\n");
+
             for (Role role : msg.getGuild().getRoles()) {
                 if (!role.getName().equalsIgnoreCase("@everyone") && !role.getName().equalsIgnoreCase("Projekt") && PermissionUtil.canInteract(msg.getGuild().getSelfMember(), role)) {
                     embedBuilder.appendDescription("***" + role.getName() + "***" + "\n");
