@@ -25,8 +25,7 @@ public class SkipCommand extends Command {
         embedBuilder.setAuthor("Command: " + getCommand(), null, msg.getGuild().getIconUrl());
         embedBuilder.setColor(msg.getGuild().getSelfMember().getColor());
 
-        if (msg.getMember().getVoiceState() != null) {
-            if (msg.getMember().getVoiceState().inVoiceChannel()) {
+        if (msg.getMember().getVoiceState() != null && msg.getMember().getVoiceState().inVoiceChannel()) {
                 CodebaseBot.getInstance().getMusicManager().skip(msg.getGuild());
                 if (CodebaseBot.getInstance().getMusicManager().getPlayingTrack(msg.getGuild()) != null) {
                     AudioTrackInfo trackInfo = CodebaseBot.getInstance().getMusicManager().getPlayingTrack(msg.getGuild()).getInfo();
@@ -40,7 +39,6 @@ public class SkipCommand extends Command {
                 } else {
                     embedBuilder.setDescription("Es gibt kein weiteres Lied in der Warteschlange");
                 }
-            }
         } else {
             embedBuilder.setDescription("Du bist in keinem Voicechannel ^^");
         }
