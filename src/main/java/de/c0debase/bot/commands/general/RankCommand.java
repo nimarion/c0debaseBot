@@ -25,8 +25,7 @@ public class RankCommand extends Command {
             member = msg.getMember();
         }
         LevelUser levelUser = CodebaseBot.getInstance().getLevelManager().getLevelUser(member.getUser().getId());
-        EmbedBuilder embedBuilder = new EmbedBuilder();
-        embedBuilder.setAuthor(StringUtils.replaceCharactar(member.getUser().getName()), null, member.getUser().getEffectiveAvatarUrl());
+        EmbedBuilder embedBuilder = getEmbed(msg.getGuild(), msg.getAuthor());
 
         embedBuilder.addField("Level", String.valueOf(levelUser.getLevel()), false);
         embedBuilder.addField("Exp", levelUser.getXp() + "/" + (levelUser.getLevel() == 0 ? "1000" : (1000 * levelUser.getLevel() * 1.2)), false);
@@ -36,7 +35,6 @@ public class RankCommand extends Command {
             embedBuilder.addField("Total Exp", String.valueOf(levelUser.getXp() + (1000 * (levelUser.getLevel() - 1) * 1.2)), false);
         }
 
-        embedBuilder.setColor(msg.getGuild().getSelfMember().getColor());
         msg.getTextChannel().sendMessage(embedBuilder.build()).queue();
     }
 }
