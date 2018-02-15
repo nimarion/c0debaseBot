@@ -51,12 +51,8 @@ public class MessageReceiveListener extends ListenerAdapter {
             CodebaseBot.getInstance().getCommandManager().execute(event.getMessage());
         } else {
             LevelUser levelUser = CodebaseBot.getInstance().getLevelManager().getLevelUser(event.getAuthor().getId());
-            if (levelUser.getLastMessage() == 0L) {
-                levelUser.setLastMessage(System.currentTimeMillis());
-                levelUser.addXP(50);
-            }
             float time = (System.currentTimeMillis() - levelUser.getLastMessage()) / 1000;
-            if (time >= 50.0f) {
+            if (time >= 50.0f || levelUser.getLastMessage() == 0L) {
                 levelUser.setLastMessage(System.currentTimeMillis());
                 if (levelUser.addXP(50)) {
                     EmbedBuilder levelUpEmbed = new EmbedBuilder();
