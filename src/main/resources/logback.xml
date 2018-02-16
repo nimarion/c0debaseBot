@@ -17,7 +17,7 @@
     </appender>
 
     <root level="DEBUG">
-        <appender-ref ref="Console" />
+        <appender-ref ref="Console"/>
         <appender-ref ref="Sentry"/>
     </root>
 
