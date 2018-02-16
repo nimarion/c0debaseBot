@@ -26,19 +26,18 @@ public class VolumeCommand extends Command {
         embedBuilder.setColor(msg.getGuild().getSelfMember().getColor());
         if (msg.getMember().getVoiceState() != null && msg.getMember().getVoiceState().inVoiceChannel()) {
             if (args.length == 1) {
-                int volume = 0;
+                int volume;
                 try {
                     volume = Integer.parseInt(args[0]);
+                    if (volume < 0 || volume > 100) {
+                        embedBuilder.addField("Ungültige Lautstärke", "Wert kann nur zwischen 0 und 100 gesetzt werden.", false);
+                    } else {
+                        CodebaseBot.getInstance().getMusicManager().setVolume(guild, volume);
+                        embedBuilder.addField("Neue Lautstärke: " + CodebaseBot.getInstance().getMusicManager().getVolume(guild), getVolume(CodebaseBot.getInstance().getMusicManager().getVolume(guild)), false);
+                    }
                 } catch (NumberFormatException e) {
                     embedBuilder.addField("Ungültiges Angabe", "*" + args[0] + "* ist keine Zahl.", false);
-                    return;
                 }
-                if (volume < 0 || volume > 100) {
-                    embedBuilder.addField("Ungültige Lautstärke", "Wert kann nur zwischen 0 und 100 gesetzt werden.", false);
-                    return;
-                }
-                CodebaseBot.getInstance().getMusicManager().setVolume(guild, volume);
-                embedBuilder.addField("Neue Lautstärke: " + CodebaseBot.getInstance().getMusicManager().getVolume(guild), getVolume(CodebaseBot.getInstance().getMusicManager().getVolume(guild)), false);
             } else {
                 embedBuilder.addField("Lautstärke: " + CodebaseBot.getInstance().getMusicManager().getVolume(guild), getVolume(CodebaseBot.getInstance().getMusicManager().getVolume(guild)), false);
             }

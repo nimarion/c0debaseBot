@@ -2,6 +2,7 @@
 
     <logger name="net.dv8tion.jda" level="ERROR"/>
     <logger name="org.reflections.Reflections" level="ERROR"/>
+    <logger name="com.sedmelluq.discord.lavaplayer" level="ERROR"/>
 
     <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
@@ -16,7 +17,7 @@
     </appender>
 
     <root level="DEBUG">
-        <appender-ref ref="Console" />
+        <appender-ref ref="Console"/>
         <appender-ref ref="Sentry"/>
     </root>
 

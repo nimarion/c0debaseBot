@@ -13,7 +13,7 @@ import java.util.HashMap;
  * @author Biosphere
  * @date 14.02.18
  */
-public class MessageMonitor extends Monitor{
+public class MessageMonitor extends Monitor {
 
     private final HashMap<String, Integer> messages = new HashMap<>();
 
@@ -23,7 +23,7 @@ public class MessageMonitor extends Monitor{
 
         try {
             ResultSet resultSet = CodebaseBot.getInstance().getMySQL().query("SELECT * FROM MessageMonitor WHERE DAY='" + Constants.simpleDateFormat.format(new Date()) + "';");
-            if(resultSet.next()){
+            if (resultSet.next()) {
                 messages.put(Constants.simpleDateFormat.format(new Date()), resultSet.getInt("MESSAGES"));
             }
         } catch (SQLException e) {
@@ -32,12 +32,12 @@ public class MessageMonitor extends Monitor{
     }
 
     @Override
-    public void trigger(){
+    public void trigger() {
         String date = Constants.simpleDateFormat.format(new Date());
-        if(messages.containsKey(date)){
+        if (messages.containsKey(date)) {
             messages.put(date, messages.get(date) + 1);
             CodebaseBot.getInstance().getMySQL().updateAsync("UPDATE MessageMonitor SET MESSAGES='" + messages.get(date) + "' WHERE DAY='" + date + "';");
-        }  else {
+        } else {
             messages.put(date, 1);
             CodebaseBot.getInstance().getMySQL().update("INSERT INTO MessageMonitor (DAY, MESSAGES) VALUES ('" + date + "'," + 1 + ");");
         }

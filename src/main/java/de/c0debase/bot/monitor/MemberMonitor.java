@@ -13,7 +13,7 @@ import java.util.HashMap;
  * @author Biosphere
  * @date 14.02.18
  */
-public class MemberMonitor extends Monitor{
+public class MemberMonitor extends Monitor {
 
     private final HashMap<String, Integer> joins = new HashMap<>();
 
@@ -22,7 +22,7 @@ public class MemberMonitor extends Monitor{
         CodebaseBot.getInstance().getMySQL().update("CREATE TABLE IF NOT EXISTS MemberMonitor (DAY VARCHAR(50), MEMBER int);");
         try {
             ResultSet resultSet = CodebaseBot.getInstance().getMySQL().query("SELECT * FROM MemberMonitor WHERE MEMBER='" + Constants.simpleDateFormat.format(new Date()) + "';");
-            if(resultSet.next()){
+            if (resultSet.next()) {
                 joins.put(Constants.simpleDateFormat.format(new Date()), resultSet.getInt("MEMBER"));
             }
         } catch (SQLException e) {
@@ -31,12 +31,12 @@ public class MemberMonitor extends Monitor{
     }
 
     @Override
-    public void trigger(){
+    public void trigger() {
         String date = Constants.simpleDateFormat.format(new Date());
-        if(joins.containsKey(date)){
+        if (joins.containsKey(date)) {
             joins.put(date, joins.get(date) + 1);
             CodebaseBot.getInstance().getMySQL().updateAsync("UPDATE MemberMonitor SET MEMBER='" + joins.get(date) + "' WHERE DAY='" + date + "';");
-        }  else {
+        } else {
             joins.put(date, 1);
             CodebaseBot.getInstance().getMySQL().update("INSERT INTO MemberMonitor (DAY, MEMBER) VALUES ('" + date + "'," + 1 + ");");
         }

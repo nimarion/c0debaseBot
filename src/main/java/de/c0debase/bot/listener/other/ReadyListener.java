@@ -25,7 +25,7 @@ public class ReadyListener extends ListenerAdapter {
                 CodebaseBot.getInstance().getLevelManager().load(member.getUser().getId());
                 if (CodebaseBot.getInstance().getLevelManager().getLevelUser(member.getUser().getId()).getLevel() >= 3 && !member.getGuild().getRolesByName("Projekt", true).isEmpty()) {
                     Role role = member.getGuild().getRolesByName("Projekt", true).get(0);
-                    if(PermissionUtil.canInteract(member.getGuild().getSelfMember(), role)){
+                    if (PermissionUtil.canInteract(member.getGuild().getSelfMember(), role)) {
                         member.getGuild().getController().addRolesToMember(member, role).queue();
                     }
                 }

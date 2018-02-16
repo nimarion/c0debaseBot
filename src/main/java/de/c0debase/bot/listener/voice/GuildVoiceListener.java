@@ -18,10 +18,8 @@ public class GuildVoiceListener extends ListenerAdapter {
     @Override
     public void onGuildVoiceJoin(GuildVoiceJoinEvent event) {
         super.onGuildVoiceJoin(event);
-        if (event.getGuild().getAudioManager().isConnected()) {
-            if (event.getGuild().getAudioManager().getConnectedChannel().getMembers().size() == 1) {
-                event.getGuild().getAudioManager().closeAudioConnection();
-            }
+        if (event.getGuild().getAudioManager().isConnected() && event.getGuild().getAudioManager().getConnectedChannel().getMembers().size() == 1) {
+            event.getGuild().getAudioManager().closeAudioConnection();
         }
     }
 
@@ -40,10 +38,8 @@ public class GuildVoiceListener extends ListenerAdapter {
             CodebaseBot.getInstance().getJda().getPresence().setGame(Game.of(Game.GameType.DEFAULT, "auf c0debase"));
             return;
         }
-        if (event.getGuild().getAudioManager().isConnected()) {
-            if (event.getGuild().getAudioManager().getConnectedChannel().getMembers().size() == 1) {
-                event.getGuild().getAudioManager().closeAudioConnection();
-            }
+        if (event.getGuild().getAudioManager().isConnected() && event.getGuild().getAudioManager().getConnectedChannel().getMembers().size() == 1) {
+            event.getGuild().getAudioManager().closeAudioConnection();
         }
     }
 }

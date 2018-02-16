@@ -1,10 +1,8 @@
 package de.c0debase.bot.mysql;
 
 import java.sql.*;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 /**
  * @author Biosphere
