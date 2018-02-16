@@ -47,7 +47,7 @@ public class RoleCommand extends Command {
         for (String role : args.split(",")) {
             if (!message.getGuild().getRolesByName(role, true).isEmpty()) {
                 Role rrole = message.getGuild().getRolesByName(role, true).get(0);
-                if (PermissionUtil.canInteract(message.getGuild().getSelfMember(), rrole)) {
+                if (PermissionUtil.canInteract(message.getGuild().getSelfMember(), rrole) && !rrole.isManaged()) {
                     if (message.getGuild().getMembersWithRoles(rrole).contains(message.getMember()) && !removeRoles.contains(rrole) && !rrole.getName().equalsIgnoreCase("Projekt")) {
                         removeRoles.add(rrole);
                     } else if (!addRoles.contains(rrole)) {
