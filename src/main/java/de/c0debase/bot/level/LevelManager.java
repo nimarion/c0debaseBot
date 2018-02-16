@@ -23,7 +23,7 @@ public class LevelManager {
     }
 
     public void startInviteChecker() {
-        if(System.getenv("BOTCHANNEL") == null){
+        if (System.getenv("BOTCHANNEL") == null) {
             return;
         }
         new Thread(() -> {
@@ -34,24 +34,22 @@ public class LevelManager {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                CodebaseBot.getInstance().getJda().getGuilds().get(0).getInvites().queue(success -> {
-                    success.forEach(invite -> {
-                        if (inviteHashMap.containsKey(invite.getCode()) && invite.getUses() > inviteHashMap.get(invite.getCode())) {
-                            LevelUser levelUser = CodebaseBot.getInstance().getLevelManager().getLevelUser(invite.getInviter().getId());
+                CodebaseBot.getInstance().getJda().getGuilds().get(0).getInvites().queue(success -> success.forEach(invite -> {
+                    if (inviteHashMap.containsKey(invite.getCode()) && invite.getUses() > inviteHashMap.get(invite.getCode())) {
+                        LevelUser levelUser = CodebaseBot.getInstance().getLevelManager().getLevelUser(invite.getInviter().getId());
 
-                            EmbedBuilder embedBuilder = new EmbedBuilder();
-                            embedBuilder.appendDescription(invite.getInviter().getAsMention() + " vielen Dank das du jemand neues auf c0debase gebracht hast");
-                            CodebaseBot.getInstance().getJda().getTextChannelById(System.getenv("BOTCHANNEL")).sendMessage(embedBuilder.build()).queue();
+                        EmbedBuilder embedBuilder = new EmbedBuilder();
+                        embedBuilder.appendDescription(invite.getInviter().getAsMention() + " vielen Dank das du jemand neues auf c0debase gebracht hast");
+                        CodebaseBot.getInstance().getJda().getTextChannelById(System.getenv("BOTCHANNEL")).sendMessage(embedBuilder.build()).queue();
 
-                            if (levelUser.addXP(100)) {
-                                EmbedBuilder levelUpEmbed = new EmbedBuilder();
-                                levelUpEmbed.appendDescription(invite.getInviter().getAsMention() + " has leveled up to level " + levelUser.getLevel());
-                                CodebaseBot.getInstance().getJda().getTextChannelById(System.getenv("BOTCHANNEL")).sendMessage(levelUpEmbed.build()).queue();
-                            }
+                        if (levelUser.addXP(100)) {
+                            EmbedBuilder levelUpEmbed = new EmbedBuilder();
+                            levelUpEmbed.appendDescription(invite.getInviter().getAsMention() + " has leveled up to level " + levelUser.getLevel());
+                            CodebaseBot.getInstance().getJda().getTextChannelById(System.getenv("BOTCHANNEL")).sendMessage(levelUpEmbed.build()).queue();
                         }
-                        inviteHashMap.put(invite.getCode(), invite.getUses());
-                    });
-                });
+                    }
+                    inviteHashMap.put(invite.getCode(), invite.getUses());
+                }));
             }
         }).start();
     }
