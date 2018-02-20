@@ -13,7 +13,7 @@ addons:
       - oracle-java8-installer
 
 after_success:
-    - if [ "$TRAVIS_BRANCH" == "master" && "$TRAVIS_PULL_REQUEST" == "false"]; then
+    - if [ "$TRAVIS_BRANCH" == "master" ]; then
       docker build -t biospheere/codebasebot .;
       docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
       docker push biospheere/codebasebot;
