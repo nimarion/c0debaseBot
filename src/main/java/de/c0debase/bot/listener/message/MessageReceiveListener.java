@@ -42,6 +42,20 @@ public class MessageReceiveListener extends ListenerAdapter {
             return;
         }
 
+        if (event.getTextChannel().getName().equalsIgnoreCase("feedback")) {
+            EmbedBuilder embedBuilder = new EmbedBuilder();
+            embedBuilder.setColor(Color.GREEN);
+            embedBuilder.setFooter("@" + event.getAuthor().getName() + "#" + event.getAuthor().getDiscriminator(), event.getAuthor().getEffectiveAvatarUrl());
+            embedBuilder.setTitle("Feedback");
+            embedBuilder.setDescription(event.getMessage().getContentDisplay());
+            event.getMessage().delete().queue();
+            event.getTextChannel().sendMessage(embedBuilder.build()).queue(success -> {
+                success.addReaction(EmojiManager.getForAlias("thumbsup").getUnicode()).queue();
+                success.addReaction(EmojiManager.getForAlias("thumbsdown").getUnicode()).queue();
+            });
+            return;
+        }
+
         if (event.getMessage().getContentRaw().startsWith(event.getGuild().getSelfMember().getAsMention())) {
             event.getTextChannel().sendMessage("hi").queue();
             return;
