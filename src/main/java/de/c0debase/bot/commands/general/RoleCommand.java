@@ -46,12 +46,14 @@ public class RoleCommand extends Command {
         List<Role> removeRoles = new ArrayList<>();
         for (String role : args.split(",")) {
             if (!message.getGuild().getRolesByName(role, true).isEmpty()) {
-                Role rrole = message.getGuild().getRolesByName(role, true).get(0);
-                if (PermissionUtil.canInteract(message.getGuild().getSelfMember(), rrole) && !rrole.isManaged()) {
-                    if (message.getGuild().getMembersWithRoles(rrole).contains(message.getMember()) && !removeRoles.contains(rrole) && !rrole.getName().equalsIgnoreCase("Projekt") && !rrole.getName().equalsIgnoreCase("Friend")) {
-                        removeRoles.add(rrole);
-                    } else if (!addRoles.contains(rrole)) {
-                        addRoles.add(rrole);
+                if (!role.equalsIgnoreCase("Friend") && !role.equalsIgnoreCase("Projekt")) {
+                    Role rrole = message.getGuild().getRolesByName(role, true).get(0);
+                    if (PermissionUtil.canInteract(message.getGuild().getSelfMember(), rrole) && !rrole.isManaged()) {
+                        if (message.getGuild().getMembersWithRoles(rrole).contains(message.getMember()) && !removeRoles.contains(rrole)) {
+                            removeRoles.add(rrole);
+                        } else if (!addRoles.contains(rrole)) {
+                            addRoles.add(rrole);
+                        }
                     }
                 }
             }
