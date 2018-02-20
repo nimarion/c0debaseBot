@@ -1,11 +1,16 @@
 package de.c0debase.bot.commands.general;
 
+import com.google.gson.reflect.TypeToken;
 import de.c0debase.bot.commands.Command;
+import de.c0debase.bot.utils.Constants;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.Role;
 import net.dv8tion.jda.core.utils.PermissionUtil;
+import org.apache.commons.io.IOUtils;
 
+import java.io.StringWriter;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -17,8 +22,19 @@ import java.util.concurrent.TimeUnit;
 
 public class RoleCommand extends Command {
 
+    private ArrayList<String> forbiddenRoles;
+
     public RoleCommand() {
         super("role", "Weise dir eine Programmiersprache zu", Categorie.GENERAL, "rolle");
+        StringWriter writer = new StringWriter();
+        try {
+            URL url = new URL("https://biospheere.github.io/codebase.json");
+            IOUtils.copy(url.openConnection().getInputStream(), writer, "UTF-8");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        forbiddenRoles = Constants.GSON.fromJson(writer.toString(), new TypeToken<ArrayList<String>>() {
+        }.getType());
     }
 
     @Override
@@ -31,7 +47,7 @@ public class RoleCommand extends Command {
             embedBuilder.appendDescription("`!role Java,Go,C#`\n\n");
 
             for (Role role : msg.getGuild().getRoles()) {
-                if (!role.isManaged() && !role.getName().equalsIgnoreCase("@everyone") && !role.getName().equalsIgnoreCase("Projekt") && PermissionUtil.canInteract(msg.getGuild().getSelfMember(), role)) {
+                if (!forbiddenRoles.contains(role.getName()) && !role.isManaged() && !role.getName().equalsIgnoreCase("@everyone") && !role.getName().equalsIgnoreCase("Projekt") && PermissionUtil.canInteract(msg.getGuild().getSelfMember(), role)) {
                     embedBuilder.appendDescription("***" + role.getName() + "***" + "\n");
                 }
             }
@@ -45,7 +61,7 @@ public class RoleCommand extends Command {
         List<Role> addRoles = new ArrayList<>();
         List<Role> removeRoles = new ArrayList<>();
         for (String role : args.split(",")) {
-            if (!message.getGuild().getRolesByName(role, true).isEmpty()) {
+            if (!forbiddenRoles.contains(role) && !message.getGuild().getRolesByName(role, true).isEmpty()) {
                 Role rrole = message.getGuild().getRolesByName(role, true).get(0);
                 if (PermissionUtil.canInteract(message.getGuild().getSelfMember(), rrole) && !rrole.isManaged()) {
                     if (message.getGuild().getMembersWithRoles(rrole).contains(message.getMember()) && !removeRoles.contains(rrole) && !rrole.getName().equalsIgnoreCase("Projekt")) {
