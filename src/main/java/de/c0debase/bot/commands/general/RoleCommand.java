@@ -31,7 +31,7 @@ public class RoleCommand extends Command {
             embedBuilder.appendDescription("`!role Java,Go,C#`\n\n");
 
             for (Role role : msg.getGuild().getRoles()) {
-                if (!role.isManaged() && !role.getName().equalsIgnoreCase("@everyone") && !role.getName().equalsIgnoreCase("Projekt") && PermissionUtil.canInteract(msg.getGuild().getSelfMember(), role)) {
+                if (!role.isManaged() && !role.getName().equalsIgnoreCase("@everyone") && !role.getName().equalsIgnoreCase("Projekt") && !role.getName().equalsIgnoreCase("Friend") && PermissionUtil.canInteract(msg.getGuild().getSelfMember(), role)) {
                     embedBuilder.appendDescription("***" + role.getName() + "***" + "\n");
                 }
             }
@@ -48,7 +48,7 @@ public class RoleCommand extends Command {
             if (!message.getGuild().getRolesByName(role, true).isEmpty()) {
                 Role rrole = message.getGuild().getRolesByName(role, true).get(0);
                 if (PermissionUtil.canInteract(message.getGuild().getSelfMember(), rrole) && !rrole.isManaged()) {
-                    if (message.getGuild().getMembersWithRoles(rrole).contains(message.getMember()) && !removeRoles.contains(rrole) && !rrole.getName().equalsIgnoreCase("Projekt")) {
+                    if (message.getGuild().getMembersWithRoles(rrole).contains(message.getMember()) && !removeRoles.contains(rrole) && !rrole.getName().equalsIgnoreCase("Projekt") && !rrole.getName().equalsIgnoreCase("Friend")) {
                         removeRoles.add(rrole);
                     } else if (!addRoles.contains(rrole)) {
                         addRoles.add(rrole);
