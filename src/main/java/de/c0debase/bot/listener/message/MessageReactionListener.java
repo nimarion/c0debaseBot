@@ -70,7 +70,7 @@ public class MessageReactionListener extends ListenerAdapter {
             if (!success.getEmbeds().isEmpty() && success.getAuthor().isBot()) {
                 String emote = EmojiManager.getByUnicode(event.getReactionEmote().getName()).getAliases().get(0);
                 MessageEmbed messageEmbed = success.getEmbeds().get(0);
-                if (messageEmbed != null && messageEmbed.getFooter().getText().contains("Seite")) {
+                if (messageEmbed.getFooter() != null && messageEmbed.getFooter().getText().contains("Seite")) {
                     CodebaseBot.getInstance().getLeaderboardPagination().updateList(CodebaseBot.getInstance().getLevelManager().getLevelUsersSorted());
 
                     String[] strings = messageEmbed.getFooter().getText().replace("Seite: (", "").replace(")", "").split("/");
