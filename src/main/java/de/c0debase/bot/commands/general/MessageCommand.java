@@ -35,7 +35,7 @@ public class MessageCommand extends Command {
             }
             int average = sum / messageCount.size();
 
-            embedBuilder.setDescription("Am Tag werden durchnittlich " + average + " Nachrichten gesendet");
+            embedBuilder.setDescription("Am Tag werden durchschnittlich " + average + " Nachrichten gesendet");
         } catch (SQLException ex) {
             ex.printStackTrace();
             embedBuilder.setDescription("Der Durchschnitt konnte nicht berechnet werden");
