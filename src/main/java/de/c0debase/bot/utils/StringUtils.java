@@ -44,7 +44,7 @@ public class StringUtils {
     /**
      * Replace all forbidden characters
      */
-    public static String replaceCharactar(final String input) {
+    public static String replaceCharacter(final String input) {
         final StringBuilder stringBuilder = new StringBuilder(input);
         for (int i = 0; i < stringBuilder.length(); i++) {
             final char c = stringBuilder.charAt(i);

@@ -31,7 +31,7 @@ public class LeaderboardCommand extends Command {
         for (LevelUser levelUser : CodebaseBot.getInstance().getLeaderboardPagination().getPage(1)) {
             Member member = msg.getGuild().getMemberById(Long.valueOf(levelUser.getId()));
             if (member != null) {
-                embedBuilder.appendDescription("`" + count + ")` " + StringUtils.replaceCharactar(member.getEffectiveName()) + "#" + member.getUser().getDiscriminator() + " (Lvl." + levelUser.getLevel() + ")\n");
+                embedBuilder.appendDescription("`" + count + ")` " + StringUtils.replaceCharacter(member.getEffectiveName()) + "#" + member.getUser().getDiscriminator() + " (Lvl." + levelUser.getLevel() + ")\n");
             }
             count++;
         }
