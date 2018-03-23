@@ -55,7 +55,7 @@ public class CodebaseBot {
             jda = new JDABuilder(AccountType.BOT)
                     .setToken(System.getenv("DISCORD-TOKEN"))
                     .setEnableShutdownHook(true)
-                    .setGame(Game.of(Game.GameType.DEFAULT, "auf c0debase"))
+                    .setGame(Game.of(Game.GameType.LISTENING, "!help"))
                     .setStatus(OnlineStatus.ONLINE)
                     .setAutoReconnect(true)
                     .setAudioEnabled(true)
