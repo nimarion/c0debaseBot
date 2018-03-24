@@ -23,8 +23,7 @@ public class MessageCommand extends Command {
     @Override
     public void execute(String[] args, Message msg) {
         EmbedBuilder embedBuilder = getEmbed(msg.getGuild(), msg.getAuthor());
-        try {
-            ResultSet resultSet = CodebaseBot.getInstance().getMySQL().query("SELECT * FROM MessageMonitor;");
+        try (ResultSet resultSet = CodebaseBot.getInstance().getMySQL().query("SELECT * FROM MessageMonitor;")) {
             List<Integer> messageCount = new ArrayList<>();
             while (resultSet.next()) {
                 messageCount.add(resultSet.getInt("MESSAGES"));
@@ -33,9 +32,7 @@ public class MessageCommand extends Command {
             for (Integer count : messageCount) {
                 sum += count;
             }
-            int average = sum / messageCount.size();
-
-            embedBuilder.setDescription("Am Tag werden durchschnittlich " + average + " Nachrichten gesendet");
+            embedBuilder.setDescription("Am Tag werden durchschnittlich " + sum / messageCount.size() + " Nachrichten gesendet");
         } catch (SQLException ex) {
             ex.printStackTrace();
             embedBuilder.setDescription("Der Durchschnitt konnte nicht berechnet werden");
