@@ -16,15 +16,11 @@ public class VolumeCommand extends Command {
         super("volume", "Ändert die Lautstärke", Categorie.MUSIC, "v");
     }
 
-
     @Override
     public void execute(String[] args, Message msg) {
         Guild guild = msg.getGuild();
-        EmbedBuilder embedBuilder = new EmbedBuilder();
-        embedBuilder.setFooter(msg.getAuthor().getName(), msg.getAuthor().getEffectiveAvatarUrl());
-        embedBuilder.setAuthor("Command: " + getCommand(), null, msg.getGuild().getIconUrl());
-        embedBuilder.setColor(msg.getGuild().getSelfMember().getColor());
-        if (msg.getMember().getVoiceState() != null && msg.getMember().getVoiceState().inVoiceChannel()) {
+        EmbedBuilder embedBuilder = getEmbed(msg.getGuild(), msg.getAuthor());
+        if (msg.getMember().getVoiceState().inVoiceChannel() && msg.getMember().getVoiceState().getChannel().getMembers().contains(msg.getGuild().getSelfMember())) {
             if (args.length == 1) {
                 int volume;
                 try {
@@ -44,7 +40,6 @@ public class VolumeCommand extends Command {
         } else {
             embedBuilder.setDescription("Du bist in keinem Voicechannel ^^");
         }
-
         msg.getTextChannel().sendMessage(embedBuilder.build()).queue();
     }
 
