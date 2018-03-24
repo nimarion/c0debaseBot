@@ -31,7 +31,7 @@ public class RankCommand extends Command {
         if (levelUser.getLevel() == 0 || levelUser.getLevel() == 1) {
             embedBuilder.addField("Total Exp", String.valueOf(levelUser.getLevel() == 0 ? levelUser.getXp() : levelUser.getXp() + 1000), false);
         } else {
-            embedBuilder.addField("Total Exp", String.valueOf(levelUser.getXp() + (1000 * (levelUser.getLevel() - 1) * 1.2)), false);
+            embedBuilder.addField("Total Exp", String.valueOf(Double.valueOf(((1000 * (levelUser.getLevel() - 1) * 1.2) * levelUser.getLevel()) / 2 + 1000 + levelUser.getXp())), false);
         }
 
         msg.getTextChannel().sendMessage(embedBuilder.build()).queue();
