@@ -21,8 +21,7 @@ public class MessageMonitor extends Monitor {
         super("MessageMonitor", "Trackt alle Nachrichten", MessageReceivedEvent.class);
         CodebaseBot.getInstance().getMySQL().update("CREATE TABLE IF NOT EXISTS MessageMonitor (DAY VARCHAR(50), MESSAGES int);");
 
-        try {
-            ResultSet resultSet = CodebaseBot.getInstance().getMySQL().query("SELECT * FROM MessageMonitor WHERE DAY='" + Constants.simpleDateFormat.format(new Date()) + "';");
+        try (ResultSet resultSet = CodebaseBot.getInstance().getMySQL().query("SELECT * FROM MessageMonitor WHERE DAY='" + Constants.simpleDateFormat.format(new Date()) + "';")) {
             if (resultSet.next()) {
                 messages.put(Constants.simpleDateFormat.format(new Date()), resultSet.getInt("MESSAGES"));
             }

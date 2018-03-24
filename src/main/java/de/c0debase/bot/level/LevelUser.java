@@ -52,8 +52,7 @@ public class LevelUser {
 
     public void read() {
         if (exists()) {
-            try {
-                ResultSet resultSet = CodebaseBot.getInstance().getMySQL().query("SELECT * FROM Users WHERE ID=" + id + ";");
+            try (ResultSet resultSet = CodebaseBot.getInstance().getMySQL().query("SELECT * FROM Users WHERE ID=" + id + ";")) {
                 if (resultSet.next()) {
                     xp = resultSet.getInt("XP");
                     level = resultSet.getInt("LEVEL");
@@ -81,8 +80,7 @@ public class LevelUser {
     }
 
     public boolean exists() {
-        try {
-            ResultSet resultSet = CodebaseBot.getInstance().getMySQL().query("SELECT * FROM Users WHERE id='" + id + "';");
+        try (ResultSet resultSet = CodebaseBot.getInstance().getMySQL().query("SELECT * FROM Users WHERE id='" + id + "';")) {
             return resultSet.next() && resultSet.getString("XP") != null;
         } catch (SQLException e) {
             e.printStackTrace();

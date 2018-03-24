@@ -20,8 +20,7 @@ public class MemberMonitor extends Monitor {
     public MemberMonitor() {
         super("MemberMonitor", "Trackt alle neuen Mitglieder", GuildMemberJoinEvent.class);
         CodebaseBot.getInstance().getMySQL().update("CREATE TABLE IF NOT EXISTS MemberMonitor (DAY VARCHAR(50), MEMBER int);");
-        try {
-            ResultSet resultSet = CodebaseBot.getInstance().getMySQL().query("SELECT * FROM MemberMonitor WHERE MEMBER='" + Constants.simpleDateFormat.format(new Date()) + "';");
+        try (ResultSet resultSet = CodebaseBot.getInstance().getMySQL().query("SELECT * FROM MemberMonitor WHERE MEMBER='" + Constants.simpleDateFormat.format(new Date()) + "';")) {
             if (resultSet.next()) {
                 joins.put(Constants.simpleDateFormat.format(new Date()), resultSet.getInt("MEMBER"));
             }
