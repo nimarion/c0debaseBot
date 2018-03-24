@@ -19,8 +19,8 @@ public class LeaveCommand extends Command {
         EmbedBuilder embedBuilder = getEmbed(msg.getGuild(), msg.getAuthor());
         if (msg.getMember().getVoiceState().inVoiceChannel() && msg.getMember().getVoiceState().getChannel().getMembers().contains(msg.getGuild().getSelfMember())) {
             if (msg.getGuild().getAudioManager().getConnectedChannel() != null) {
-                msg.getGuild().getAudioManager().closeAudioConnection();
                 embedBuilder.addField("Verbindung getrennt", "`Channel " + msg.getGuild().getAudioManager().getConnectedChannel().getName() + " verlassen`", false);
+                msg.getGuild().getAudioManager().closeAudioConnection();
             } else {
                 embedBuilder.setDescription("Der Bot ist in keinem Voicechannel");
             }
