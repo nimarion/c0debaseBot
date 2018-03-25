@@ -6,15 +6,13 @@ import de.c0debase.bot.commands.Command;
 import de.c0debase.bot.commands.Command.Categorie;
 import de.c0debase.bot.level.LevelUser;
 import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.MessageEmbed;
-import net.dv8tion.jda.core.entities.Role;
+import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.message.guild.react.GenericGuildMessageReactionEvent;
 import net.dv8tion.jda.core.events.message.guild.react.GuildMessageReactionAddEvent;
 import net.dv8tion.jda.core.events.message.guild.react.GuildMessageReactionRemoveEvent;
 import net.dv8tion.jda.core.events.message.priv.react.GenericPrivateMessageReactionEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
+import net.dv8tion.jda.core.utils.PermissionUtil;
 
 import java.awt.*;
 
@@ -27,11 +25,14 @@ public class MessageReactionListener extends ListenerAdapter {
     @Override
     public void onGenericPrivateMessageReaction(GenericPrivateMessageReactionEvent event) {
         super.onGenericPrivateMessageReaction(event);
-        if (event.getUser().isBot() || EmojiManager.getByUnicode(event.getReactionEmote().getName()) == null) {
+        if (event.getUser().isBot()) {
             return;
         }
         event.getChannel().getMessageById(event.getMessageId()).queue((Message success) -> {
-            String emote = EmojiManager.getByUnicode(event.getReactionEmote().getName()).getAliases().get(0);
+            final String emote = getReaction(event.getReactionEmote());
+            if (emote == null) {
+                return;
+            }
             if (!success.getEmbeds().isEmpty() && success.getAuthor().isBot()) {
                 EmbedBuilder embedBuilder = new EmbedBuilder();
                 embedBuilder.setColor(Color.GREEN);
@@ -68,7 +69,10 @@ public class MessageReactionListener extends ListenerAdapter {
                 return;
             }
             if (!success.getEmbeds().isEmpty() && success.getAuthor().isBot()) {
-                String emote = EmojiManager.getByUnicode(event.getReactionEmote().getName()).getAliases().get(0);
+                final String emote = getReaction(event.getReactionEmote());
+                if (emote == null) {
+                    return;
+                }
                 MessageEmbed messageEmbed = success.getEmbeds().get(0);
                 if (messageEmbed.getFooter() != null && messageEmbed.getFooter().getText().contains("Seite")) {
                     CodebaseBot.getInstance().getLeaderboardPagination().updateList(CodebaseBot.getInstance().getLevelManager().getLevelUsersSorted());
@@ -116,10 +120,13 @@ public class MessageReactionListener extends ListenerAdapter {
             return;
         }
         event.getChannel().getMessageById(event.getMessageId()).queue(success -> {
-            if (success.getTextChannel().getName().equalsIgnoreCase("rollen-freischalten")) {
-                String emote = event.getReactionEmote().getName();
-                if (!success.getGuild().getRolesByName(emote, true).isEmpty()) {
-                    Role role = success.getGuild().getRolesByName(emote, true).get(0);
+            if (success.getTextChannel().getTopic().endsWith("RS")) {
+                final String emote = getReaction(event.getReactionEmote());
+                if (emote == null) {
+                    return;
+                }
+                Role role = success.getGuild().getRolesByName(emote, true).stream().findFirst().get();
+                if (role != null && PermissionUtil.canInteract(event.getGuild().getSelfMember(), role)) {
                     if (success.getGuild().getMembersWithRoles(role).contains(event.getMember())) {
                         success.getGuild().getController().removeRolesFromMember(event.getMember(), role).queue();
                     }
@@ -132,16 +139,24 @@ public class MessageReactionListener extends ListenerAdapter {
     public void onGuildMessageReactionAdd(GuildMessageReactionAddEvent event) {
         super.onGuildMessageReactionAdd(event);
         event.getChannel().getMessageById(event.getMessageId()).queue(success -> {
-            if (success.getTextChannel().getName().equalsIgnoreCase("rollen-freischalten")) {
-                String emote = event.getReactionEmote().getName();
-                if (!success.getGuild().getRolesByName(emote, true).isEmpty()) {
-                    Role role = success.getGuild().getRolesByName(emote, true).get(0);
+            if (success.getTextChannel().getTopic().endsWith("RS")) {
+                String emote = getReaction(event.getReactionEmote());
+                Role role = success.getGuild().getRolesByName(emote, true).stream().findFirst().get();
+                if (role != null && PermissionUtil.canInteract(event.getGuild().getSelfMember(), role)) {
                     if (!success.getGuild().getMembersWithRoles(role).contains(event.getMember())) {
                         success.getGuild().getController().addRolesToMember(event.getMember(), role).queue();
                     }
                 }
             }
         });
+    }
+
+    private String getReaction(MessageReaction.ReactionEmote emote) {
+        try {
+            return EmojiManager.getByUnicode(emote.getName()).getAliases().get(0);
+        } catch (Exception e) {
+            return emote.getName();
+        }
     }
 }
 
