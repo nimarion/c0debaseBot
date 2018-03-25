@@ -20,12 +20,9 @@ public class SkipCommand extends Command {
 
     @Override
     public void execute(String[] args, Message msg) {
-        EmbedBuilder embedBuilder = new EmbedBuilder();
-        embedBuilder.setFooter(msg.getAuthor().getName(), msg.getAuthor().getEffectiveAvatarUrl());
-        embedBuilder.setAuthor("Command: " + getCommand(), null, msg.getGuild().getIconUrl());
-        embedBuilder.setColor(msg.getGuild().getSelfMember().getColor());
+        EmbedBuilder embedBuilder = getEmbed(msg.getGuild(), msg.getAuthor());
 
-        if (msg.getMember().getVoiceState() != null && msg.getMember().getVoiceState().inVoiceChannel()) {
+        if (msg.getMember().getVoiceState().inVoiceChannel() && msg.getMember().getVoiceState().getChannel().getMembers().contains(msg.getGuild().getSelfMember())) {
             CodebaseBot.getInstance().getMusicManager().skip(msg.getGuild());
             if (CodebaseBot.getInstance().getMusicManager().getPlayingTrack(msg.getGuild()) != null) {
                 AudioTrackInfo trackInfo = CodebaseBot.getInstance().getMusicManager().getPlayingTrack(msg.getGuild()).getInfo();
@@ -40,7 +37,7 @@ public class SkipCommand extends Command {
                 embedBuilder.setDescription("Es gibt kein weiteres Lied in der Warteschlange");
             }
         } else {
-            embedBuilder.setDescription("Du bist in keinem Voicechannel ^^");
+            embedBuilder.setDescription("Du bist in keinem Voicechannel mit dem Bot");
         }
         msg.getTextChannel().sendMessage(embedBuilder.build()).queue();
     }

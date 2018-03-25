@@ -2,7 +2,8 @@ package de.c0debase.bot.commands.music;
 
 import de.c0debase.bot.commands.Command;
 import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.entities.*;
+import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.core.entities.VoiceChannel;
 import net.dv8tion.jda.core.managers.AudioManager;
 
 /**
@@ -17,26 +18,19 @@ public class JoinCommand extends Command {
 
     @Override
     public void execute(String[] args, Message msg) {
-        Guild guild = msg.getGuild();
-        AudioManager audioManager = guild.getAudioManager();
-        Member member = msg.getMember();
-        TextChannel textChannel = msg.getTextChannel();
+        EmbedBuilder embedBuilder = getEmbed(msg.getGuild(), msg.getAuthor());
 
-        EmbedBuilder embedBuilder = new EmbedBuilder();
-        embedBuilder.setFooter(msg.getAuthor().getName(), msg.getAuthor().getEffectiveAvatarUrl());
-        embedBuilder.setAuthor("Command: " + getCommand(), null, msg.getGuild().getIconUrl());
-        embedBuilder.setColor(msg.getGuild().getSelfMember().getColor());
-
+        AudioManager audioManager = msg.getGuild().getAudioManager();
         if (audioManager.isConnected() || audioManager.isAttemptingToConnect()) {
             embedBuilder.setDescription("Der Bot ist bereits verbunden");
-        } else if (!member.getVoiceState().inVoiceChannel()) {
+        } else if (!msg.getMember().getVoiceState().inVoiceChannel()) {
             embedBuilder.setDescription("Dafür musst du in einem Voicechannel sein.");
         } else {
-            VoiceChannel channel = member.getVoiceState().getChannel();
-            guild.getAudioManager().openAudioConnection(channel);
+            VoiceChannel channel = msg.getMember().getVoiceState().getChannel();
+            msg.getGuild().getAudioManager().openAudioConnection(channel);
             embedBuilder.setDescription("Channel" + channel.getName() + " betreten");
         }
-        textChannel.sendMessage(embedBuilder.build()).queue();
+        msg.getTextChannel().sendMessage(embedBuilder.build()).queue();
 
     }
 }
