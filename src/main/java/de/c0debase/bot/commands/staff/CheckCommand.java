@@ -6,7 +6,6 @@ import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
 
-import java.awt.*;
 import java.time.format.DateTimeFormatter;
 
 /**
@@ -31,6 +30,8 @@ public class CheckCommand extends Command {
                 EmbedBuilder embedBuilder = getEmbed(msg.getGuild(), member.getUser());
                 embedBuilder.addField("Erstelldatum: ", member.getUser().getCreationTime().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")), true);
                 embedBuilder.addField("Standart Avatar: ", String.valueOf(member.getUser().getAvatarUrl() == null), true);
+                embedBuilder.addField("Beitritt: ", String.valueOf(member.getUser().getAvatarUrl() == null), true);
+
                 msg.getTextChannel().sendMessage(embedBuilder.build()).queue();
             }
         }

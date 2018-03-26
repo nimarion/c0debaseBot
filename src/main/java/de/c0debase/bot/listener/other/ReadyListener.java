@@ -1,8 +1,10 @@
 package de.c0debase.bot.listener.other;
 
 import de.c0debase.bot.CodebaseBot;
+import net.dv8tion.jda.core.entities.Role;
 import net.dv8tion.jda.core.events.ReadyEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
+import net.dv8tion.jda.core.utils.PermissionUtil;
 import org.reflections.Reflections;
 
 import java.util.Set;
@@ -21,9 +23,12 @@ public class ReadyListener extends ListenerAdapter {
         event.getJDA().getGuilds().get(0).getMembers().forEach(member -> {
             if (!member.getUser().isBot()) {
                 CodebaseBot.getInstance().getLevelManager().load(member.getUser().getId());
-                /*if (CodebaseBot.getInstance().getLevelManager().getLevelUser(member.getUser().getId()).getLevel() >= 3 && !member.getGuild().getRolesByName("Projekt", true).isEmpty()) {
-                    member.getGuild().getController().addRolesToMember(member, member.getGuild().getRolesByName("Projekt", true).get(0)).queue();
-                }*/
+                if (CodebaseBot.getInstance().getLevelManager().getLevelUser(member.getUser().getId()).getLevel() >= 3 && !member.getGuild().getRolesByName("Projekt", true).isEmpty()) {
+                    Role role = member.getGuild().getRolesByName("Projekt", true).get(0);
+                    if (PermissionUtil.canInteract(member.getGuild().getSelfMember(), role)) {
+                        member.getGuild().getController().addRolesToMember(member, role).queue();
+                    }
+                }
             }
         });
 

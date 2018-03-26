@@ -20,29 +20,24 @@ public class SkipCommand extends Command {
 
     @Override
     public void execute(String[] args, Message msg) {
-        EmbedBuilder embedBuilder = new EmbedBuilder();
-        embedBuilder.setFooter(msg.getAuthor().getName(), msg.getAuthor().getEffectiveAvatarUrl());
-        embedBuilder.setAuthor("Command: " + getCommand(), null, msg.getGuild().getIconUrl());
-        embedBuilder.setColor(msg.getGuild().getSelfMember().getColor());
+        EmbedBuilder embedBuilder = getEmbed(msg.getGuild(), msg.getAuthor());
 
-        if (msg.getMember().getVoiceState() != null) {
-            if (msg.getMember().getVoiceState().inVoiceChannel()) {
-                CodebaseBot.getInstance().getMusicManager().skip(msg.getGuild());
-                if (CodebaseBot.getInstance().getMusicManager().getPlayingTrack(msg.getGuild()) != null) {
-                    AudioTrackInfo trackInfo = CodebaseBot.getInstance().getMusicManager().getPlayingTrack(msg.getGuild()).getInfo();
-                    String length;
-                    if (TimeUnit.MILLISECONDS.toHours(trackInfo.length) >= 24) {
-                        length = String.format("%dd %02d:%02d:%02d", TimeUnit.MILLISECONDS.toDays(trackInfo.length), TimeUnit.MILLISECONDS.toHours(trackInfo.length) % 24, TimeUnit.MILLISECONDS.toMinutes(trackInfo.length) % 60, TimeUnit.MILLISECONDS.toSeconds(trackInfo.length) % 60);
-                    } else {
-                        length = String.format("%02d:%02d:%02d", TimeUnit.MILLISECONDS.toHours(trackInfo.length) % 24, TimeUnit.MILLISECONDS.toMinutes(trackInfo.length) % 60, TimeUnit.MILLISECONDS.toSeconds(trackInfo.length) % 60);
-                    }
-                    embedBuilder.addField(trackInfo.title, "`" + trackInfo.author + " - " + (trackInfo.isStream ? "STREAM" : length) + "`", false);
+        if (msg.getMember().getVoiceState().inVoiceChannel() && msg.getMember().getVoiceState().getChannel().getMembers().contains(msg.getGuild().getSelfMember())) {
+            CodebaseBot.getInstance().getMusicManager().skip(msg.getGuild());
+            if (CodebaseBot.getInstance().getMusicManager().getPlayingTrack(msg.getGuild()) != null) {
+                AudioTrackInfo trackInfo = CodebaseBot.getInstance().getMusicManager().getPlayingTrack(msg.getGuild()).getInfo();
+                String length;
+                if (TimeUnit.MILLISECONDS.toHours(trackInfo.length) >= 24) {
+                    length = String.format("%dd %02d:%02d:%02d", TimeUnit.MILLISECONDS.toDays(trackInfo.length), TimeUnit.MILLISECONDS.toHours(trackInfo.length) % 24, TimeUnit.MILLISECONDS.toMinutes(trackInfo.length) % 60, TimeUnit.MILLISECONDS.toSeconds(trackInfo.length) % 60);
                 } else {
-                    embedBuilder.setDescription("Es gibt kein weiteres Lied in der Warteschlange");
+                    length = String.format("%02d:%02d:%02d", TimeUnit.MILLISECONDS.toHours(trackInfo.length) % 24, TimeUnit.MILLISECONDS.toMinutes(trackInfo.length) % 60, TimeUnit.MILLISECONDS.toSeconds(trackInfo.length) % 60);
                 }
+                embedBuilder.addField(trackInfo.title, "`" + trackInfo.author + " - " + (trackInfo.isStream ? "STREAM" : length) + "`", false);
+            } else {
+                embedBuilder.setDescription("Es gibt kein weiteres Lied in der Warteschlange");
             }
         } else {
-            embedBuilder.setDescription("Du bist in keinem Voicechannel ^^");
+            embedBuilder.setDescription("Du bist in keinem Voicechannel mit dem Bot");
         }
         msg.getTextChannel().sendMessage(embedBuilder.build()).queue();
     }

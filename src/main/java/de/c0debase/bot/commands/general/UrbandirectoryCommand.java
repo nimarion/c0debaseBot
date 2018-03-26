@@ -1,7 +1,6 @@
 package de.c0debase.bot.commands.general;
 
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import de.c0debase.bot.commands.Command;
@@ -9,6 +8,7 @@ import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Message;
 import org.apache.commons.io.IOUtils;
 
+import java.io.InputStream;
 import java.io.StringWriter;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -20,45 +20,37 @@ import java.net.URLEncoder;
 public class UrbandirectoryCommand extends Command {
 
     public UrbandirectoryCommand() {
-        super("urbandirectory", "Sucht im urban dictionary etwas für dich", Categorie.GENERAL, "ud");
+        super("urbandirectory", "Sucht im Urban Dictionary etwas für dich", Categorie.GENERAL, "ud");
     }
 
     @Override
-    public void execute(String[] args, Message msg) {
+    public void execute(String[] args, Message message) {
         if (args.length < 1) {
-            EmbedBuilder embedBuilder = new EmbedBuilder();
-            embedBuilder.setFooter("@" + msg.getAuthor().getName() + "#" + msg.getAuthor().getDiscriminator(), msg.getAuthor().getEffectiveAvatarUrl());
-            embedBuilder.setTitle("Command: " + getCommand());
-            embedBuilder.setColor(msg.getGuild().getSelfMember().getColor());
-            embedBuilder.appendDescription("**Description: ** Search something in urban dictionary !\n");
-            embedBuilder.appendDescription("**Usage: ** " + "!ud [term]");
-            msg.getTextChannel().sendMessage(embedBuilder.build()).queue();
+            message.getTextChannel().sendMessage(getEmbed(message.getGuild(), message.getAuthor()).setDescription("!ud [term]").build()).queue();
         } else {
-            msg.getTextChannel().sendTyping().queue();
+            message.getTextChannel().sendTyping().queue();
             final String search = String.join(" ", args);
 
-            StringWriter writer = new StringWriter();
+            final StringWriter writer = new StringWriter();
             try {
                 URL url = new URL("http://api.urbandictionary.com/v0/define?term=" + URLEncoder.encode(search, "UTF-8"));
-                IOUtils.copy(url.openConnection().getInputStream(), writer, "UTF-8");
+                try (final InputStream inputStream = url.openConnection().getInputStream()) {
+                    IOUtils.copy(inputStream, writer, "UTF-8");
+                }
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            EmbedBuilder embedBuilder = new EmbedBuilder();
-            embedBuilder.setFooter("@" + msg.getAuthor().getName() + "#" + msg.getAuthor().getDiscriminator(), msg.getAuthor().getEffectiveAvatarUrl());
-            embedBuilder.setColor(msg.getGuild().getSelfMember().getColor());
+            EmbedBuilder embedBuilder = getEmbed(message.getGuild(), message.getAuthor());
             embedBuilder.setTitle("Definition: " + search);
-            embedBuilder.setFooter("@" + msg.getAuthor().getName() + "#" + msg.getAuthor().getDiscriminator(), msg.getAuthor().getEffectiveAvatarUrl());
 
-            JsonArray jsonResult;
             try {
-                JsonElement jsonElement = new JsonParser().parse(writer.toString());
-                jsonResult = jsonElement.getAsJsonObject().getAsJsonArray("list");
+                JsonArray jsonResult = new JsonParser().parse(writer.toString()).getAsJsonObject().getAsJsonArray("list");
                 embedBuilder.appendDescription(jsonResult.size() != 0 ? jsonResult.get(0).getAsJsonObject().get("definition").getAsString() : "Search term not found.");
             } catch (JsonParseException ex) {
                 embedBuilder.appendDescription("An error occurred.");
+            } finally {
+                message.getTextChannel().sendMessage(embedBuilder.build()).queue();
             }
-            msg.getTextChannel().sendMessage(embedBuilder.build()).queue();
         }
     }
 }

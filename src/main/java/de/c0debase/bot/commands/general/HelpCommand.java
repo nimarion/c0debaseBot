@@ -23,7 +23,7 @@ public class HelpCommand extends Command {
     public void execute(String[] args, Message msg) {
         EmbedBuilder infoEmbed = new EmbedBuilder();
         infoEmbed.setColor(msg.getGuild().getSelfMember().getColor());
-        infoEmbed.appendDescription(msg.getAuthor().getAsMention() + " schau mal in deine DM's");
+        infoEmbed.appendDescription(msg.getAuthor().getAsMention() + " schau mal in deine DMs");
         msg.getTextChannel().sendMessage(infoEmbed.build()).queue();
 
         EmbedBuilder embedBuilder = new EmbedBuilder();

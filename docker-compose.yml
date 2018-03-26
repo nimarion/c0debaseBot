@@ -1,0 +1,30 @@
+version: '3'
+services:
+
+  ################################################################################
+  ##                               Database
+  ################################################################################
+  db:
+    image: mysql
+    restart: always
+
+    volumes:
+      - /opt/mysql:/var/lib/mysql
+    environment:
+        MYSQL_ROOT_PASSWORD: YOUR_PASSWORD
+
+
+  ################################################################################
+  ##                               c0debaseBot
+  ################################################################################
+  bot:
+    image: biospheere/codebasebot
+    restart: always
+    depends_on:
+      - db
+    links:
+      - db
+    env_file: .env
+
+
+

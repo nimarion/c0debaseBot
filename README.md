@@ -1,3 +1,4 @@
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/1d9c272e855743b695a447f43b2c193b)](https://app.codacy.com/app/biosphere.dev/c0debaseBot?utm_source=github.com&utm_medium=referral&utm_content=Biospheere/c0debaseBot&utm_campaign=badger)
 [![Build Status](https://travis-ci.org/Biospheere/c0debaseBot.svg?branch=master)](https://travis-ci.org/Biospheere/c0debaseBot)
 [![GitHub contributors](https://img.shields.io/github/contributors/biospheere/c0debaseBot.svg)](https://github.com/Biospheere/c0debaseBot/graphs/contributors/)
 
@@ -14,4 +15,5 @@ c0debaseBot ist ein Discord Bot für den c0debase Discord.
 
 
 [![Join c0debase Discord](https://discordapp.com/api/guilds/361448651748540426/embed.png?style=banner2)](https://discord.gg/BDwBeZ3)
+
 [![Docker](http://dockeri.co/image/biospheere/codebasebot)](https://hub.docker.com/r/biospheere/codebasebot/)

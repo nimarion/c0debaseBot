@@ -17,16 +17,13 @@ public class ClearQueueCommand extends Command {
 
     @Override
     public void execute(String[] args, Message msg) {
-        EmbedBuilder embedBuilder = new EmbedBuilder();
-        embedBuilder.setFooter(msg.getAuthor().getName(), msg.getAuthor().getEffectiveAvatarUrl());
-        embedBuilder.setAuthor("Command: " + getCommand(), null, msg.getGuild().getIconUrl());
-        embedBuilder.setColor(msg.getGuild().getSelfMember().getColor());
-        if (msg.getMember().getVoiceState() != null && msg.getMember().getVoiceState().inVoiceChannel()) {
+        EmbedBuilder embedBuilder = getEmbed(msg.getGuild(), msg.getAuthor());
+        if (msg.getMember().getVoiceState().inVoiceChannel() && msg.getMember().getVoiceState().getChannel().getMembers().contains(msg.getGuild().getSelfMember())) {
             CodebaseBot.getInstance().getMusicManager().clearQueue(msg.getGuild());
             CodebaseBot.getInstance().getMusicManager().stop(msg.getGuild());
             embedBuilder.setDescription("Warteschlange geleert");
         } else {
-            embedBuilder.setDescription("Du bist in keinem Voicechannel ^^");
+            embedBuilder.setDescription("Du bist in keinem Voicechannel mit dem Bot");
         }
         msg.getTextChannel().sendMessage(embedBuilder.build()).queue();
     }

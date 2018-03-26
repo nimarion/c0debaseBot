@@ -3,7 +3,6 @@ package de.c0debase.bot.commands.music;
 import de.c0debase.bot.CodebaseBot;
 import de.c0debase.bot.commands.Command;
 import de.c0debase.bot.utils.StringUtils;
-import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Message;
 
 /**
@@ -13,24 +12,17 @@ import net.dv8tion.jda.core.entities.Message;
 public class PlayCommand extends Command {
 
     public PlayCommand() {
-        super("play", "Spiele etwas Musik", Categorie.MUSIC);
+        super("play", "Spiele etwas Musik", Categorie.MUSIC, "add");
     }
 
     @Override
     public void execute(String[] args, Message msg) {
-
-        EmbedBuilder embedBuilder = new EmbedBuilder();
-        embedBuilder.setFooter(msg.getAuthor().getName(), msg.getAuthor().getEffectiveAvatarUrl());
-        embedBuilder.setAuthor("Command: " + getCommand(), null, msg.getGuild().getIconUrl());
-        embedBuilder.setColor(msg.getGuild().getSelfMember().getColor());
-
-        if (msg.getMember().getVoiceState() != null && msg.getMember().getVoiceState().inVoiceChannel()) {
+        if (msg.getMember().getVoiceState().inVoiceChannel()) {
             if (msg.getGuild().getAudioManager().getConnectedChannel() == null) {
                 msg.getGuild().getAudioManager().openAudioConnection(msg.getMember().getVoiceState().getChannel());
             }
             if (args.length < 1) {
-                embedBuilder.setDescription("!play <URL|Titel");
-                msg.getTextChannel().sendMessage(embedBuilder.build()).queue();
+                msg.getTextChannel().sendMessage(getEmbed(msg.getGuild(), msg.getAuthor()).setDescription("!play <URL|Titel").build()).queue();
             } else {
                 CodebaseBot.getInstance().getMusicManager().setPaused(msg.getGuild(), false);
                 if (StringUtils.extractUrls(args[0]).isEmpty()) {
@@ -40,8 +32,7 @@ public class PlayCommand extends Command {
                 }
             }
         } else {
-            embedBuilder.setDescription("Du bist in keinem Voicechannel ^^");
-            msg.getTextChannel().sendMessage(embedBuilder.build()).queue();
+            msg.getTextChannel().sendMessage(getEmbed(msg.getGuild(), msg.getAuthor()).setDescription("Du bist in keinem Voicechannel").build()).queue();
         }
     }
 }

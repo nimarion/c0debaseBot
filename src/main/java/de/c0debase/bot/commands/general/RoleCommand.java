@@ -28,8 +28,10 @@ public class RoleCommand extends Command {
             embedBuilder.setFooter("!role Java,Go,Javascript", msg.getMember().getUser().getEffectiveAvatarUrl());
             embedBuilder.setTitle("Es gibt diese Rollen:");
 
+            embedBuilder.appendDescription("`!role Java,Go,C#`\n\n");
+
             for (Role role : msg.getGuild().getRoles()) {
-                if (!role.getName().equalsIgnoreCase("@everyone") && !role.getName().equalsIgnoreCase("Projekt") && PermissionUtil.canInteract(msg.getGuild().getSelfMember(), role)) {
+                if (!role.isManaged() && !role.getName().equalsIgnoreCase("@everyone") && !role.getName().equalsIgnoreCase("Projekt") && !role.getName().equalsIgnoreCase("Friend") && PermissionUtil.canInteract(msg.getGuild().getSelfMember(), role)) {
                     embedBuilder.appendDescription("***" + role.getName() + "***" + "\n");
                 }
             }
@@ -44,12 +46,14 @@ public class RoleCommand extends Command {
         List<Role> removeRoles = new ArrayList<>();
         for (String role : args.split(",")) {
             if (!message.getGuild().getRolesByName(role, true).isEmpty()) {
-                Role rrole = message.getGuild().getRolesByName(role, true).get(0);
-                if (PermissionUtil.canInteract(message.getGuild().getSelfMember(), rrole)) {
-                    if (message.getGuild().getMembersWithRoles(rrole).contains(message.getMember()) && !removeRoles.contains(rrole) && !rrole.getName().equalsIgnoreCase("Projekt")) {
-                        removeRoles.add(rrole);
-                    } else if (!addRoles.contains(rrole)) {
-                        addRoles.add(rrole);
+                if (!role.equalsIgnoreCase("Friend") && !role.equalsIgnoreCase("Projekt")) {
+                    Role rrole = message.getGuild().getRolesByName(role, true).get(0);
+                    if (PermissionUtil.canInteract(message.getGuild().getSelfMember(), rrole) && !rrole.isManaged()) {
+                        if (message.getGuild().getMembersWithRoles(rrole).contains(message.getMember()) && !removeRoles.contains(rrole)) {
+                            removeRoles.add(rrole);
+                        } else if (!addRoles.contains(rrole)) {
+                            addRoles.add(rrole);
+                        }
                     }
                 }
             }
@@ -57,15 +61,8 @@ public class RoleCommand extends Command {
         EmbedBuilder embedBuilder = getEmbed(message.getGuild(), message.getAuthor());
         embedBuilder.setTitle("Rolle(n) geupdatet");
         embedBuilder.appendDescription("Du bist " + addRoles.size() + (addRoles.size() > 1 ? " Rollen " : " Rolle ") + "beigetreten\n");
-        embedBuilder.appendDescription("Du hast " + removeRoles.size() + (removeRoles.size() > 1 ? " Rollen " : " Rolle ") + " Rollen verlassen");
+        embedBuilder.appendDescription("Du hast " + removeRoles.size() + (removeRoles.size() == 1 ? " Rolle " : " Rollen ") + "verlassen");
         message.getTextChannel().sendMessage(embedBuilder.build()).queue();
-        message.getGuild().getController().addRolesToMember(message.getMember(), addRoles).queue(success -> {
-            try {
-                TimeUnit.SECONDS.sleep(1);
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-            message.getGuild().getController().removeRolesFromMember(message.getMember(), removeRoles).queue();
-        });
+        message.getGuild().getController().addRolesToMember(message.getMember(), addRoles).queue(success -> message.getGuild().getController().removeRolesFromMember(message.getMember(), removeRoles).queueAfter(1, TimeUnit.SECONDS));
     }
 }

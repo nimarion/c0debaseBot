@@ -1,10 +1,8 @@
 package de.c0debase.bot.mysql;
 
 import java.sql.*;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 /**
  * @author Biosphere
@@ -52,12 +50,10 @@ public class MySQL {
     }
 
     public void update(final String query) {
-        try {
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.execute();
-            preparedStatement.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException exception) {
+            exception.printStackTrace();
         }
     }
 

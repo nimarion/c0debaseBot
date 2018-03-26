@@ -26,7 +26,7 @@ public class LevelUser {
     }
 
     public void create() {
-        if(!exists()){
+        if (!exists()) {
             level = 0;
             xp = 0;
             CodebaseBot.getInstance().getMySQL().update("INSERT INTO Users (ID, XP, LEVEL) VALUES (" + id + "," + xp + ", " + level + ");");
@@ -51,9 +51,8 @@ public class LevelUser {
     }
 
     public void read() {
-        if(exists()){
-            try {
-                ResultSet resultSet = CodebaseBot.getInstance().getMySQL().query("SELECT * FROM Users WHERE ID=" + id + ";");
+        if (exists()) {
+            try (ResultSet resultSet = CodebaseBot.getInstance().getMySQL().query("SELECT * FROM Users WHERE ID=" + id + ";")) {
                 if (resultSet.next()) {
                     xp = resultSet.getInt("XP");
                     level = resultSet.getInt("LEVEL");
@@ -81,8 +80,7 @@ public class LevelUser {
     }
 
     public boolean exists() {
-        try {
-            ResultSet resultSet = CodebaseBot.getInstance().getMySQL().query("SELECT * FROM Users WHERE id='" + id + "';");
+        try (ResultSet resultSet = CodebaseBot.getInstance().getMySQL().query("SELECT * FROM Users WHERE id='" + id + "';")) {
             return resultSet.next() && resultSet.getString("XP") != null;
         } catch (SQLException e) {
             e.printStackTrace();

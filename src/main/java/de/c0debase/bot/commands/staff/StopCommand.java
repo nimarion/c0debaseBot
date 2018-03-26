@@ -19,7 +19,7 @@ public class StopCommand extends Command {
         if (msg.getMember().hasPermission(Permission.ADMINISTRATOR) || msg.getMember().hasPermission(Permission.BAN_MEMBERS)) {
             msg.delete().queue();
             msg.getJDA().shutdownNow();
-            System.exit(0);
+            Runtime.getRuntime().exit(0);
         }
     }
 }
