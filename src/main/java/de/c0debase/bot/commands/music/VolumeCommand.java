@@ -48,7 +48,7 @@ public class VolumeCommand extends Command {
 
     private String getVolume(int volume) {
         final StringBuilder stringBuilder = new StringBuilder();
-        for (int i = 0; i < 10; i++) {
+        for (int i = 1; i < 11; i++) {
             if (i > (volume / 10)) {
                 stringBuilder.append(BLACK_SQUARE);
             } else {
