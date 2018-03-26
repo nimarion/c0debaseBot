@@ -15,7 +15,7 @@ public class VolumeCommand extends Command {
     private static final String WHITE_SQUARE = ":white_large_square:";
 
     public VolumeCommand() {
-        super("volume", "Ändert die Lautstärke", Categorie.MUSIC, "v");
+        super("volume", "Ändert die Lautstärke", Categorie.MUSIC, "v", "vol");
     }
 
     @Override
