@@ -11,6 +11,8 @@ import net.dv8tion.jda.core.entities.Message;
  * @date 23.01.18
  */
 public class VolumeCommand extends Command {
+    private static final String BLACK_SQUARE = ":black_large_square:";
+    private static final String WHITE_SQUARE = ":white_large_square:";
 
     public VolumeCommand() {
         super("volume", "Ändert die Lautstärke", Categorie.MUSIC, "v");
@@ -19,46 +21,46 @@ public class VolumeCommand extends Command {
 
     @Override
     public void execute(String[] args, Message msg) {
-        Guild guild = msg.getGuild();
-        EmbedBuilder embedBuilder = new EmbedBuilder();
+        final Guild guild = msg.getGuild();
+        final EmbedBuilder embedBuilder = new EmbedBuilder();
         embedBuilder.setFooter(msg.getAuthor().getName(), msg.getAuthor().getEffectiveAvatarUrl());
-        embedBuilder.setAuthor("Command: " + getCommand(), null, msg.getGuild().getIconUrl());
+        embedBuilder.setAuthor(String.format("Command: %s", getCommand()), null, msg.getGuild().getIconUrl());
         embedBuilder.setColor(msg.getGuild().getSelfMember().getColor());
         if (msg.getMember().getVoiceState() != null && msg.getMember().getVoiceState().inVoiceChannel()) {
+            final int volume = CodebaseBot.getInstance().getMusicManager().getVolume(guild);
             if (args.length == 1) {
-                int volume = 0;
+                final int newVolume;
                 try {
-                    volume = Integer.parseInt(args[0]);
+                    newVolume = Integer.parseInt(args[0]);
                 } catch (NumberFormatException e) {
-                    embedBuilder.addField("Ungültiges Angabe", "*" + args[0] + "* ist keine Zahl.", false);
+                    embedBuilder.addField("Ungültiges Angabe", String.format("*%s* ist keine Zahl.", args[0]), false);
                     return;
                 }
-                if (volume < 0 || volume > 100) {
+                if (newVolume < 0 || newVolume > 100) {
                     embedBuilder.addField("Ungültige Lautstärke", "Wert kann nur zwischen 0 und 100 gesetzt werden.", false);
                     return;
                 }
-                CodebaseBot.getInstance().getMusicManager().setVolume(guild, volume);
-                embedBuilder.addField("Neue Lautstärke: " + CodebaseBot.getInstance().getMusicManager().getVolume(guild), getVolume(CodebaseBot.getInstance().getMusicManager().getVolume(guild)), false);
+                CodebaseBot.getInstance().getMusicManager().setVolume(guild, newVolume);
+                embedBuilder.addField(String.format("Neue Lautstärke: %d", volume), getVolume(volume), false);
             } else {
-                embedBuilder.addField("Lautstärke: " + CodebaseBot.getInstance().getMusicManager().getVolume(guild), getVolume(CodebaseBot.getInstance().getMusicManager().getVolume(guild)), false);
+                embedBuilder.addField(String.format("Lautstärke: %d", volume), getVolume(volume), false);
             }
         } else {
             embedBuilder.setDescription("Du bist in keinem Voicechannel ^^");
         }
-
         msg.getTextChannel().sendMessage(embedBuilder.build()).queue();
     }
 
     private String getVolume(int volume) {
-        String s = "";
-        for (int i = 10; i > 0; i--) {
+        final StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i < 10; i++) {
             if (i > (volume / 10)) {
-                s += ":black_large_square:";
+                stringBuilder.append(BLACK_SQUARE);
             } else {
-                s += ":white_large_square:";
+                stringBuilder.append(WHITE_SQUARE);
             }
         }
-        return s;
+        return stringBuilder.toString();
     }
 
 }
