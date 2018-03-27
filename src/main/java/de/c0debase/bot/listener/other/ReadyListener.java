@@ -1,7 +1,11 @@
 package de.c0debase.bot.listener.other;
 
 import de.c0debase.bot.CodebaseBot;
+import net.dv8tion.jda.core.Permission;
+import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Role;
+import net.dv8tion.jda.core.entities.TextChannel;
+import net.dv8tion.jda.core.entities.VoiceChannel;
 import net.dv8tion.jda.core.events.ReadyEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 import net.dv8tion.jda.core.utils.PermissionUtil;
@@ -42,6 +46,28 @@ public class ReadyListener extends ListenerAdapter {
                 }
             }
         });
+
+        for (VoiceChannel voiceChannel : event.getJDA().getGuilds().get(0).getVoiceChannels()) {
+            final TextChannel textChannel = voiceChannel.getGuild().getTextChannelsByName("temp-" + voiceChannel.getName().toLowerCase(), true).isEmpty() ? null : voiceChannel.getGuild().getTextChannelsByName("temp-" + voiceChannel.getName().toLowerCase(), true).get(0);
+            if (textChannel == null) {
+                continue;
+            }
+            for (Member member : textChannel.getMembers()) {
+                if (member.hasPermission(Permission.MESSAGE_MANAGE)) {
+                    continue;
+                }
+                if (voiceChannel.getMembers().contains(member)) {
+                    if (textChannel.getPermissionOverride(member).isMemberOverride()) {
+                        textChannel.getPermissionOverride(member).getManager().grant(Permission.MESSAGE_READ).queue();
+                    } else {
+                        textChannel.createPermissionOverride(member).setAllow(Permission.MESSAGE_READ).queue();
+                    }
+                } else if (textChannel.getPermissionOverride(member) != null) {
+                    textChannel.getPermissionOverride(member).delete().queue();
+                }
+            }
+
+        }
 
 
         CodebaseBot.getInstance().getLevelManager().startInviteChecker();

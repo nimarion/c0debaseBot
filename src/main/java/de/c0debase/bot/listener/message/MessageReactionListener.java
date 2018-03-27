@@ -120,7 +120,7 @@ public class MessageReactionListener extends ListenerAdapter {
             return;
         }
         event.getChannel().getMessageById(event.getMessageId()).queue(success -> {
-            if (success.getTextChannel().getTopic().endsWith("RS")) {
+            if (success.getTextChannel().getTopic() != null && success.getTextChannel().getTopic().endsWith("RS")) {
                 final String emote = getReaction(event.getReactionEmote());
                 if (emote == null) {
                     return;
