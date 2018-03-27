@@ -50,7 +50,7 @@ public class ReadyListener extends ListenerAdapter {
         for (VoiceChannel voiceChannel : event.getJDA().getGuilds().get(0).getVoiceChannels()) {
             final TextChannel textChannel = voiceChannel.getGuild().getTextChannelsByName("temp-" + voiceChannel.getName().toLowerCase(), true).isEmpty() ? null : voiceChannel.getGuild().getTextChannelsByName("temp-" + voiceChannel.getName().toLowerCase(), true).get(0);
             if (textChannel == null) {
-                return;
+                continue;
             }
             for (Member member : textChannel.getMembers()) {
                 if (member.hasPermission(Permission.MESSAGE_MANAGE)) {
