@@ -7,6 +7,7 @@ import de.c0debase.bot.listener.other.ReadyListener;
 import de.c0debase.bot.monitor.MonitorManager;
 import de.c0debase.bot.music.MusicManager;
 import de.c0debase.bot.mysql.MySQL;
+import de.c0debase.bot.tempchannel.Tempchannel;
 import de.c0debase.bot.utils.Pagination;
 import io.sentry.Sentry;
 import lombok.Getter;
@@ -19,6 +20,8 @@ import net.dv8tion.jda.core.events.Event;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.HashMap;
 
 /**
  * @author Biosphere
@@ -37,6 +40,7 @@ public class CodebaseBot {
     private final MonitorManager monitorManager;
     private final Logger logger = LoggerFactory.getLogger("de.c0debase.bot");
     private MusicManager musicManager;
+    private final HashMap<String, Tempchannel> tempchannels;
     private JDA jda;
 
     private CodebaseBot() {
@@ -49,6 +53,7 @@ public class CodebaseBot {
         commandManager = new CommandManager();
         monitorManager = new MonitorManager();
         levelManager = new LevelManager();
+        tempchannels = new HashMap<>();
         leaderboardPagination = new Pagination<>(levelManager.getLevelUsersSorted(), 10);
 
         try {
