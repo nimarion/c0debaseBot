@@ -30,7 +30,7 @@ public class CheckCommand extends Command {
                 EmbedBuilder embedBuilder = getEmbed(msg.getGuild(), member.getUser());
                 embedBuilder.addField("Erstelldatum: ", member.getUser().getCreationTime().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")), true);
                 embedBuilder.addField("Standart Avatar: ", String.valueOf(member.getUser().getAvatarUrl() == null), true);
-                embedBuilder.addField("Beitritt: ", String.valueOf(member.getUser().getAvatarUrl() == null), true);
+                embedBuilder.addField("Beitritt: ", member.getJoinDate().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")), true);
 
                 msg.getTextChannel().sendMessage(embedBuilder.build()).queue();
             }
