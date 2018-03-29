@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
  */
 public class ColorCommand extends Command {
 
-    private static final Pattern VALID_HEX_CODE = Pattern.compile("#([0-9a-f]{3}|[0-9a-f]{6}|[0-9a-f]{8})");
+    private static final Pattern VALID_HEX_CODE = Pattern.compile("([0-9a-f]{3}|[0-9a-f]{6}|[0-9a-f]{8})");
 
 
     public ColorCommand() {
@@ -23,7 +23,7 @@ public class ColorCommand extends Command {
     @Override
     public void execute(String[] args, Message msg) {
         if (args.length > 0) {
-            if (VALID_HEX_CODE.matcher(args[0]).matches()) {
+            if (VALID_HEX_CODE.matcher(args[0].replace("#", "")).matches()) {
                 msg.getTextChannel().sendMessage(
                         new EmbedBuilder()
                                 .setTitle("Color-Code-Preview").setDescription("Farbcode Vorschau für: " + args[0])
