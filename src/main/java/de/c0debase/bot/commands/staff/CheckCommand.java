@@ -22,9 +22,16 @@ public class CheckCommand extends Command {
     public void execute(String[] args, Message msg) {
         if (msg.getMember().hasPermission(Permission.ADMINISTRATOR) || msg.getMember().hasPermission(Permission.BAN_MEMBERS)) {
             if (args.length < 1) {
+                msg.getTextChannel().sendMessage(getEmbed(msg.getGuild(), msg.getAuthor()).setDescription("!check [id]").build()).queue();
                 return;
             }
             String id = args[0];
+            try {
+                Long.valueOf(id);
+            } catch (NumberFormatException exception) {
+                msg.getTextChannel().sendMessage(getEmbed(msg.getGuild(), msg.getAuthor()).setDescription("!check [id]").build()).queue();
+                return;
+            }
             if (msg.getGuild().getMemberById(id) != null) {
                 Member member = msg.getGuild().getMemberById(id);
                 EmbedBuilder embedBuilder = getEmbed(msg.getGuild(), member.getUser());
@@ -33,6 +40,8 @@ public class CheckCommand extends Command {
                 embedBuilder.addField("Beitritt: ", member.getJoinDate().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")), true);
 
                 msg.getTextChannel().sendMessage(embedBuilder.build()).queue();
+            } else {
+                msg.getTextChannel().sendMessage(getEmbed(msg.getGuild(), msg.getAuthor()).setDescription("Mitglied wurde nicht gefunden").build()).queue();
             }
         }
     }

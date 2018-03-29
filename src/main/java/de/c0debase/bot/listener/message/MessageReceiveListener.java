@@ -1,5 +1,8 @@
 package de.c0debase.bot.listener.message;
 
+import ai.api.AIServiceException;
+import ai.api.model.AIRequest;
+import ai.api.model.AIResponse;
 import com.vdurmont.emoji.EmojiManager;
 import de.c0debase.bot.CodebaseBot;
 import de.c0debase.bot.level.LevelUser;
@@ -56,9 +59,21 @@ public class MessageReceiveListener extends ListenerAdapter {
             return;
         }
 
-        if (event.getMessage().getContentRaw().startsWith(event.getGuild().getSelfMember().getAsMention())) {
-            event.getTextChannel().sendMessage("hi").queue();
-            return;
+        if (event.getMessage().getContentRaw().startsWith(event.getGuild().getSelfMember().getAsMention()) && CodebaseBot.getInstance().getAiDataService() != null) {
+            try {
+                AIRequest request = new AIRequest(event.getMessage().getContentRaw().replace(event.getGuild().getSelfMember().getAsMention(), ""));
+                AIResponse response = CodebaseBot.getInstance().getAiDataService().request(request);
+
+                if (response.getStatus().getCode() == 200) {
+                    if (response.getResult().getFulfillment().getSpeech().trim().isEmpty()) {
+                        event.getChannel().sendMessage("Leider kann ich nicht verstehen, was du von mir möchtest.").queue();
+                    } else {
+                        event.getChannel().sendMessage(response.getResult().getFulfillment().getSpeech().replace("@everyone", "@ everyone").replace("@here", "@ here")).queue();
+                    }
+                }
+            } catch (AIServiceException e) {
+                e.printStackTrace();
+            }
         }
 
         if (event.getMessage().getTextChannel().getName().equalsIgnoreCase("bot") && event.getMessage().getContentRaw().startsWith("!")) {

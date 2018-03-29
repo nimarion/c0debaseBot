@@ -87,10 +87,17 @@
             <artifactId>mysql-connector-java</artifactId>
             <version>8.0.9-rc</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/io.sentry/sentry-logback -->
         <dependency>
             <groupId>io.sentry</groupId>
             <artifactId>sentry-logback</artifactId>
             <version>1.6.8</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/ai.api/libai -->
+        <dependency>
+            <groupId>ai.api</groupId>
+            <artifactId>libai</artifactId>
+            <version>1.6.12</version>
         </dependency>
     </dependencies>
 
