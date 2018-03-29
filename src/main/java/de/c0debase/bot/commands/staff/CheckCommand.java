@@ -27,7 +27,7 @@ public class CheckCommand extends Command {
             }
             String id = args[0];
             try {
-                Integer.valueOf(id);
+                Long.valueOf(id);
             } catch (NumberFormatException exception) {
                 msg.getTextChannel().sendMessage(getEmbed(msg.getGuild(), msg.getAuthor()).setDescription("!check [id]").build()).queue();
                 return;
