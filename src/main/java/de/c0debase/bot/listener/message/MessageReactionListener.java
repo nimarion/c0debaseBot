@@ -139,7 +139,7 @@ public class MessageReactionListener extends ListenerAdapter {
     public void onGuildMessageReactionAdd(GuildMessageReactionAddEvent event) {
         super.onGuildMessageReactionAdd(event);
         event.getChannel().getMessageById(event.getMessageId()).queue(success -> {
-            if (success.getTextChannel().getTopic().endsWith("RS")) {
+            if (success.getTextChannel().getTopic() != null && success.getTextChannel().getTopic().endsWith("RS")) {
                 String emote = getReaction(event.getReactionEmote());
                 Role role = success.getGuild().getRolesByName(emote, true).stream().findFirst().get();
                 if (role != null && PermissionUtil.canInteract(event.getGuild().getSelfMember(), role)) {
