@@ -17,6 +17,8 @@ import java.awt.*;
 
 public class MessageReceiveListener extends ListenerAdapter {
 
+    private static final Pattern VALID_HEX_CODE = Pattern.compile("#([0-9a-f]{3}|[0-9a-f]{6}|[0-9a-f]{8})");
+    
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
         super.onMessageReceived(event);
@@ -75,7 +77,26 @@ public class MessageReceiveListener extends ListenerAdapter {
                 }
             }
         }
+        if (VALID_HEX_CODE.matcher(event.getMessage().getContentRaw()).matches()) {
+            previewColor(event.getMessage());
+        }
     }
 
+    private void previewColor(Message message) {
+        message.getTextChannel().sendMessage(
+                new EmbedBuilder()
+                        .setTitle("Color-Code-Preview")
+                        .setDescription("Farbcode Vorschau für: " + message.getContentRaw())
+                        .setImage("https://dummyimage.com/250x250/" + message.getContentRaw().replace("#", "") + "/" + message.getContentRaw().replace("#", "") + ".png")
+                        .setColor(hex2Rgb(message.getContentRaw())).build()
+        ).queue(message1 -> {
+
+        });
+        return;
+    }
+
+    private Color hex2Rgb(String colorStr) {
+        return new Color(Integer.valueOf(colorStr.substring(1, 3), 16), Integer.valueOf(colorStr.substring(3, 5), 16), Integer.valueOf(colorStr.substring(5, 7), 16));
+    }
 
 }
