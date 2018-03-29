@@ -31,7 +31,7 @@ public class ColorCommand extends Command {
                                 .setColor(hex2Rgb(args[0])).build()
                 ).queue();
             } else {
-                msg.getTextChannel().sendMessage(getEmbed(msg.getGuild(), msg.getAuthor()).setDescription("No Hex Code found").build()).queue();
+                msg.getTextChannel().sendMessage(getEmbed(msg.getGuild(), msg.getAuthor()).setDescription("Kein Hex Code gefunden :hushed:").build()).queue();
             }
         } else {
             msg.getTextChannel().sendMessage(getEmbed(msg.getGuild(), msg.getAuthor()).setDescription("!color [code]").build()).queue();
