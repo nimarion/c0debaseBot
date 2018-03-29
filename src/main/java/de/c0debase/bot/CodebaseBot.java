@@ -1,5 +1,7 @@
 package de.c0debase.bot;
 
+import ai.api.AIConfiguration;
+import ai.api.AIDataService;
 import de.c0debase.bot.commands.CommandManager;
 import de.c0debase.bot.level.LevelManager;
 import de.c0debase.bot.level.LevelUser;
@@ -42,6 +44,8 @@ public class CodebaseBot {
     private MusicManager musicManager;
     private final HashMap<String, Tempchannel> tempchannels;
     private JDA jda;
+    private AIDataService aiDataService;
+
 
     private CodebaseBot() {
         instance = this;
@@ -55,6 +59,10 @@ public class CodebaseBot {
         levelManager = new LevelManager();
         tempchannels = new HashMap<>();
         leaderboardPagination = new Pagination<>(levelManager.getLevelUsersSorted(), 10);
+        if (System.getenv("APIAI-TOKEN") != null) {
+            aiDataService = new AIDataService(new AIConfiguration(System.getenv("APIAI-TOKEN")));
+        }
+
 
         try {
             jda = new JDABuilder(AccountType.BOT)
