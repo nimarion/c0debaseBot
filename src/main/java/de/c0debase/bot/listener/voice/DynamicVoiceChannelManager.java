@@ -54,7 +54,7 @@ public class DynamicVoiceChannelManager extends ListenerAdapter {
                 if (!channel.getName().startsWith(channelName)) {
                     return;
                 }
-                final java.util.List<VoiceChannel> voiceChannels = channel.getGuild().getVoiceChannelCache().stream()
+                final List<VoiceChannel> voiceChannels = channel.getGuild().getVoiceChannelCache().stream()
                         .filter(voiceChannel -> voiceChannel.getName().startsWith(channelName)).collect(
                                 Collectors.toList());
                 final boolean freeVoiceChannels = voiceChannels.stream()
@@ -98,7 +98,8 @@ public class DynamicVoiceChannelManager extends ListenerAdapter {
 
                     final int finalPosition = positionToMove;
                     final String romanNumerals = romanNumeralsConverter.toRomanNumerals(numberToCreate);
-                    parent.createVoiceChannel(oldName.replaceFirst(oldName.replaceFirst(this.channelName, "").trim(), romanNumerals))
+                    parent.createVoiceChannel(
+                            replaceLast(oldName, oldName.replaceFirst(this.channelName, "").trim(), romanNumerals))
                             .complete().getManager().setPosition(finalPosition).complete();
                 }
 
@@ -115,7 +116,7 @@ public class DynamicVoiceChannelManager extends ListenerAdapter {
                 if (!channel.getName().startsWith(channelName)) {
                     return;
                 }
-                final java.util.List<VoiceChannel> voiceChannels = channel.getGuild().getVoiceChannelCache().stream()
+                final List<VoiceChannel> voiceChannels = channel.getGuild().getVoiceChannelCache().stream()
                         .filter(voiceChannel -> voiceChannel.getName().startsWith(channelName)).collect(Collectors.toList());
                 final List<VoiceChannel> emptyChannels = voiceChannels.stream().filter(
                         voiceChannel -> voiceChannel.getMembers().size() == 0).collect(Collectors.toList());
@@ -131,5 +132,10 @@ public class DynamicVoiceChannelManager extends ListenerAdapter {
 
     private int parseNumber(final String channelName) throws ParseException {
         return romanNumeralsConverter.toNumber(channelName.replaceFirst(this.channelName, "").trim());
+    }
+
+
+    private static String replaceLast(final String text, final String regex, final String replacement) {
+        return text.replaceFirst("(?s)"+regex+"(?!.*?"+regex+")", replacement);
     }
 }
