@@ -1,6 +1,7 @@
 package de.c0debase.bot.listener.voice;
 
 import com.frequal.romannumerals.Converter;
+import net.dv8tion.jda.core.entities.Category;
 import net.dv8tion.jda.core.entities.VoiceChannel;
 import net.dv8tion.jda.core.events.guild.voice.GuildVoiceJoinEvent;
 import net.dv8tion.jda.core.events.guild.voice.GuildVoiceLeaveEvent;
@@ -9,6 +10,9 @@ import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
 import java.text.ParseException;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
 /**
@@ -16,10 +20,14 @@ import java.util.stream.Collectors;
  */
 public class DynamicVoiceChannelManager extends ListenerAdapter {
     private final String channelName;
+    private final ExecutorService executorService;
+    private final ReentrantLock lock;
     private final Converter romanNumeralsConverter;
 
     public DynamicVoiceChannelManager(final String channelName) {
         this.channelName = channelName;
+        executorService = Executors.newCachedThreadPool();
+        lock = new ReentrantLock();
         romanNumeralsConverter = new Converter();
     }
 
@@ -40,53 +48,88 @@ public class DynamicVoiceChannelManager extends ListenerAdapter {
     }
 
     private void handleJoin(final VoiceChannel channel) {
-        if (!channel.getName().startsWith(channelName)) {
-            return;
-        }
-        synchronized (this) {
-            final java.util.List<VoiceChannel> voiceChannels = channel.getGuild().getVoiceChannelCache().stream()
-                    .filter(voiceChannel -> voiceChannel.getName().startsWith(channelName)).collect(
-                            Collectors.toList());
-            final boolean freeVoiceChannels = voiceChannels.stream()
-                    .anyMatch(voiceChannel -> voiceChannel.getMembers().size() == 0);
-            if (!freeVoiceChannels) {
-                final VoiceChannel lastChannel = voiceChannels.get(voiceChannels.size() - 1);
-                final String name = lastChannel.getName();
-                final String number = parseNumber(name);
-                final String nextNumber;
-                try {
-                    nextNumber = getNextNumber(number);
-                } catch (final ParseException exception) {
-                    return; //if a channel matches the name but has no number at the end
+        executorService.execute(() -> {
+            lock.lock();
+            try {
+                if (!channel.getName().startsWith(channelName)) {
+                    return;
                 }
-                final int position = lastChannel.getPosition();
-                lastChannel.getParent().createVoiceChannel(name.replaceFirst(number, nextNumber)).queue(
-                        newChannel -> newChannel.getManager().setPosition(position).queue());
+                final java.util.List<VoiceChannel> voiceChannels = channel.getGuild().getVoiceChannelCache().stream()
+                        .filter(voiceChannel -> voiceChannel.getName().startsWith(channelName)).collect(
+                                Collectors.toList());
+                final boolean freeVoiceChannels = voiceChannels.stream()
+                        .anyMatch(voiceChannel -> voiceChannel.getMembers().size() == 0);
+
+                String oldName = null;
+                int numberToCreate = -1;
+                int positionToMove = -1;
+                Category parent = null;
+
+                if (!freeVoiceChannels) {
+                    for (int i = 0; i < voiceChannels.size(); i++) {
+                        final VoiceChannel nextChannel = voiceChannels.get(i);
+                        final int number;
+                        try {
+                            number = parseNumber(nextChannel.getName());
+                        } catch (final ParseException ignored) {
+                            break;
+                        }
+                        if (number != i + 1) //voice channel with this number missing
+                        {
+                            oldName = nextChannel.getName();
+                            numberToCreate = i + 1;
+                            positionToMove = nextChannel.getPosition() - 1;
+                            parent = channel.getParent();
+                            break;
+                        }
+                    }
+
+                    if (numberToCreate == -1) {
+                        final VoiceChannel lastChannel = voiceChannels.get(voiceChannels.size() - 1);
+                        oldName = lastChannel.getName();
+                        try {
+                            numberToCreate = parseNumber(lastChannel.getName()) + 1;
+                        } catch (final ParseException ignored) {
+                            return;
+                        }
+                        positionToMove = lastChannel.getPosition();
+                        parent = lastChannel.getParent();
+                    }
+
+                    final int finalPosition = positionToMove;
+                    final String romanNumerals = romanNumeralsConverter.toRomanNumerals(numberToCreate);
+                    parent.createVoiceChannel(oldName.replaceFirst(oldName.replaceFirst(this.channelName, "").trim(), romanNumerals))
+                            .complete().getManager().setPosition(finalPosition).complete();
+                }
+
+            } finally {
+                lock.unlock();
             }
-        }
+        });
     }
 
     private void handleLeave(final VoiceChannel channel) {
-        if (!channel.getName().startsWith(channelName)) {
-            return;
-        }
-        synchronized (this) {
-            final List<VoiceChannel> voiceChannels = channel.getGuild().getVoiceChannelCache().stream()
-                    .filter(voiceChannel -> voiceChannel.getName().startsWith(channelName)).collect(Collectors.toList());
-            final List<VoiceChannel> emptyChannels = voiceChannels.stream().filter(
-                    voiceChannel -> voiceChannel.getMembers().size() == 0).collect(Collectors.toList());
-            if (emptyChannels.size() > 1) {
-                emptyChannels.get(emptyChannels.size() - 1).delete().queue();
+        executorService.execute(() -> {
+            lock.lock();
+            try {
+                if (!channel.getName().startsWith(channelName)) {
+                    return;
+                }
+                final java.util.List<VoiceChannel> voiceChannels = channel.getGuild().getVoiceChannelCache().stream()
+                        .filter(voiceChannel -> voiceChannel.getName().startsWith(channelName)).collect(Collectors.toList());
+                final List<VoiceChannel> emptyChannels = voiceChannels.stream().filter(
+                        voiceChannel -> voiceChannel.getMembers().size() == 0).collect(Collectors.toList());
+                if (emptyChannels.size() > 1) {
+                    emptyChannels.get(emptyChannels.size() - 1).delete().complete();
+
+                }
+            } finally {
+                lock.unlock();
             }
-        }
+        });
     }
 
-    private String parseNumber(final String channelName) {
-        return channelName.replaceFirst(this.channelName, "").trim();
-    }
-
-    private String getNextNumber(final String number) throws ParseException {
-        final int currentChannelNumber = romanNumeralsConverter.toNumber(number);
-        return romanNumeralsConverter.toRomanNumerals(currentChannelNumber + 1);
+    private int parseNumber(final String channelName) throws ParseException {
+        return romanNumeralsConverter.toNumber(channelName.replaceFirst(this.channelName, "").trim());
     }
 }
