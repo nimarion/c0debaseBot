@@ -6,6 +6,7 @@ import de.c0debase.bot.commands.CommandManager;
 import de.c0debase.bot.level.LevelManager;
 import de.c0debase.bot.level.LevelUser;
 import de.c0debase.bot.listener.other.ReadyListener;
+import de.c0debase.bot.listener.voice.DynamicVoiceChannelManager;
 import de.c0debase.bot.monitor.MonitorManager;
 import de.c0debase.bot.music.MusicManager;
 import de.c0debase.bot.mysql.MySQL;
@@ -73,6 +74,8 @@ public class CodebaseBot {
                     .setAutoReconnect(true)
                     .setAudioEnabled(true)
                     .addEventListener(new ReadyListener())
+                    .addEventListener(new DynamicVoiceChannelManager("Talk "))
+                    .addEventListener(new DynamicVoiceChannelManager("Ingame "))
                     .addEventListener(new ListenerAdapter() {
                         @Override
                         public void onGenericEvent(Event event) {

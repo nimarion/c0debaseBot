@@ -1,4 +1,4 @@
-FROM openjdk:8-jdk-slim
+FROM openjdk:10-jdk-slim
 
 LABEL maintainer = "biosphere.dev@gmx.de"
 
