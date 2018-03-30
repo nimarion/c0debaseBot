@@ -1,15 +1,24 @@
 package de.c0debase.bot.tempchannel;
 
 import net.dv8tion.jda.core.Permission;
+import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.VoiceChannel;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author Biosphere
  * @date 27.03.18
  */
 public class Tempchannel implements TempchannelEvents {
+    private static final List<Permission> MEMBER_PERMISSIONS;
+
+    static {
+        MEMBER_PERMISSIONS = Arrays.asList(Permission.MESSAGE_WRITE, Permission.MESSAGE_READ);
+    }
 
     private TextChannel textChannel;
 
@@ -23,15 +32,17 @@ public class Tempchannel implements TempchannelEvents {
     @Override
     public void onTempchannelJoin(VoiceChannel voiceChannel, Member member) {
         if (textChannel == null) {
-            textChannel = (TextChannel) voiceChannel.getParent().createTextChannel("temp-" + voiceChannel.getName().toLowerCase()).complete();
-            textChannel.createPermissionOverride(member.getGuild().getSelfMember()).setAllow(Permission.MESSAGE_READ, Permission.MESSAGE_WRITE).complete();
-            textChannel.createPermissionOverride(member).setAllow(Permission.MESSAGE_READ, Permission.MESSAGE_WRITE).complete();
-            textChannel.createPermissionOverride(textChannel.getGuild().getPublicRole()).setDeny(Permission.MESSAGE_READ, Permission.MESSAGE_WRITE).complete();
+            final Guild guild = voiceChannel.getGuild();
+            voiceChannel.getParent().createTextChannel("temp-" + voiceChannel.getName().toLowerCase())
+                    .addPermissionOverride(guild.getSelfMember(), MEMBER_PERMISSIONS, null)
+                    .addPermissionOverride(member, MEMBER_PERMISSIONS, null)
+                    .addPermissionOverride(guild.getPublicRole(), null, MEMBER_PERMISSIONS)
+                    .queue(channel -> setTextChannel((TextChannel) channel));
         } else {
             if (textChannel.getPermissionOverride(member) != null) {
-                textChannel.getPermissionOverride(member).getManager().grant(Permission.MESSAGE_READ, Permission.MESSAGE_WRITE).queue();
+                textChannel.getPermissionOverride(member).getManager().grant(MEMBER_PERMISSIONS).queue();
             } else {
-                textChannel.createPermissionOverride(member).setAllow(Permission.MESSAGE_READ, Permission.MESSAGE_WRITE).queue();
+                textChannel.createPermissionOverride(member).setAllow(MEMBER_PERMISSIONS).queue();
             }
         }
     }
@@ -50,7 +61,7 @@ public class Tempchannel implements TempchannelEvents {
     public void onLoad(TextChannel textChannel, VoiceChannel voiceChannel) {
         if (voiceChannel.getMembers().isEmpty()) {
             textChannel.delete().queue();
-            textChannel = null;
+            setTextChannel(null);
             return;
         }
 
@@ -68,5 +79,9 @@ public class Tempchannel implements TempchannelEvents {
                 textChannel.getPermissionOverride(member).delete().queue();
             }
         }
+    }
+
+    private void setTextChannel(final TextChannel textChannel) {
+        this.textChannel = textChannel;
     }
 }

@@ -2,14 +2,15 @@ package de.c0debase.bot.listener.voice;
 
 import com.frequal.romannumerals.Converter;
 import de.c0debase.bot.utils.StringUtils;
-import net.dv8tion.jda.core.entities.Category;
-import net.dv8tion.jda.core.entities.VoiceChannel;
+import net.dv8tion.jda.core.Permission;
+import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.guild.voice.GuildVoiceJoinEvent;
 import net.dv8tion.jda.core.events.guild.voice.GuildVoiceLeaveEvent;
 import net.dv8tion.jda.core.events.guild.voice.GuildVoiceMoveEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
 import java.text.ParseException;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -52,10 +53,11 @@ public class DynamicVoiceChannelManager extends ListenerAdapter {
         executorService.execute(() -> {
             lock.lock();
             try {
+                final Guild guild = channel.getGuild();
                 if (!channel.getName().startsWith(channelName)) {
                     return;
                 }
-                final List<VoiceChannel> voiceChannels = channel.getGuild().getVoiceChannelCache().stream()
+                final List<VoiceChannel> voiceChannels = guild.getVoiceChannelCache().stream()
                         .filter(voiceChannel -> voiceChannel.getName().startsWith(channelName)).collect(
                                 Collectors.toList());
                 final boolean freeVoiceChannels = voiceChannels.stream()
@@ -99,11 +101,14 @@ public class DynamicVoiceChannelManager extends ListenerAdapter {
 
                     final int finalPosition = positionToMove;
                     final String romanNumerals = romanNumeralsConverter.toRomanNumerals(numberToCreate);
-                    parent.createVoiceChannel(
+                    final Role publicRole = guild.getPublicRole();
+                    final Channel createdChannel = parent.createVoiceChannel(
                             StringUtils.replaceLast(oldName, oldName.replaceFirst(this.channelName, "").trim(), romanNumerals))
-                            .complete().getManager().setPosition(finalPosition).complete();
+                            .addPermissionOverride(publicRole, null, Collections.singleton(Permission.VIEW_CHANNEL))
+                            .complete();
+                    createdChannel.getManager().setPosition(finalPosition).complete();
+                    createdChannel.getPermissionOverride(publicRole).getManager().clear(Permission.VIEW_CHANNEL).complete();
                 }
-
             } finally {
                 lock.unlock();
             }
