@@ -16,7 +16,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
 /**
- * @author LGA1151
+ * @author LGA1151 (https://github.com/LGA1151)
  */
 public class DynamicVoiceChannelManager extends ListenerAdapter {
     private final String channelName;
