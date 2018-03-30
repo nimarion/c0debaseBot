@@ -12,7 +12,6 @@ public class GuildMemberLeaveListener extends ListenerAdapter {
 
     @Override
     public void onGuildMemberLeave(GuildMemberLeaveEvent event) {
-        super.onGuildMemberLeave(event);
         event.getGuild().getTextChannelsByName("log", true).forEach(channel -> {
             EmbedBuilder embedBuilder = new EmbedBuilder();
             embedBuilder.setFooter("@" + event.getMember().getUser().getName() + "#" + event.getMember().getUser().getDiscriminator(), event.getMember().getUser().getEffectiveAvatarUrl());

@@ -21,16 +21,15 @@ import java.util.Set;
  */
 
 public class ReadyListener extends ListenerAdapter {
-    private static final List<Class> exceptions;
+
+    private static final List<Class> EXCEPTIONS;
 
     static {
-        exceptions = Arrays.asList(ReadyListener.class, DynamicVoiceChannelManager.class);
+        EXCEPTIONS = Arrays.asList(ReadyListener.class, DynamicVoiceChannelManager.class);
     }
 
     @Override
     public void onReady(ReadyEvent event) {
-        super.onReady(event);
-
         event.getJDA().getGuilds().get(0).getMembers().forEach(member -> {
             if (!member.getUser().isBot()) {
                 CodebaseBot.getInstance().getLevelManager().load(member.getUser().getId());
@@ -45,7 +44,7 @@ public class ReadyListener extends ListenerAdapter {
 
         Set<Class<? extends ListenerAdapter>> classes = new Reflections("de.c0debase.bot.listener").getSubTypesOf(ListenerAdapter.class);
         classes.forEach(listenerClass -> {
-            if(!exceptions.contains(listenerClass)) {
+            if (!EXCEPTIONS.contains(listenerClass)) {
                 try {
                     event.getJDA().addEventListener(listenerClass.newInstance());
                 } catch (Exception ex) {

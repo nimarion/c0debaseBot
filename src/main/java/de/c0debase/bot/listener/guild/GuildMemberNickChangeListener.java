@@ -12,7 +12,6 @@ public class GuildMemberNickChangeListener extends ListenerAdapter {
 
     @Override
     public void onGuildMemberNickChange(GuildMemberNickChangeEvent event) {
-        super.onGuildMemberNickChange(event);
         event.getGuild().getTextChannelsByName("log", true).forEach(channel -> {
             EmbedBuilder logBuilder = new EmbedBuilder();
             logBuilder.setTitle("Nickname geändert");

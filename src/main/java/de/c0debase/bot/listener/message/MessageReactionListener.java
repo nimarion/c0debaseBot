@@ -24,7 +24,6 @@ public class MessageReactionListener extends ListenerAdapter {
 
     @Override
     public void onGenericPrivateMessageReaction(GenericPrivateMessageReactionEvent event) {
-        super.onGenericPrivateMessageReaction(event);
         if (event.getUser().isBot()) {
             return;
         }
@@ -59,7 +58,6 @@ public class MessageReactionListener extends ListenerAdapter {
 
     @Override
     public void onGenericGuildMessageReaction(GenericGuildMessageReactionEvent event) {
-        super.onGenericGuildMessageReaction(event);
         if (event.getUser().isBot()) {
             return;
         }
@@ -115,7 +113,6 @@ public class MessageReactionListener extends ListenerAdapter {
 
     @Override
     public void onGuildMessageReactionRemove(GuildMessageReactionRemoveEvent event) {
-        super.onGuildMessageReactionRemove(event);
         if (event.getMember().getUser().isBot()) {
             return;
         }
@@ -125,11 +122,9 @@ public class MessageReactionListener extends ListenerAdapter {
                 if (emote == null) {
                     return;
                 }
-                Role role = success.getGuild().getRolesByName(emote, true).stream().findFirst().get();
-                if (role != null && PermissionUtil.canInteract(event.getGuild().getSelfMember(), role)) {
-                    if (success.getGuild().getMembersWithRoles(role).contains(event.getMember())) {
-                        success.getGuild().getController().removeRolesFromMember(event.getMember(), role).queue();
-                    }
+                Role role = success.getGuild().getRolesByName(emote, true).stream().findFirst().orElseGet(null);
+                if (role != null && PermissionUtil.canInteract(event.getGuild().getSelfMember(), role) && success.getGuild().getMembersWithRoles(role).contains(event.getMember())) {
+                    success.getGuild().getController().removeRolesFromMember(event.getMember(), role).queue();
                 }
             }
         });
@@ -137,7 +132,6 @@ public class MessageReactionListener extends ListenerAdapter {
 
     @Override
     public void onGuildMessageReactionAdd(GuildMessageReactionAddEvent event) {
-        super.onGuildMessageReactionAdd(event);
         event.getChannel().getMessageById(event.getMessageId()).queue(success -> {
             if (success.getTextChannel().getTopic() != null && success.getTextChannel().getTopic().endsWith("RS")) {
                 String emote = getReaction(event.getReactionEmote());

@@ -1,6 +1,7 @@
 package de.c0debase.bot.utils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -14,12 +15,11 @@ public class StringUtils {
     /**
      * Forbidden characters
      */
-    private static final List<Character> ESCAPE_CHARACTERS = new ArrayList<Character>() {{
-        this.add('*');
-        this.add('_');
-        this.add('`');
-        this.add('~');
-    }};
+    private static final List<Character> ESCAPE_CHARACTERS;
+
+    static {
+        ESCAPE_CHARACTERS = Arrays.asList('*', '_', '`', '~');
+    }
 
     /**
      * Find all urls in a text
@@ -54,6 +54,10 @@ public class StringUtils {
             }
         }
         return stringBuilder.toString();
+    }
+
+    public static String replaceLast(final String text, final String regex, final String replacement) {
+        return text.replaceFirst("(?s)" + regex + "(?!.*?" + regex + ")", replacement);
     }
 
 }
