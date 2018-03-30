@@ -19,7 +19,6 @@ public class GuildVoiceListener extends ListenerAdapter {
 
     @Override
     public void onGuildVoiceJoin(GuildVoiceJoinEvent event) {
-        super.onGuildVoiceJoin(event);
         if (event.getGuild().getAudioManager().isConnected() && event.getGuild().getAudioManager().getConnectedChannel().getMembers().size() == 1) {
             event.getGuild().getAudioManager().closeAudioConnection();
         }
@@ -29,7 +28,6 @@ public class GuildVoiceListener extends ListenerAdapter {
 
     @Override
     public void onGuildVoiceMove(GuildVoiceMoveEvent event) {
-        super.onGuildVoiceMove(event);
         if (event.getChannelLeft().getMembers().contains(event.getGuild().getSelfMember()) && event.getChannelLeft().getMembers().size() == 1) {
             event.getGuild().getAudioManager().closeAudioConnection();
         }
@@ -39,7 +37,6 @@ public class GuildVoiceListener extends ListenerAdapter {
 
     @Override
     public void onGuildVoiceLeave(GuildVoiceLeaveEvent event) {
-        super.onGuildVoiceLeave(event);
         if (event.getGuild().getAudioManager().isConnected() && event.getGuild().getAudioManager().getConnectedChannel().getMembers().size() == 1) {
             event.getGuild().getAudioManager().closeAudioConnection();
         }

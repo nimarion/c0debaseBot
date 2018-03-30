@@ -1,6 +1,7 @@
 package de.c0debase.bot.listener.voice;
 
 import com.frequal.romannumerals.Converter;
+import de.c0debase.bot.utils.StringUtils;
 import net.dv8tion.jda.core.entities.Category;
 import net.dv8tion.jda.core.entities.VoiceChannel;
 import net.dv8tion.jda.core.events.guild.voice.GuildVoiceJoinEvent;
@@ -99,7 +100,7 @@ public class DynamicVoiceChannelManager extends ListenerAdapter {
                     final int finalPosition = positionToMove;
                     final String romanNumerals = romanNumeralsConverter.toRomanNumerals(numberToCreate);
                     parent.createVoiceChannel(
-                            replaceLast(oldName, oldName.replaceFirst(this.channelName, "").trim(), romanNumerals))
+                            StringUtils.replaceLast(oldName, oldName.replaceFirst(this.channelName, "").trim(), romanNumerals))
                             .complete().getManager().setPosition(finalPosition).complete();
                 }
 
@@ -134,8 +135,4 @@ public class DynamicVoiceChannelManager extends ListenerAdapter {
         return romanNumeralsConverter.toNumber(channelName.replaceFirst(this.channelName, "").trim());
     }
 
-
-    private static String replaceLast(final String text, final String regex, final String replacement) {
-        return text.replaceFirst("(?s)"+regex+"(?!.*?"+regex+")", replacement);
-    }
 }

@@ -7,6 +7,7 @@ import net.dv8tion.jda.core.entities.Role;
 import net.dv8tion.jda.core.utils.PermissionUtil;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -16,6 +17,12 @@ import java.util.concurrent.TimeUnit;
  */
 
 public class RoleCommand extends Command {
+
+    private static final List<String> FORBIDDEN;
+
+    static {
+        FORBIDDEN = Arrays.asList("Projekt", "Friend", "-_-", "Mute", "@everyone");
+    }
 
     public RoleCommand() {
         super("role", "Weise dir eine Programmiersprache zu", Categorie.GENERAL, "rolle");
@@ -31,7 +38,7 @@ public class RoleCommand extends Command {
             embedBuilder.appendDescription("`!role Java,Go,C#`\n\n");
 
             for (Role role : msg.getGuild().getRoles()) {
-                if (!role.isManaged() && !role.getName().equalsIgnoreCase("@everyone") && !role.getName().equalsIgnoreCase("Projekt") && !role.getName().equalsIgnoreCase("Friend") && PermissionUtil.canInteract(msg.getGuild().getSelfMember(), role)) {
+                if (!role.isManaged() && !FORBIDDEN.contains(role.getName()) && PermissionUtil.canInteract(msg.getGuild().getSelfMember(), role)) {
                     embedBuilder.appendDescription("***" + role.getName() + "***" + "\n");
                 }
             }
@@ -45,8 +52,7 @@ public class RoleCommand extends Command {
         List<Role> addRoles = new ArrayList<>();
         List<Role> removeRoles = new ArrayList<>();
         for (String role : args.split(",")) {
-            if (!message.getGuild().getRolesByName(role, true).isEmpty()) {
-                if (!role.equalsIgnoreCase("Friend") && !role.equalsIgnoreCase("Projekt")) {
+            if (!message.getGuild().getRolesByName(role, true).isEmpty() && !FORBIDDEN.contains(role)) {
                     Role rrole = message.getGuild().getRolesByName(role, true).get(0);
                     if (PermissionUtil.canInteract(message.getGuild().getSelfMember(), rrole) && !rrole.isManaged()) {
                         if (message.getGuild().getMembersWithRoles(rrole).contains(message.getMember()) && !removeRoles.contains(rrole)) {
@@ -55,7 +61,6 @@ public class RoleCommand extends Command {
                             addRoles.add(rrole);
                         }
                     }
-                }
             }
         }
         EmbedBuilder embedBuilder = getEmbed(message.getGuild(), message.getAuthor());

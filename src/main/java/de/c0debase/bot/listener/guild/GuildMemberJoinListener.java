@@ -16,8 +16,6 @@ public class GuildMemberJoinListener extends ListenerAdapter {
 
     @Override
     public void onGuildMemberJoin(GuildMemberJoinEvent event) {
-        super.onGuildMemberJoin(event);
-
         CodebaseBot.getInstance().getLevelManager().load(event.getUser().getId());
         if (event.getJDA().getGuildById("361448651748540426") != null) {
             EmbedBuilder embedBuilder = new EmbedBuilder();
