@@ -47,7 +47,7 @@ public class Tempchannel implements TempchannelEvents {
             }
             final EmbedBuilder embedBuilder = new EmbedBuilder();
             embedBuilder.setColor(member.getColor());
-            embedBuilder.setDescription(":arrow_right: " + member.getAsMention() + " ist betreten");
+            embedBuilder.setDescription(":arrow_right: " + member.getAsMention() + " ist beigetreten");
             textChannel.sendMessage(embedBuilder.build()).queue();
         }
     }
