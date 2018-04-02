@@ -135,11 +135,9 @@ public class MessageReactionListener extends ListenerAdapter {
         event.getChannel().getMessageById(event.getMessageId()).queue(success -> {
             if (success.getTextChannel().getTopic() != null && success.getTextChannel().getTopic().endsWith("RS")) {
                 String emote = getReaction(event.getReactionEmote());
-                Role role = success.getGuild().getRolesByName(emote, true).stream().findFirst().get();
-                if (role != null && PermissionUtil.canInteract(event.getGuild().getSelfMember(), role)) {
-                    if (!success.getGuild().getMembersWithRoles(role).contains(event.getMember())) {
+                Role role = success.getGuild().getRolesByName(emote, true).stream().findFirst().orElseGet(null);
+                if (role != null && PermissionUtil.canInteract(event.getGuild().getSelfMember(), role) && !success.getGuild().getMembersWithRoles(role).contains(event.getMember())) {
                         success.getGuild().getController().addRolesToMember(event.getMember(), role).queue();
-                    }
                 }
             }
         });

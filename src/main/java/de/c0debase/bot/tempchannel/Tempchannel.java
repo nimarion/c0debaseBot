@@ -1,5 +1,6 @@
 package de.c0debase.bot.tempchannel;
 
+import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
@@ -44,6 +45,10 @@ public class Tempchannel implements TempchannelEvents {
             } else {
                 textChannel.createPermissionOverride(member).setAllow(MEMBER_PERMISSIONS).queue();
             }
+            final EmbedBuilder embedBuilder = new EmbedBuilder();
+            embedBuilder.setColor(member.getColor());
+            embedBuilder.setDescription(":arrow_right: " + member.getAsMention() + " ist betreten");
+            textChannel.sendMessage(embedBuilder.build()).queue();
         }
     }
 
@@ -54,6 +59,10 @@ public class Tempchannel implements TempchannelEvents {
             textChannel = null;
         } else if (textChannel.getPermissionOverride(member) != null) {
             textChannel.getPermissionOverride(member).delete().queue();
+            final EmbedBuilder embedBuilder = new EmbedBuilder();
+            embedBuilder.setColor(member.getColor());
+            embedBuilder.setDescription(":arrow_left: " + member.getAsMention() + " hat uns verlassen");
+            textChannel.sendMessage(embedBuilder.build()).queue();
         }
     }
 
