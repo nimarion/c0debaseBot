@@ -1,4 +1,4 @@
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/1d9c272e855743b695a447f43b2c193b)](https://app.codacy.com/app/biosphere.dev/c0debaseBot?utm_source=github.com&utm_medium=referral&utm_content=Biospheere/c0debaseBot&utm_campaign=badger)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/e09f05b8e67c4156accc633d72e8a75d)](https://www.codacy.com/app/biosphere.dev/c0debaseBot?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Biospheere/c0debaseBot&amp;utm_campaign=Badge_Grade)
 [![Build Status](https://travis-ci.org/Biospheere/c0debaseBot.svg?branch=master)](https://travis-ci.org/Biospheere/c0debaseBot)
 [![GitHub contributors](https://img.shields.io/github/contributors/biospheere/c0debaseBot.svg)](https://github.com/Biospheere/c0debaseBot/graphs/contributors/)
 

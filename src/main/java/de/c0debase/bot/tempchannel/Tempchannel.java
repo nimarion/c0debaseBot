@@ -32,6 +32,9 @@ public class Tempchannel implements TempchannelEvents {
 
     @Override
     public void onTempchannelJoin(VoiceChannel voiceChannel, Member member) {
+        if (voiceChannel.equals(voiceChannel.getGuild().getAfkChannel())) {
+            return;
+        }
         if (textChannel == null) {
             final Guild guild = voiceChannel.getGuild();
             voiceChannel.getParent().createTextChannel("temp-" + voiceChannel.getName().toLowerCase())
@@ -57,6 +60,9 @@ public class Tempchannel implements TempchannelEvents {
 
     @Override
     public void onTempchannelLeave(VoiceChannel voiceChannel, Member member) {
+        if (voiceChannel.equals(voiceChannel.getGuild().getAfkChannel())) {
+            return;
+        }
         if (voiceChannel.getMembers().isEmpty()) {
             textChannel.delete().queue();
             textChannel = null;
