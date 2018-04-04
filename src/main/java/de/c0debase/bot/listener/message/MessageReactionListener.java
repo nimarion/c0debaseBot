@@ -5,6 +5,7 @@ import de.c0debase.bot.CodebaseBot;
 import de.c0debase.bot.commands.Command;
 import de.c0debase.bot.commands.Command.Categorie;
 import de.c0debase.bot.level.LevelUser;
+import de.c0debase.bot.utils.StringUtils;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.message.guild.react.GenericGuildMessageReactionEvent;
@@ -132,13 +133,22 @@ public class MessageReactionListener extends ListenerAdapter {
 
     @Override
     public void onGuildMessageReactionAdd(GuildMessageReactionAddEvent event) {
+        if (event.getMember().getUser().isBot()) {
+            return;
+        }
         event.getChannel().getMessageById(event.getMessageId()).queue(success -> {
+            String emote = getReaction(event.getReactionEmote());
             if (success.getTextChannel().getTopic() != null && success.getTextChannel().getTopic().endsWith("RS")) {
-                String emote = getReaction(event.getReactionEmote());
                 Role role = success.getGuild().getRolesByName(emote, true).stream().findFirst().orElseGet(null);
                 if (role != null && PermissionUtil.canInteract(event.getGuild().getSelfMember(), role) && !success.getGuild().getMembersWithRoles(role).contains(event.getMember())) {
                         success.getGuild().getController().addRolesToMember(event.getMember(), role).queue();
                 }
+            }
+            if (emote.equalsIgnoreCase("black_right_pointing_triangle_with_double_vertical_bar") && !StringUtils.extractUrls(success.getContentRaw()).isEmpty() && event.getMember().getVoiceState().inVoiceChannel()) {
+                if (event.getGuild().getAudioManager().getConnectedChannel() == null) {
+                    event.getGuild().getAudioManager().openAudioConnection(event.getMember().getVoiceState().getChannel());
+                }
+                CodebaseBot.getInstance().getMusicManager().loadTrack(success.getTextChannel(), event.getMember().getUser(), StringUtils.extractUrls(success.getContentRaw()).get(0));
             }
         });
     }
