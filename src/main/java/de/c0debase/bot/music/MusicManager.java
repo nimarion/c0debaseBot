@@ -68,6 +68,7 @@ public class MusicManager {
                     length = String.format("%02d:%02d:%02d", TimeUnit.MILLISECONDS.toHours(trackInfo.length) % 24, TimeUnit.MILLISECONDS.toMinutes(trackInfo.length) % 60, TimeUnit.MILLISECONDS.toSeconds(trackInfo.length) % 60);
                 }
                 eb.addField(trackInfo.title, "`" + trackInfo.author + " - " + (trackInfo.isStream ? "STREAM" : length) + "`", false);
+                eb.setImage("http://img.youtube.com/vi/" + track.getIdentifier() + "/maxresdefault.jpg");
                 channel.sendMessage(eb.build()).queue();
             }
 
