@@ -45,6 +45,9 @@ public class Tempchannel implements TempchannelEvents {
             } else {
                 textChannel.createPermissionOverride(member).setAllow(MEMBER_PERMISSIONS).queue();
             }
+            if (member.getUser().isBot()) {
+                return;
+            }
             final EmbedBuilder embedBuilder = new EmbedBuilder();
             embedBuilder.setColor(member.getColor());
             embedBuilder.setDescription(":arrow_right: " + member.getAsMention() + " ist beigetreten");
@@ -59,6 +62,9 @@ public class Tempchannel implements TempchannelEvents {
             textChannel = null;
         } else if (textChannel.getPermissionOverride(member) != null) {
             textChannel.getPermissionOverride(member).delete().queue();
+            if (member.getUser().isBot()) {
+                return;
+            }
             final EmbedBuilder embedBuilder = new EmbedBuilder();
             embedBuilder.setColor(member.getColor());
             embedBuilder.setDescription(":arrow_left: " + member.getAsMention() + " hat uns verlassen");
