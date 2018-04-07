@@ -24,7 +24,7 @@ public class RankCommand extends Command {
             member = msg.getMember();
         }
         LevelUser levelUser = CodebaseBot.getInstance().getLevelManager().getLevelUser(member.getUser().getId());
-        EmbedBuilder embedBuilder = getEmbed(msg.getGuild(), msg.getAuthor());
+        EmbedBuilder embedBuilder = getEmbed(msg.getGuild(), member.getUser());
 
         embedBuilder.addField("Level", String.valueOf(levelUser.getLevel()), false);
         embedBuilder.addField("Exp", levelUser.getXp() + "/" + (levelUser.getLevel() == 0 ? "1000" : (1000 * levelUser.getLevel() * 1.2)), false);
