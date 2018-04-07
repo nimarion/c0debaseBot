@@ -84,7 +84,7 @@ public class MessageReceiveListener extends ListenerAdapter {
                 levelUser.setLastMessage(System.currentTimeMillis());
                 if (levelUser.addXP(50)) {
                     EmbedBuilder levelUpEmbed = new EmbedBuilder();
-                    levelUpEmbed.appendDescription(event.getAuthor().getAsMention() + " has leveled up to level " + levelUser.getLevel());
+                    levelUpEmbed.appendDescription(event.getAuthor().getAsMention() + " ist nun Level " + levelUser.getLevel());
                     event.getTextChannel().sendMessage(levelUpEmbed.build()).queue();
                 }
             }
