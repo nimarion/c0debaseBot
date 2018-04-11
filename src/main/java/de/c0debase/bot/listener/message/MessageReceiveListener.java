@@ -44,7 +44,7 @@ public class MessageReceiveListener extends ListenerAdapter {
             return;
         }
 
-        if (event.getTextChannel().getName().equalsIgnoreCase("feedback")) {
+        if (event.getTextChannel().getTopic() != null && event.getTextChannel().getTopic().contains(":pushpin:")) {
             EmbedBuilder embedBuilder = new EmbedBuilder();
             embedBuilder.setColor(Color.GREEN);
             embedBuilder.setFooter("@" + event.getAuthor().getName() + "#" + event.getAuthor().getDiscriminator(), event.getAuthor().getEffectiveAvatarUrl());
