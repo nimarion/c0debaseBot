@@ -41,7 +41,6 @@ public class GithubCommand extends Command {
         embedBuilder.addField("Forks", String.valueOf(jsonObject.get("forks_count").getAsInt()), true);
         embedBuilder.addField("Issues", String.valueOf(jsonObject.get("open_issues_count").getAsInt()), true);
 
-        embedBuilder.setImage(msg.getJDA().getSelfUser().getAvatarUrl());
         msg.getTextChannel().sendMessage(embedBuilder.build()).queue();
     }
 }
