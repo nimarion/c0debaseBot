@@ -1,5 +1,6 @@
 package de.c0debase.bot.commands;
 
+import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Message;
 import org.reflections.Reflections;
 
@@ -29,6 +30,9 @@ public class CommandManager {
     public void execute(Message msg) {
         String[] arguments = msg.getContentRaw().split(" ");
         for (Command command : this.availableCommands) {
+            if (command.getCategorie().equals(Command.Categorie.STAFF) && !msg.getMember().hasPermission(Permission.BAN_MEMBERS)) {
+                continue;
+            }
             if (("!" + command.getCommand()).equalsIgnoreCase(arguments[0])) {
                 command.execute(Arrays.copyOfRange(arguments, 1, arguments.length), msg);
             } else {
