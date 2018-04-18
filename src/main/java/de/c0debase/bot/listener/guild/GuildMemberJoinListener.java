@@ -16,8 +16,8 @@ public class GuildMemberJoinListener extends ListenerAdapter {
 
     @Override
     public void onGuildMemberJoin(GuildMemberJoinEvent event) {
+        CodebaseBot.getInstance().getLevelManager().setLastJoin(System.currentTimeMillis());
         CodebaseBot.getInstance().getLevelManager().load(event.getUser().getId());
-        if (event.getJDA().getGuildById("361448651748540426") != null) {
             EmbedBuilder embedBuilder = new EmbedBuilder();
             embedBuilder.setFooter("@" + event.getMember().getUser().getName() + "#" + event.getMember().getUser().getDiscriminator(), event.getMember().getUser().getEffectiveAvatarUrl());
             embedBuilder.setColor(event.getGuild().getSelfMember().getColor());
@@ -36,6 +36,5 @@ public class GuildMemberJoinListener extends ListenerAdapter {
                 logBuilder.appendDescription("Standart Avatar: " + (event.getMember().getUser().getAvatarUrl() == null) + "\n");
                 channel.sendMessage(logBuilder.build()).queue();
             });
-        }
     }
 }
