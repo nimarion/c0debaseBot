@@ -44,7 +44,7 @@ public class LevelManager {
 
                     if (levelUser.addXP(100)) {
                         EmbedBuilder levelUpEmbed = new EmbedBuilder();
-                        levelUpEmbed.setDescription(invite.getInviter().getAsMention() + " has leveled up to level " + levelUser.getLevel());
+                        levelUpEmbed.setDescription(invite.getInviter().getAsMention() + " ist nun Level " + levelUser.getLevel());
                         CodebaseBot.getInstance().getJda().getTextChannelById(System.getenv("BOTCHANNEL")).sendMessage(levelUpEmbed.build()).queue();
                     }
                 }
