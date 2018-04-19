@@ -2,7 +2,6 @@ package de.c0debase.bot.commands.staff;
 
 import de.c0debase.bot.commands.Command;
 import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageHistory;
 
@@ -20,7 +19,6 @@ public class ClearCommand extends Command {
 
     @Override
     public void execute(String[] args, Message msg) {
-        if (msg.getMember().hasPermission(Permission.ADMINISTRATOR) || msg.getMember().hasPermission(Permission.BAN_MEMBERS)) {
             if (args.length == 0) {
                 EmbedBuilder embedBuilder = new EmbedBuilder();
                 embedBuilder.setFooter("@" + msg.getMember().getUser().getName() + "#" + msg.getMember().getUser().getDiscriminator(), msg.getMember().getUser().getEffectiveAvatarUrl());
@@ -46,6 +44,5 @@ public class ClearCommand extends Command {
                 msg.getTextChannel().sendMessage(embedBuilder.build()).queue();
 
             }
-        }
     }
 }

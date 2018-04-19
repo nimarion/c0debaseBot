@@ -1,7 +1,6 @@
 package de.c0debase.bot.commands.staff;
 
 import de.c0debase.bot.commands.Command;
-import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Message;
 
 /**
@@ -16,10 +15,7 @@ public class StopCommand extends Command {
 
     @Override
     public void execute(String[] args, Message msg) {
-        if (msg.getMember().hasPermission(Permission.ADMINISTRATOR) || msg.getMember().hasPermission(Permission.BAN_MEMBERS)) {
-            msg.delete().queue();
             msg.getJDA().shutdownNow();
             Runtime.getRuntime().exit(0);
-        }
     }
 }

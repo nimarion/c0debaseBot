@@ -2,7 +2,6 @@ package de.c0debase.bot.commands.staff;
 
 import de.c0debase.bot.commands.Command;
 import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
 
@@ -20,7 +19,6 @@ public class CheckCommand extends Command {
 
     @Override
     public void execute(String[] args, Message msg) {
-        if (msg.getMember().hasPermission(Permission.ADMINISTRATOR) || msg.getMember().hasPermission(Permission.BAN_MEMBERS)) {
             if (args.length < 1) {
                 msg.getTextChannel().sendMessage(getEmbed(msg.getGuild(), msg.getAuthor()).setDescription("!check [id]").build()).queue();
                 return;
@@ -43,6 +41,5 @@ public class CheckCommand extends Command {
             } else {
                 msg.getTextChannel().sendMessage(getEmbed(msg.getGuild(), msg.getAuthor()).setDescription("Mitglied wurde nicht gefunden").build()).queue();
             }
-        }
     }
 }

@@ -2,21 +2,26 @@ package de.c0debase.bot.level;
 
 import de.c0debase.bot.CodebaseBot;
 import lombok.Getter;
+import lombok.Setter;
 import net.dv8tion.jda.core.EmbedBuilder;
+import net.dv8tion.jda.core.entities.Invite;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 /**
  * @author Biosphere
  * @date 23.01.18
  */
+@Getter
 public class LevelManager {
 
-    @Getter
     private HashMap<String, LevelUser> levelUsers;
+    @Setter
+    private long lastJoin = System.currentTimeMillis();
 
     public LevelManager() {
         this.levelUsers = new HashMap<>();
@@ -26,23 +31,34 @@ public class LevelManager {
         if (System.getenv("BOTCHANNEL") == null) {
             return;
         }
-        HashMap<String, Integer> inviteHashMap = new HashMap<>();
-        CodebaseBot.getInstance().getExecutorService().scheduleAtFixedRate(() -> CodebaseBot.getInstance().getJda().getGuilds().get(0).getInvites().queue(success -> success.forEach(invite -> {
-            if (inviteHashMap.containsKey(invite.getCode()) && invite.getUses() > inviteHashMap.get(invite.getCode())) {
-                LevelUser levelUser = CodebaseBot.getInstance().getLevelManager().getLevelUser(invite.getInviter().getId());
+        ConcurrentHashMap<String, Invite> inviteHashMap = new ConcurrentHashMap<>();
+        CodebaseBot.getInstance().getExecutorService().scheduleAtFixedRate(() -> CodebaseBot.getInstance().getJda().getGuilds().get(0).getInvites().queue(success -> {
 
-                EmbedBuilder embedBuilder = new EmbedBuilder();
-                embedBuilder.appendDescription(invite.getInviter().getAsMention() + " vielen Dank das du jemand neues auf c0debase gebracht hast");
-                CodebaseBot.getInstance().getJda().getTextChannelById(System.getenv("BOTCHANNEL")).sendMessage(embedBuilder.build()).queue();
+            success.forEach(invite -> {
+                if (inviteHashMap.containsKey(invite.getCode()) && invite.getUses() > inviteHashMap.get(invite.getCode()).getUses()) {
+                    LevelUser levelUser = CodebaseBot.getInstance().getLevelManager().getLevelUser(invite.getInviter().getId());
 
-                if (levelUser.addXP(100)) {
-                    EmbedBuilder levelUpEmbed = new EmbedBuilder();
-                    levelUpEmbed.appendDescription(invite.getInviter().getAsMention() + " has leveled up to level " + levelUser.getLevel());
-                    CodebaseBot.getInstance().getJda().getTextChannelById(System.getenv("BOTCHANNEL")).sendMessage(levelUpEmbed.build()).queue();
+                    EmbedBuilder embedBuilder = new EmbedBuilder();
+                    embedBuilder.setDescription(invite.getInviter().getAsMention() + " vielen Dank das du jemand neues auf c0debase gebracht hast");
+                    CodebaseBot.getInstance().getJda().getTextChannelById(System.getenv("BOTCHANNEL")).sendMessage(embedBuilder.build()).queue();
+
+                    if (levelUser.addXP(100)) {
+                        EmbedBuilder levelUpEmbed = new EmbedBuilder();
+                        levelUpEmbed.setDescription(invite.getInviter().getAsMention() + " ist nun Level " + levelUser.getLevel());
+                        CodebaseBot.getInstance().getJda().getTextChannelById(System.getenv("BOTCHANNEL")).sendMessage(levelUpEmbed.build()).queue();
+                    }
                 }
-            }
-            inviteHashMap.put(invite.getCode(), invite.getUses());
-        })), 5, 5, TimeUnit.SECONDS);
+                inviteHashMap.put(invite.getCode(), invite);
+            });
+            inviteHashMap.keySet().forEach(invite -> {
+                if (!success.contains(inviteHashMap.get(invite)) && ((lastJoin - System.currentTimeMillis()) / 1000) > -7) {
+                    EmbedBuilder embedBuilder = new EmbedBuilder();
+                    embedBuilder.setDescription(inviteHashMap.get(invite).getInviter().getAsMention() + " vielen Dank das du jemand neues auf c0debase gebracht hast");
+                    CodebaseBot.getInstance().getJda().getTextChannelById(System.getenv("BOTCHANNEL")).sendMessage(embedBuilder.build()).queue();
+                    inviteHashMap.remove(invite);
+                }
+            });
+        }), 5, 5, TimeUnit.SECONDS);
     }
 
     public LevelUser load(String id) {
