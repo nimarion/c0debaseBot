@@ -36,11 +36,11 @@ public class GithubCommand extends Command {
 
         EmbedBuilder embedBuilder = getEmbed(msg.getGuild(), msg.getAuthor());
         embedBuilder.setTitle("c0debaseBot", "https://github.com/Biospheere/c0debaseBot");
-        embedBuilder.addField("Stars", String.valueOf(jsonObject.get("stargazers_count").getAsInt()), true);
-        embedBuilder.addField("Sprache", jsonObject.get("language").getAsString(), true);
-        embedBuilder.addField("Forks", String.valueOf(jsonObject.get("forks_count").getAsInt()), true);
-        embedBuilder.addField("Issues", String.valueOf(jsonObject.get("open_issues_count").getAsInt()), true);
-
+        embedBuilder.addField("Sprache", jsonObject.get("language").getAsString(), false);
+        embedBuilder.addField("Stars", String.valueOf(jsonObject.get("stargazers_count").getAsInt()), false);
+        embedBuilder.addField("Forks", String.valueOf(jsonObject.get("forks_count").getAsInt()), false);
+        embedBuilder.addField("Issues", String.valueOf(jsonObject.get("open_issues_count").getAsInt()), false);
+        embedBuilder.addField("Clonen", "`git clone " + jsonObject.get("ssh_url").getAsString() + "`", false);
         msg.getTextChannel().sendMessage(embedBuilder.build()).queue();
     }
 }
