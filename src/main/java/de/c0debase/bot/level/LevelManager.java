@@ -57,12 +57,12 @@ public class LevelManager {
                     CodebaseBot.getInstance().getJda().getTextChannelById(System.getenv("BOTCHANNEL")).sendMessage(embedBuilder.build()).queue();
                     LevelUser levelUser = CodebaseBot.getInstance().getLevelManager().getLevelUser(inviteHashMap.get(invite).getInviter().getId());
 
-
                     if (levelUser.addXP(100)) {
                         EmbedBuilder levelUpEmbed = new EmbedBuilder();
                         levelUpEmbed.setDescription(inviteHashMap.get(invite).getInviter().getAsMention() + " ist nun Level " + levelUser.getLevel());
                         CodebaseBot.getInstance().getJda().getTextChannelById(System.getenv("BOTCHANNEL")).sendMessage(levelUpEmbed.build()).queue();
                     }
+
                     inviteHashMap.remove(invite);
                 }
             });
