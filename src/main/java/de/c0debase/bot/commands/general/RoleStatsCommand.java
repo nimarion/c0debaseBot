@@ -6,6 +6,7 @@ import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.Role;
 import net.dv8tion.jda.core.utils.PermissionUtil;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -30,9 +31,12 @@ public class RoleStatsCommand extends Command {
         EmbedBuilder embedBuilder = getEmbed(msg.getGuild(), msg.getAuthor());
         embedBuilder.setTitle("Rollen Statistiken");
 
-        for (Role role : msg.getGuild().getRoles()) {
+        List<Role> roles = new ArrayList<>(msg.getGuild().getRoles());
+        roles.sort((o1, o2) -> (int) (msg.getGuild().getMembers().stream().filter(member -> member.getRoles().contains(o2)).count() - msg.getGuild().getMembers().stream().filter(member -> member.getRoles().contains(o1)).count()));
+
+        for (Role role : roles) {
             if (!role.isManaged() && !FORBIDDEN.contains(role.getName()) && PermissionUtil.canInteract(msg.getGuild().getSelfMember(), role)) {
-                embedBuilder.appendDescription("***" + role.getName() + "*** ( " + msg.getGuild().getMembers().stream().filter(member -> member.getRoles().contains(role)).count() + ")\n");
+                embedBuilder.appendDescription("***" + role.getName() + "*** (" + msg.getGuild().getMembers().stream().filter(member -> member.getRoles().contains(role)).count() + ")\n");
             }
         }
         msg.getTextChannel().sendMessage(embedBuilder.build()).queue();

@@ -25,6 +25,7 @@ import net.dv8tion.jda.core.hooks.ListenerAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
@@ -60,7 +61,6 @@ public class CodebaseBot {
         instance = this;
 
         mySQL = new MySQL(System.getenv("MYSQL-HOSTNAME") == null ? "sqlserver" : System.getenv("MYSQL-HOSTNAME"), System.getenv("MYSQL-USERNAME"), System.getenv("MYSQL-PASSWORT"), System.getenv("MYSQL-DATABASE") == null ? "codebase" : System.getenv("MYSQL-DATABASE"), System.getenv("MYSQL-PORT") == null ? 3306 : Integer.valueOf(System.getenv("MYSQL-PORT")));
-        mySQL.connect();
         mySQL.update("CREATE TABLE IF NOT EXISTS Users (ID VARCHAR(50),XP int,LEVEL int);");
 
         executorService = Executors.newScheduledThreadPool(1);
@@ -99,21 +99,18 @@ public class CodebaseBot {
         }
         executorService.scheduleAtFixedRate(() -> {
             final String day = Constants.simpleDateFormat.format(new Date());
-            try (ResultSet resultSet = CodebaseBot.getInstance().getMySQL().query("SELECT * FROM MemberMonitor WHERE DAY='" + day + "';")) {
+            try (final Connection connection = CodebaseBot.getInstance().getMySQL().getConnection()) {
+                ResultSet resultSet = connection.prepareStatement("SELECT * FROM MemberMonitor WHERE DAY='" + day + "';").executeQuery();
                 if (resultSet.next()) {
                     CodebaseBot.getInstance().getMySQL().updateAsync("UPDATE MemberMonitor SET MEMBER='" + jda.getGuildById("361448651748540426").getMembers().size() + "' WHERE DAY='" + day + "';");
                 } else {
                     CodebaseBot.getInstance().getMySQL().update("INSERT INTO MemberMonitor (DAY, MEMBER) VALUES ('" + day + "'," + jda.getGuildById("361448651748540426").getMembers().size() + ");");
                 }
-            } catch (SQLException e) {
-                e.printStackTrace();
+            } catch (SQLException exception) {
+                exception.printStackTrace();
             }
-
         }, 0, 5, TimeUnit.MINUTES);
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            mySQL.disconnect();
-            executorService.shutdown();
-        }));
+        Runtime.getRuntime().addShutdownHook(new Thread(executorService::shutdown));
     }
 
 

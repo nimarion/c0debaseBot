@@ -4,6 +4,8 @@
     <logger name="org.reflections.Reflections" level="ERROR"/>
     <logger name="com.sedmelluq.discord.lavaplayer" level="ERROR"/>
     <logger name="ai.api.AIDataService" level="ERROR"/>
+    <logger name="com.zaxxer.hikari.HikariConfig" level="ERROR"/>
+    <logger name="com.zaxxer.hikari.pool.HikariPool" level="ERROR"/>
 
     <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>

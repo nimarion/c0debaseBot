@@ -4,6 +4,7 @@ import de.c0debase.bot.CodebaseBot;
 import de.c0debase.bot.utils.Constants;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
@@ -21,12 +22,13 @@ public class MessageMonitor extends Monitor {
         super("MessageMonitor", "Trackt alle Nachrichten", MessageReceivedEvent.class);
         CodebaseBot.getInstance().getMySQL().update("CREATE TABLE IF NOT EXISTS MessageMonitor (DAY VARCHAR(50), MESSAGES int);");
 
-        try (ResultSet resultSet = CodebaseBot.getInstance().getMySQL().query("SELECT * FROM MessageMonitor WHERE DAY='" + Constants.simpleDateFormat.format(new Date()) + "';")) {
+        try (final Connection connection = CodebaseBot.getInstance().getMySQL().getConnection()) {
+            ResultSet resultSet = connection.prepareStatement("SELECT * FROM MessageMonitor WHERE DAY='" + Constants.simpleDateFormat.format(new Date()) + "';").executeQuery();
             if (resultSet.next()) {
                 messages.put(Constants.simpleDateFormat.format(new Date()), resultSet.getInt("MESSAGES"));
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException exception) {
+            exception.printStackTrace();
         }
     }
 

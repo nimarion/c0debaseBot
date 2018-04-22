@@ -4,6 +4,7 @@ import de.c0debase.bot.CodebaseBot;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Random;
@@ -52,13 +53,14 @@ public class LevelUser {
 
     public void read() {
         if (exists()) {
-            try (ResultSet resultSet = CodebaseBot.getInstance().getMySQL().query("SELECT * FROM Users WHERE ID=" + id + ";")) {
+            try (final Connection connection = CodebaseBot.getInstance().getMySQL().getConnection()) {
+                ResultSet resultSet = connection.prepareStatement("SELECT * FROM Users WHERE ID=" + id + ";").executeQuery();
                 if (resultSet.next()) {
                     xp = resultSet.getInt("XP");
                     level = resultSet.getInt("LEVEL");
                 }
-            } catch (SQLException e) {
-                e.printStackTrace();
+            } catch (SQLException exception) {
+                exception.printStackTrace();
             }
         } else {
             create();
@@ -80,11 +82,13 @@ public class LevelUser {
     }
 
     public boolean exists() {
-        try (ResultSet resultSet = CodebaseBot.getInstance().getMySQL().query("SELECT * FROM Users WHERE id='" + id + "';")) {
+        try (final Connection connection = CodebaseBot.getInstance().getMySQL().getConnection()) {
+            ResultSet resultSet = connection.prepareStatement("SELECT * FROM Users WHERE id='" + id + "';").executeQuery();
             return resultSet.next() && resultSet.getString("XP") != null;
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException exception) {
+            exception.printStackTrace();
         }
+
         return false;
     }
 }
