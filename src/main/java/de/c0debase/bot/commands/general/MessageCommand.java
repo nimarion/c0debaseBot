@@ -5,6 +5,7 @@ import de.c0debase.bot.commands.Command;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Message;
 
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -23,7 +24,8 @@ public class MessageCommand extends Command {
     @Override
     public void execute(String[] args, Message msg) {
         EmbedBuilder embedBuilder = getEmbed(msg.getGuild(), msg.getAuthor());
-        try (ResultSet resultSet = CodebaseBot.getInstance().getMySQL().query("SELECT * FROM MessageMonitor;")) {
+        try (final Connection connection = CodebaseBot.getInstance().getMySQL().getConnection()) {
+            ResultSet resultSet = connection.prepareStatement("SELECT * FROM MessageMonitor;").executeQuery();
             List<Integer> messageCount = new ArrayList<>();
             while (resultSet.next()) {
                 messageCount.add(resultSet.getInt("MESSAGES"));
@@ -33,12 +35,9 @@ public class MessageCommand extends Command {
                 sum += count;
             }
             embedBuilder.setDescription("Am Tag werden durchschnittlich " + sum / messageCount.size() + " Nachrichten gesendet");
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-            embedBuilder.setDescription("Der Durchschnitt konnte nicht berechnet werden");
-        } finally {
             msg.getTextChannel().sendMessage(embedBuilder.build()).queue();
+        } catch (SQLException exception) {
+            exception.printStackTrace();
         }
-
     }
 }

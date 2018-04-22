@@ -30,6 +30,12 @@
     </repositories>
 
     <dependencies>
+        <!-- https://mvnrepository.com/artifact/com.zaxxer/HikariCP -->
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+            <version>3.1.0</version>
+        </dependency>
         <!-- https://bintray.com/dv8fromtheworld/maven/JDA -->
         <dependency>
             <groupId>net.dv8tion</groupId>
