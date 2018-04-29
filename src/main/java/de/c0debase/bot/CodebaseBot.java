@@ -3,8 +3,8 @@ package de.c0debase.bot;
 import ai.api.AIConfiguration;
 import ai.api.AIDataService;
 import de.c0debase.bot.commands.CommandManager;
+import de.c0debase.bot.database.MongoDataManager;
 import de.c0debase.bot.level.LevelManager;
-import de.c0debase.bot.level.LevelUser;
 import de.c0debase.bot.listener.other.ReadyListener;
 import de.c0debase.bot.listener.voice.DynamicVoiceChannelManager;
 import de.c0debase.bot.monitor.MonitorManager;
@@ -12,7 +12,6 @@ import de.c0debase.bot.music.MusicManager;
 import de.c0debase.bot.mysql.MySQL;
 import de.c0debase.bot.tempchannel.Tempchannel;
 import de.c0debase.bot.utils.Constants;
-import de.c0debase.bot.utils.Pagination;
 import io.sentry.Sentry;
 import lombok.Getter;
 import net.dv8tion.jda.core.AccountType;
@@ -46,8 +45,8 @@ public class CodebaseBot {
     private static CodebaseBot instance;
     private final CommandManager commandManager;
     private final LevelManager levelManager;
-    private final Pagination<LevelUser> leaderboardPagination;
     private final MySQL mySQL;
+    private final MongoDataManager mongoDataManager;
     private final MonitorManager monitorManager;
     private final Logger logger = LoggerFactory.getLogger("de.c0debase.bot");
     private final HashMap<String, Tempchannel> tempchannels;
@@ -59,7 +58,8 @@ public class CodebaseBot {
 
     private CodebaseBot() {
         instance = this;
-
+        logger.info("Starting c0debaseBot");
+        mongoDataManager = new MongoDataManager();
         mySQL = new MySQL(System.getenv("MYSQL-HOSTNAME") == null ? "sqlserver" : System.getenv("MYSQL-HOSTNAME"), System.getenv("MYSQL-USERNAME"), System.getenv("MYSQL-PASSWORT"), System.getenv("MYSQL-DATABASE") == null ? "codebase" : System.getenv("MYSQL-DATABASE"), System.getenv("MYSQL-PORT") == null ? 3306 : Integer.valueOf(System.getenv("MYSQL-PORT")));
         mySQL.update("CREATE TABLE IF NOT EXISTS Users (ID VARCHAR(50),XP int,LEVEL int);");
 
@@ -68,7 +68,6 @@ public class CodebaseBot {
         monitorManager = new MonitorManager();
         levelManager = new LevelManager();
         tempchannels = new HashMap<>();
-        leaderboardPagination = new Pagination<>(levelManager.getLevelUsersSorted(), 10);
         if (System.getenv("APIAI-TOKEN") != null) {
             aiDataService = new AIDataService(new AIConfiguration(System.getenv("APIAI-TOKEN")));
         }

@@ -5,7 +5,6 @@ import ai.api.model.AIRequest;
 import ai.api.model.AIResponse;
 import com.vdurmont.emoji.EmojiManager;
 import de.c0debase.bot.CodebaseBot;
-import de.c0debase.bot.level.LevelUser;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.ChannelType;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
@@ -78,18 +77,19 @@ public class MessageReceiveListener extends ListenerAdapter {
         if (event.getMessage().getTextChannel().getName().equalsIgnoreCase("bot") && event.getMessage().getContentRaw().startsWith("!")) {
             CodebaseBot.getInstance().getCommandManager().execute(event.getMessage());
         } else {
-            LevelUser levelUser = CodebaseBot.getInstance().getLevelManager().getLevelUser(event.getAuthor().getId());
-            float time = (System.currentTimeMillis() - levelUser.getLastMessage()) / 1000;
-            if (time >= 50.0f || levelUser.getLastMessage() == 0L) {
-                levelUser.setLastMessage(System.currentTimeMillis());
-                if (levelUser.addXP(50)) {
-                    EmbedBuilder levelUpEmbed = new EmbedBuilder();
-                    levelUpEmbed.appendDescription(event.getAuthor().getAsMention() + " ist nun Level " + levelUser.getLevel());
-                    event.getTextChannel().sendMessage(levelUpEmbed.build()).queue();
+            CodebaseBot.getInstance().getMongoDataManager().getLevelUser(event.getGuild().getId(), event.getAuthor().getId(), levelUser -> {
+                float time = (System.currentTimeMillis() - levelUser.getLastMessage()) / 1000;
+                if (time >= 50.0f) {
+                    if (levelUser.addXP(50)) {
+                        EmbedBuilder levelUpEmbed = new EmbedBuilder();
+                        levelUpEmbed.appendDescription(event.getAuthor().getAsMention() + " ist nun Level " + levelUser.getLevel());
+                        event.getTextChannel().sendMessage(levelUpEmbed.build()).queue();
+                    }
+                    levelUser.setLastMessage(System.currentTimeMillis());
+                    CodebaseBot.getInstance().getMongoDataManager().updateLevelUser(levelUser);
                 }
-            }
+            });
         }
     }
-
 
 }

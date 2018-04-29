@@ -17,7 +17,6 @@ public class GuildMemberJoinListener extends ListenerAdapter {
     @Override
     public void onGuildMemberJoin(GuildMemberJoinEvent event) {
         CodebaseBot.getInstance().getLevelManager().setLastJoin(System.currentTimeMillis());
-        CodebaseBot.getInstance().getLevelManager().load(event.getUser().getId());
             EmbedBuilder embedBuilder = new EmbedBuilder();
             embedBuilder.setFooter("@" + event.getMember().getUser().getName() + "#" + event.getMember().getUser().getDiscriminator(), event.getMember().getUser().getEffectiveAvatarUrl());
             embedBuilder.setColor(event.getGuild().getSelfMember().getColor());
@@ -26,7 +25,8 @@ public class GuildMemberJoinListener extends ListenerAdapter {
             embedBuilder.appendDescription("— Weise dir eine Rolle mit !role zu\n");
             embedBuilder.appendDescription("— Schaue dir die Regeln in #rules an");
 
-            event.getGuild().getTextChannelById(System.getenv("BOTCHANNEL")).sendMessage(embedBuilder.build()).queue();
+
+        event.getGuild().getTextChannelById(System.getenv("BOTCHANNEL")).sendMessage(embedBuilder.build()).queue();
 
             event.getGuild().getTextChannelsByName("log", true).forEach(channel -> {
                 EmbedBuilder logBuilder = new EmbedBuilder();
@@ -36,5 +36,15 @@ public class GuildMemberJoinListener extends ListenerAdapter {
                 logBuilder.appendDescription("Standart Avatar: " + (event.getMember().getUser().getAvatarUrl() == null) + "\n");
                 channel.sendMessage(logBuilder.build()).queue();
             });
+        new java.util.Timer().schedule(
+                new java.util.TimerTask() {
+                    @Override
+                    public void run() {
+                        if (event.getGuild().getMembers().contains(event.getMember()) && event.getMember().getRoles().isEmpty()) {
+                            event.getGuild().getTextChannelById(System.getenv("BOTCHANNEL")).sendMessage(event.getMember().getAsMention() + " mit `!role` kannst du dir verschiedene Rollen zuweisen :yum:").queue();
+                        }
+                    }
+                }, 60 * 1000
+        );
     }
 }
