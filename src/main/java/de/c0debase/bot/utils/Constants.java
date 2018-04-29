@@ -1,5 +1,7 @@
 package de.c0debase.bot.utils;
 
+import com.google.gson.Gson;
+
 import java.text.SimpleDateFormat;
 
 /**
@@ -9,5 +11,6 @@ import java.text.SimpleDateFormat;
 public class Constants {
 
     public static final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
+    public static final Gson GSON = new Gson();
 
 }
