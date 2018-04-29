@@ -2,10 +2,14 @@ package de.c0debase.bot.listener.guild;
 
 import de.c0debase.bot.CodebaseBot;
 import net.dv8tion.jda.core.EmbedBuilder;
+import net.dv8tion.jda.core.entities.Role;
 import net.dv8tion.jda.core.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
+import net.dv8tion.jda.core.utils.PermissionUtil;
 
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Biosphere
@@ -36,6 +40,11 @@ public class GuildMemberJoinListener extends ListenerAdapter {
                 logBuilder.appendDescription("Standart Avatar: " + (event.getMember().getUser().getAvatarUrl() == null) + "\n");
                 channel.sendMessage(logBuilder.build()).queue();
             });
+        CodebaseBot.getInstance().getMongoDataManager().getLevelUser(event.getGuild().getId(), event.getUser().getId(), levelUser -> {
+            List<Role> roles = new ArrayList<>();
+            levelUser.getRoles().forEach(roleName -> event.getGuild().getRolesByName(roleName, true).stream().filter(arole -> PermissionUtil.canInteract(event.getGuild().getSelfMember(), arole)).findFirst().ifPresent(roles::add));
+            event.getGuild().getController().addRolesToMember(event.getMember(), roles).reason("Autorole").queue();
+        });
         new java.util.Timer().schedule(
                 new java.util.TimerTask() {
                     @Override
