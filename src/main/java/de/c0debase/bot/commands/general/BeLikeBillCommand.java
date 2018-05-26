@@ -15,6 +15,6 @@ public class BeLikeBillCommand extends Command {
 
     @Override
     public void execute(String[] args, Message msg) {
-        msg.getTextChannel().sendMessage(getEmbed(msg.getGuild(), msg.getAuthor()).setImage("http://belikebill.azurewebsites.net/billgen-API.php?default=1&name=" + (msg.getMentionedMembers().isEmpty() ? msg.getMember().getUser().getName() : msg.getMentionedMembers().get(0).getUser().getName())).build()).queue();
+        msg.getTextChannel().sendMessage(getEmbed(msg.getGuild(), msg.getAuthor()).setImage("http://belikebill.azurewebsites.net/billgen-API.php?default=1&name=" + (msg.getMentionedMembers().isEmpty() ? msg.getMember().getEffectiveName().replaceAll("\\s+",""): msg.getMentionedMembers().get(0).getEffectiveName().replaceAll("\\s+",""))).build()).queue();
     }
 }
