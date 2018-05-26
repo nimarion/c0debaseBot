@@ -20,7 +20,7 @@ public class SinceCommand extends Command {
     @Override
     public void execute(String[] args, Message msg) {
         msg.getTextChannel().sendMessage(getEmbed(msg.getGuild(), msg.getAuthor())
-                .setDescription("Du bist seit " + ChronoUnit.DAYS.between(msg.getMentionedMembers().stream().findFirst().orElse(msg.getMember()).getJoinDate(), LocalDateTime.now().atOffset(ZoneOffset.UTC)) + " Tagen auf " + msg.getGuild().getName())
+                .setDescription(msg.getMentionedMembers().stream().findFirst().orElse(msg.getMember()).getAsMention() + " ist seit " + ChronoUnit.DAYS.between(msg.getMentionedMembers().stream().findFirst().orElse(msg.getMember()).getJoinDate(), LocalDateTime.now().atOffset(ZoneOffset.UTC)) + " Tagen auf " + msg.getGuild().getName())
                 .build()).queue();
     }
 }
