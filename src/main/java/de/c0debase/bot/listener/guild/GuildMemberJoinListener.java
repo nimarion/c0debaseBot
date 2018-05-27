@@ -49,15 +49,5 @@ public class GuildMemberJoinListener extends ListenerAdapter {
             });
             event.getGuild().getController().addRolesToMember(event.getMember(), roles).reason("Autorole").queue();
         });
-        new java.util.Timer().schedule(
-                new java.util.TimerTask() {
-                    @Override
-                    public void run() {
-                        if (event.getGuild().getMembers().contains(event.getMember()) && event.getMember().getRoles().isEmpty()) {
-                            event.getGuild().getTextChannelById(System.getenv("BOTCHANNEL")).sendMessage(event.getMember().getAsMention() + " mit `!role` kannst du dir verschiedene Rollen zuweisen :yum:").queue();
-                        }
-                    }
-                }, 60 * 1000
-        );
     }
 }
