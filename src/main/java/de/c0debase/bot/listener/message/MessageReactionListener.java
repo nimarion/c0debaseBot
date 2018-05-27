@@ -16,6 +16,7 @@ import net.dv8tion.jda.core.hooks.ListenerAdapter;
 import net.dv8tion.jda.core.utils.PermissionUtil;
 
 import java.awt.*;
+import java.util.Optional;
 
 /**
  * @author Biosphere
@@ -97,14 +98,16 @@ public class MessageReactionListener extends ListenerAdapter {
                         embedBuilder.setFooter("Seite: (" + current + "/" + max + ")", success.getGuild().getIconUrl());
                         int count = 1;
 
-                        for (LevelUser levelUser : leaderboard.getPage(current)) {
-                            Member member = success.getGuild().getMemberById(Long.valueOf(levelUser.getUserID()));
-                            if (member != null) {
-                                embedBuilder.appendDescription("`" + (current == 1 ? count : +((current - 1) * 10 + count)) + ")` " + member.getEffectiveName() + "#" + member.getUser().getDiscriminator() + " (Lvl." + levelUser.getLevel() + ")\n");
-                                count++;
+                        if(current > 0){
+                            for (LevelUser levelUser : leaderboard.getPage(current)) {
+                                Member member = success.getGuild().getMemberById(Long.valueOf(levelUser.getUserID()));
+                                if (member != null) {
+                                    embedBuilder.appendDescription("`" + (current == 1 ? count : +((current - 1) * 10 + count)) + ")` " + member.getEffectiveName() + "#" + member.getUser().getDiscriminator() + " (Lvl." + levelUser.getLevel() + ")\n");
+                                    count++;
+                                }
                             }
+                            success.editMessage(embedBuilder.build()).queue();
                         }
-                        success.editMessage(embedBuilder.build()).queue();
                     });
 
                 }
@@ -123,7 +126,7 @@ public class MessageReactionListener extends ListenerAdapter {
                 if (emote == null) {
                     return;
                 }
-                Role role = success.getGuild().getRolesByName(emote, true).stream().findFirst().orElseGet(null);
+                Role role = success.getGuild().getRolesByName(emote, true).stream().findFirst().orElse(null);
                 if (role != null && PermissionUtil.canInteract(event.getGuild().getSelfMember(), role) && success.getGuild().getMembersWithRoles(role).contains(event.getMember())) {
                     success.getGuild().getController().removeRolesFromMember(event.getMember(), role).queue();
                 }
@@ -139,9 +142,9 @@ public class MessageReactionListener extends ListenerAdapter {
         event.getChannel().getMessageById(event.getMessageId()).queue(success -> {
             String emote = getReaction(event.getReactionEmote());
             if (success.getTextChannel().getTopic() != null && success.getTextChannel().getTopic().endsWith("RS")) {
-                Role role = success.getGuild().getRolesByName(emote, true).stream().findFirst().orElseGet(null);
-                if (role != null && PermissionUtil.canInteract(event.getGuild().getSelfMember(), role) && !success.getGuild().getMembersWithRoles(role).contains(event.getMember())) {
-                        success.getGuild().getController().addRolesToMember(event.getMember(), role).queue();
+                Optional<Role> role = success.getGuild().getRolesByName(emote, true).stream().findFirst();
+                if (role.isPresent() && PermissionUtil.canInteract(event.getGuild().getSelfMember(), role.get()) && !success.getGuild().getMembersWithRoles(role.get()).contains(event.getMember())) {
+                    success.getGuild().getController().addRolesToMember(event.getMember(), role.get()).queue();
                 }
             }
             if (emote.equalsIgnoreCase("black_right_pointing_triangle_with_double_vertical_bar") && !StringUtils.extractUrls(success.getContentRaw()).isEmpty() && event.getMember().getVoiceState().inVoiceChannel()) {
