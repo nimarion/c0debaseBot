@@ -17,7 +17,7 @@ import org.bson.Document;
 public class MongoDatabaseManager {
 
     private static final String DATABASE_NAME = "codebase";
-    private static final String LEVEL_COLLECTION_NAME = "levels";
+    private static final String USER_COLLECTION_NAME = "user";
 
 
     private final MongoClient mongoClient;
@@ -34,7 +34,7 @@ public class MongoDatabaseManager {
         }
         CodebaseBot.getInstance().getLogger().info("Connected to MongoDB " + mongoClient.getAddress());
         final MongoDatabase database = mongoClient.getDatabase(DATABASE_NAME);
-        levels = database.getCollection(LEVEL_COLLECTION_NAME);
+        levels = database.getCollection(USER_COLLECTION_NAME);
 
     }
 
