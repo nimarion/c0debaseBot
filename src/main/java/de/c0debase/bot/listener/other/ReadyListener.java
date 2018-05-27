@@ -50,7 +50,6 @@ public class ReadyListener extends ListenerAdapter {
                 CodebaseBot.getInstance().getTempchannels().put(voiceChannel.getId(), tempchannel);
             }
         }
-        CodebaseBot.getInstance().getLevelManager().startInviteChecker();
     }
 
 }
