@@ -48,6 +48,7 @@ public class MongoDataManager {
     public void getLevelUser(final String guildID, final String userID, final Consumer<LevelUser> consumer) {
         if (userCache.containsKey(guildID + "-" + userID)) {
             consumer.accept(userCache.get(guildID + "-" + userID));
+            return;
         }
         executorService.execute(() -> {
             final Document document = mongoDatabaseManager.getLevels().find(Filters.and(Filters.eq("guildID", guildID), Filters.eq("userID", userID))).first();
@@ -79,6 +80,7 @@ public class MongoDataManager {
     public void getLeaderboard(final String guildID, final Consumer<Pagination> consumer) {
         if (leaderboardCache.containsKey(guildID)) {
             consumer.accept(leaderboardCache.get(guildID));
+            return;
         }
         executorService.execute(() -> {
             List<LevelUser> levelUsers = new ArrayList<>();
