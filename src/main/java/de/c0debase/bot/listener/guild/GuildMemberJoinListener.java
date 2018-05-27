@@ -20,7 +20,6 @@ public class GuildMemberJoinListener extends ListenerAdapter {
 
     @Override
     public void onGuildMemberJoin(GuildMemberJoinEvent event) {
-        CodebaseBot.getInstance().getLevelManager().setLastJoin(System.currentTimeMillis());
             EmbedBuilder embedBuilder = new EmbedBuilder();
             embedBuilder.setFooter("@" + event.getMember().getUser().getName() + "#" + event.getMember().getUser().getDiscriminator(), event.getMember().getUser().getEffectiveAvatarUrl());
             embedBuilder.setColor(event.getGuild().getSelfMember().getColor());
@@ -30,7 +29,7 @@ public class GuildMemberJoinListener extends ListenerAdapter {
             embedBuilder.appendDescription("— Schaue dir die Regeln in #rules an");
 
 
-        event.getGuild().getTextChannelById(System.getenv("BOTCHANNEL")).sendMessage(embedBuilder.build()).queue();
+           event.getGuild().getTextChannelById(System.getenv("BOTCHANNEL")).sendMessage(embedBuilder.build()).queue();
 
             event.getGuild().getTextChannelsByName("log", true).forEach(channel -> {
                 EmbedBuilder logBuilder = new EmbedBuilder();
@@ -42,7 +41,12 @@ public class GuildMemberJoinListener extends ListenerAdapter {
             });
         CodebaseBot.getInstance().getMongoDataManager().getLevelUser(event.getGuild().getId(), event.getUser().getId(), levelUser -> {
             List<Role> roles = new ArrayList<>();
-            levelUser.getRoles().forEach(roleName -> event.getGuild().getRolesByName(roleName, true).stream().filter(arole -> PermissionUtil.canInteract(event.getGuild().getSelfMember(), arole)).findFirst().ifPresent(roles::add));
+            levelUser.getRoles().forEach(roleName -> {
+                Role role = event.getGuild().getRoleById(roleName);
+                if(role != null && PermissionUtil.canInteract(event.getGuild().getSelfMember(), role)){
+                    roles.add(role);
+                }
+            });
             event.getGuild().getController().addRolesToMember(event.getMember(), roles).reason("Autorole").queue();
         });
         new java.util.Timer().schedule(
