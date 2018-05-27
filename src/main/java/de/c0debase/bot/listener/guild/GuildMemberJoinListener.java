@@ -2,10 +2,14 @@ package de.c0debase.bot.listener.guild;
 
 import de.c0debase.bot.CodebaseBot;
 import net.dv8tion.jda.core.EmbedBuilder;
+import net.dv8tion.jda.core.entities.Role;
 import net.dv8tion.jda.core.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
+import net.dv8tion.jda.core.utils.PermissionUtil;
 
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Biosphere
@@ -16,8 +20,6 @@ public class GuildMemberJoinListener extends ListenerAdapter {
 
     @Override
     public void onGuildMemberJoin(GuildMemberJoinEvent event) {
-        CodebaseBot.getInstance().getLevelManager().setLastJoin(System.currentTimeMillis());
-        CodebaseBot.getInstance().getLevelManager().load(event.getUser().getId());
             EmbedBuilder embedBuilder = new EmbedBuilder();
             embedBuilder.setFooter("@" + event.getMember().getUser().getName() + "#" + event.getMember().getUser().getDiscriminator(), event.getMember().getUser().getEffectiveAvatarUrl());
             embedBuilder.setColor(event.getGuild().getSelfMember().getColor());
@@ -26,7 +28,8 @@ public class GuildMemberJoinListener extends ListenerAdapter {
             embedBuilder.appendDescription("— Weise dir eine Rolle mit !role zu\n");
             embedBuilder.appendDescription("— Schaue dir die Regeln in #rules an");
 
-            event.getGuild().getTextChannelById(System.getenv("BOTCHANNEL")).sendMessage(embedBuilder.build()).queue();
+
+           event.getGuild().getTextChannelById(System.getenv("BOTCHANNEL")).sendMessage(embedBuilder.build()).queue();
 
             event.getGuild().getTextChannelsByName("log", true).forEach(channel -> {
                 EmbedBuilder logBuilder = new EmbedBuilder();
@@ -36,5 +39,15 @@ public class GuildMemberJoinListener extends ListenerAdapter {
                 logBuilder.appendDescription("Standart Avatar: " + (event.getMember().getUser().getAvatarUrl() == null) + "\n");
                 channel.sendMessage(logBuilder.build()).queue();
             });
+        CodebaseBot.getInstance().getMongoDataManager().getLevelUser(event.getGuild().getId(), event.getUser().getId(), levelUser -> {
+            List<Role> roles = new ArrayList<>();
+            levelUser.getRoles().forEach(roleName -> {
+                Role role = event.getGuild().getRoleById(roleName);
+                if(role != null && PermissionUtil.canInteract(event.getGuild().getSelfMember(), role)){
+                    roles.add(role);
+                }
+            });
+            event.getGuild().getController().addRolesToMember(event.getMember(), roles).reason("Autorole").queue();
+        });
     }
 }

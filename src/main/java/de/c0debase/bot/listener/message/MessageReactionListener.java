@@ -4,7 +4,7 @@ import com.vdurmont.emoji.EmojiManager;
 import de.c0debase.bot.CodebaseBot;
 import de.c0debase.bot.commands.Command;
 import de.c0debase.bot.commands.Command.Categorie;
-import de.c0debase.bot.level.LevelUser;
+import de.c0debase.bot.database.data.LevelUser;
 import de.c0debase.bot.utils.StringUtils;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.*;
@@ -16,6 +16,7 @@ import net.dv8tion.jda.core.hooks.ListenerAdapter;
 import net.dv8tion.jda.core.utils.PermissionUtil;
 
 import java.awt.*;
+import java.util.Optional;
 
 /**
  * @author Biosphere
@@ -74,39 +75,41 @@ public class MessageReactionListener extends ListenerAdapter {
                 }
                 MessageEmbed messageEmbed = success.getEmbeds().get(0);
                 if (messageEmbed.getFooter() != null && messageEmbed.getFooter().getText().contains("Seite")) {
-                    CodebaseBot.getInstance().getLeaderboardPagination().updateList(CodebaseBot.getInstance().getLevelManager().getLevelUsersSorted());
+                    CodebaseBot.getInstance().getMongoDataManager().getLeaderboard(success.getGuild().getId(), leaderboard -> {
+                        String[] strings = messageEmbed.getFooter().getText().replace("Seite: (", "").replace(")", "").split("/");
 
-                    String[] strings = messageEmbed.getFooter().getText().replace("Seite: (", "").replace(")", "").split("/");
-
-                    int max = Integer.valueOf(strings[1]);
-                    int current = Integer.valueOf(strings[0]);
+                        int max = Integer.valueOf(strings[1]);
+                        int current = Integer.valueOf(strings[0]);
 
 
-                    EmbedBuilder embedBuilder = new EmbedBuilder();
-                    embedBuilder.setColor(success.getGuild().getSelfMember().getColor());
-                    embedBuilder.setTitle("Leaderboard: " + event.getGuild().getName());
+                        EmbedBuilder embedBuilder = new EmbedBuilder();
+                        embedBuilder.setColor(success.getGuild().getSelfMember().getColor());
+                        embedBuilder.setTitle("Leaderboard: " + event.getGuild().getName());
 
-                    if (max != current) {
-                        if (emote.equalsIgnoreCase("arrow_right")) {
-                            current++;
-                        } else if (emote.equalsIgnoreCase("arrow_left") && current > 1) {
+                        if (max != current) {
+                            if (emote.equalsIgnoreCase("arrow_right")) {
+                                current++;
+                            } else if (emote.equalsIgnoreCase("arrow_left") && current > 1) {
+                                current--;
+                            }
+                        } else if (emote.equalsIgnoreCase("arrow_left") && current >= 1) {
                             current--;
                         }
-                    } else if (emote.equalsIgnoreCase("arrow_left") && current >= 1) {
-                        current--;
-                    }
-                    embedBuilder.setFooter("Seite: (" + current + "/" + max + ")", success.getGuild().getIconUrl());
+                        embedBuilder.setFooter("Seite: (" + current + "/" + max + ")", success.getGuild().getIconUrl());
+                        int count = 1;
 
-                    int count = 1;
-
-                    for (LevelUser levelUser : CodebaseBot.getInstance().getLeaderboardPagination().getPage(current)) {
-                        Member member = success.getGuild().getMemberById(Long.valueOf(levelUser.getId()));
-                        if (member != null) {
-                            embedBuilder.appendDescription("`" + (current == 1 ? count : +((current - 1) * 10 + count)) + ")` " + member.getEffectiveName() + "#" + member.getUser().getDiscriminator() + " (Lvl." + levelUser.getLevel() + ")\n");
-                            count++;
+                        if(current > 0){
+                            for (LevelUser levelUser : leaderboard.getPage(current)) {
+                                Member member = success.getGuild().getMemberById(Long.valueOf(levelUser.getUserID()));
+                                if (member != null) {
+                                    embedBuilder.appendDescription("`" + (current == 1 ? count : +((current - 1) * 10 + count)) + ")` " + member.getEffectiveName() + "#" + member.getUser().getDiscriminator() + " (Lvl." + levelUser.getLevel() + ")\n");
+                                    count++;
+                                }
+                            }
+                            success.editMessage(embedBuilder.build()).queue();
                         }
-                    }
-                    success.editMessage(embedBuilder.build()).queue();
+                    });
+
                 }
             }
         });
@@ -123,7 +126,7 @@ public class MessageReactionListener extends ListenerAdapter {
                 if (emote == null) {
                     return;
                 }
-                Role role = success.getGuild().getRolesByName(emote, true).stream().findFirst().orElseGet(null);
+                Role role = success.getGuild().getRolesByName(emote, true).stream().findFirst().orElse(null);
                 if (role != null && PermissionUtil.canInteract(event.getGuild().getSelfMember(), role) && success.getGuild().getMembersWithRoles(role).contains(event.getMember())) {
                     success.getGuild().getController().removeRolesFromMember(event.getMember(), role).queue();
                 }
@@ -139,9 +142,9 @@ public class MessageReactionListener extends ListenerAdapter {
         event.getChannel().getMessageById(event.getMessageId()).queue(success -> {
             String emote = getReaction(event.getReactionEmote());
             if (success.getTextChannel().getTopic() != null && success.getTextChannel().getTopic().endsWith("RS")) {
-                Role role = success.getGuild().getRolesByName(emote, true).stream().findFirst().orElseGet(null);
-                if (role != null && PermissionUtil.canInteract(event.getGuild().getSelfMember(), role) && !success.getGuild().getMembersWithRoles(role).contains(event.getMember())) {
-                        success.getGuild().getController().addRolesToMember(event.getMember(), role).queue();
+                Optional<Role> role = success.getGuild().getRolesByName(emote, true).stream().findFirst();
+                if (role.isPresent() && PermissionUtil.canInteract(event.getGuild().getSelfMember(), role.get()) && !success.getGuild().getMembersWithRoles(role.get()).contains(event.getMember())) {
+                    success.getGuild().getController().addRolesToMember(event.getMember(), role.get()).queue();
                 }
             }
             if (emote.equalsIgnoreCase("black_right_pointing_triangle_with_double_vertical_bar") && !StringUtils.extractUrls(success.getContentRaw()).isEmpty() && event.getMember().getVoiceState().inVoiceChannel()) {
