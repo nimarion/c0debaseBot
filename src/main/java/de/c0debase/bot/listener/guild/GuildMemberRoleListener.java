@@ -9,13 +9,13 @@ import net.dv8tion.jda.core.hooks.ListenerAdapter;
  * @author Biosphere
  * @date 29.04.18
  */
-public class GuildMemerRoleListener extends ListenerAdapter {
+public class GuildMemberRoleListener extends ListenerAdapter {
 
     @Override
     public void onGuildMemberRoleAdd(GuildMemberRoleAddEvent event) {
         CodebaseBot.getInstance().getMongoDataManager().getLevelUser(event.getGuild().getId(), event.getUser().getId(), levelUser -> event.getRoles().forEach(role -> {
-            if (!levelUser.getRoles().contains(role.getName())) {
-                levelUser.getRoles().add(role.getName());
+            if (role != null && !levelUser.getRoles().contains(role.getId())) {
+                levelUser.getRoles().add(role.getId());
             }
             CodebaseBot.getInstance().getMongoDataManager().updateLevelUser(levelUser);
         }));
@@ -24,7 +24,11 @@ public class GuildMemerRoleListener extends ListenerAdapter {
     @Override
     public void onGuildMemberRoleRemove(GuildMemberRoleRemoveEvent event) {
         CodebaseBot.getInstance().getMongoDataManager().getLevelUser(event.getGuild().getId(), event.getUser().getId(), levelUser -> {
-            event.getRoles().forEach(role -> levelUser.getRoles().remove(role.getName()));
+            event.getRoles().forEach(role -> {
+                if(role != null){
+                    levelUser.getRoles().remove(role.getId());
+                }
+            });
             CodebaseBot.getInstance().getMongoDataManager().updateLevelUser(levelUser);
         });
     }
