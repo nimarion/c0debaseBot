@@ -2,7 +2,7 @@ package de.c0debase.bot.database.data;
 
 import lombok.Data;
 
-import java.util.List;
+import java.util.ArrayList;
 import java.util.Random;
 
 /**
@@ -15,7 +15,7 @@ public class LevelUser {
     private String userID, guildID;
     private int level, xp;
     private long lastMessage;
-    private List<String> roles;
+    private ArrayList<String> roles;
 
     public boolean addXP(int xp) {
         setXp(getXp() + new Random().nextInt(xp));
