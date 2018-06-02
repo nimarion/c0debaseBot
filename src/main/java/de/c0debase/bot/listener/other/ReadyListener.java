@@ -1,7 +1,6 @@
 package de.c0debase.bot.listener.other;
 
 import de.c0debase.bot.CodebaseBot;
-import de.c0debase.bot.listener.voice.DynamicVoiceChannelManager;
 import de.c0debase.bot.tempchannel.Tempchannel;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.VoiceChannel;
@@ -9,8 +8,6 @@ import net.dv8tion.jda.core.events.ReadyEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 import org.reflections.Reflections;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -20,22 +17,14 @@ import java.util.Set;
 
 public class ReadyListener extends ListenerAdapter {
 
-    private static final List<Class> EXCEPTIONS;
-
-    static {
-        EXCEPTIONS = Arrays.asList(ReadyListener.class, DynamicVoiceChannelManager.class);
-    }
-
     @Override
     public void onReady(ReadyEvent event) {
         Set<Class<? extends ListenerAdapter>> classes = new Reflections("de.c0debase.bot.listener").getSubTypesOf(ListenerAdapter.class);
         classes.forEach(listenerClass -> {
-            if (!EXCEPTIONS.contains(listenerClass)) {
-                try {
-                    event.getJDA().addEventListener(listenerClass.newInstance());
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
+            try {
+                event.getJDA().addEventListener(listenerClass.newInstance());
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
         });
 
