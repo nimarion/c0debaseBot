@@ -21,16 +21,21 @@ import java.util.stream.Collectors;
  * @author LGA1151 (https://github.com/LGA1151)
  */
 public class DynamicVoiceChannelManager extends ListenerAdapter {
-    private final String channelName;
-    private final ExecutorService executorService;
-    private final ReentrantLock lock;
-    private final Converter romanNumeralsConverter;
 
-    public DynamicVoiceChannelManager(final String channelName) {
-        this.channelName = channelName;
+    private static final ExecutorService executorService;
+    private static final ReentrantLock lock;
+    private static final Converter romanNumeralsConverter;
+
+    private final String channelName;
+
+    static {
         executorService = Executors.newCachedThreadPool();
         lock = new ReentrantLock();
         romanNumeralsConverter = new Converter();
+    }
+
+    public DynamicVoiceChannelManager(final String channelName) {
+        this.channelName = channelName;
     }
 
     @Override
@@ -61,7 +66,7 @@ public class DynamicVoiceChannelManager extends ListenerAdapter {
                         .filter(voiceChannel -> voiceChannel.getName().startsWith(channelName)).collect(
                                 Collectors.toList());
                 final boolean freeVoiceChannels = voiceChannels.stream()
-                        .anyMatch(voiceChannel -> voiceChannel.getMembers().size() == 0);
+                        .anyMatch(voiceChannel -> voiceChannel.getMembers().isEmpty());
 
                 String oldName = null;
                 int numberToCreate = -1;
@@ -125,7 +130,7 @@ public class DynamicVoiceChannelManager extends ListenerAdapter {
                 final List<VoiceChannel> voiceChannels = channel.getGuild().getVoiceChannelCache().stream()
                         .filter(voiceChannel -> voiceChannel.getName().startsWith(channelName)).collect(Collectors.toList());
                 final List<VoiceChannel> emptyChannels = voiceChannels.stream().filter(
-                        voiceChannel -> voiceChannel.getMembers().size() == 0).collect(Collectors.toList());
+                        voiceChannel -> voiceChannel.getMembers().isEmpty()).collect(Collectors.toList());
                 if (emptyChannels.size() > 1) {
                     emptyChannels.get(emptyChannels.size() - 1).delete().complete();
 
