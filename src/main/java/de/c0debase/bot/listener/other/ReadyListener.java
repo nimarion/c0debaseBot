@@ -21,10 +21,12 @@ public class ReadyListener extends ListenerAdapter {
     public void onReady(ReadyEvent event) {
         Set<Class<? extends ListenerAdapter>> classes = new Reflections("de.c0debase.bot.listener").getSubTypesOf(ListenerAdapter.class);
         classes.forEach(listenerClass -> {
-            try {
-                event.getJDA().addEventListener(listenerClass.newInstance());
-            } catch (Exception ex) {
-                ex.printStackTrace();
+            if(listenerClass != ReadyListener.class){
+                try {
+                    event.getJDA().addEventListener(listenerClass.newInstance());
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
             }
         });
 
