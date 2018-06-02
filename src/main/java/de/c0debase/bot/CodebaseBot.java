@@ -5,7 +5,6 @@ import ai.api.AIDataService;
 import de.c0debase.bot.commands.CommandManager;
 import de.c0debase.bot.database.MongoDataManager;
 import de.c0debase.bot.listener.other.ReadyListener;
-import de.c0debase.bot.listener.voice.DynamicVoiceChannelManager;
 import de.c0debase.bot.music.MusicManager;
 import de.c0debase.bot.tempchannel.Tempchannel;
 import io.sentry.Sentry;
@@ -64,8 +63,6 @@ public class CodebaseBot {
                     .setAutoReconnect(true)
                     .setAudioEnabled(true)
                     .addEventListener(new ReadyListener())
-                    .addEventListener(new DynamicVoiceChannelManager("Talk "))
-                    .addEventListener(new DynamicVoiceChannelManager("Ingame "))
                     .buildBlocking();
             musicManager = new MusicManager(this);
         } catch (Exception ex) {
