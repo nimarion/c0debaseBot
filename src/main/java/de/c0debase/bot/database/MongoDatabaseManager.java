@@ -22,7 +22,7 @@ public class MongoDatabaseManager {
 
     private final MongoClient mongoClient;
     @Getter
-    private final MongoCollection<Document> levels;
+    private final MongoCollection<Document> users;
 
     public MongoDatabaseManager(final String host, final int port, final String username, final String password) {
         if (username != null && password != null) {
@@ -34,7 +34,7 @@ public class MongoDatabaseManager {
         }
         CodebaseBot.getInstance().getLogger().info("Connected to MongoDB " + mongoClient.getAddress());
         final MongoDatabase database = mongoClient.getDatabase(DATABASE_NAME);
-        levels = database.getCollection(USER_COLLECTION_NAME);
+        users = database.getCollection(USER_COLLECTION_NAME);
 
     }
 

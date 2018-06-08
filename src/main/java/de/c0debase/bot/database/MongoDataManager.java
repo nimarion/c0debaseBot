@@ -51,7 +51,7 @@ public class MongoDataManager {
             return;
         }
         executorService.execute(() -> {
-            final Document document = mongoDatabaseManager.getLevels().find(Filters.and(Filters.eq("guildID", guildID), Filters.eq("userID", userID))).first();
+            final Document document = mongoDatabaseManager.getUsers().find(Filters.and(Filters.eq("guildID", guildID), Filters.eq("userID", userID))).first();
             final LevelUser levelUser;
             if (document == null) {
                 levelUser = new LevelUser();
@@ -60,8 +60,8 @@ public class MongoDataManager {
                 levelUser.addXP(50);
                 levelUser.setLastMessage(System.currentTimeMillis());
                 levelUser.setUserID(userID);
-                levelUser.setRoles(Collections.emptyList());
-                mongoDatabaseManager.getLevels().insertOne(Document.parse(Constants.GSON.toJson(levelUser)));
+                levelUser.setRoles(new ArrayList<>());
+                mongoDatabaseManager.getUsers().insertOne(Document.parse(Constants.GSON.toJson(levelUser)));
             } else {
                 levelUser = Constants.GSON.fromJson(document.toJson(jsonWriterSettings), LevelUser.class);
             }
@@ -72,7 +72,7 @@ public class MongoDataManager {
 
     public void updateLevelUser(final LevelUser levelUser) {
         executorService.execute(() -> {
-            mongoDatabaseManager.getLevels().replaceOne(Filters.and(Filters.eq("guildID", levelUser.getGuildID()), Filters.eq("userID", levelUser.getUserID())), Document.parse(Constants.GSON.toJson(levelUser)));
+            mongoDatabaseManager.getUsers().replaceOne(Filters.and(Filters.eq("guildID", levelUser.getGuildID()), Filters.eq("userID", levelUser.getUserID())), Document.parse(Constants.GSON.toJson(levelUser)));
             userCache.put(levelUser.getGuildID() + "-" + levelUser.getUserID(), levelUser);
         });
     }
@@ -84,7 +84,7 @@ public class MongoDataManager {
         }
         executorService.execute(() -> {
             List<LevelUser> levelUsers = new ArrayList<>();
-            FindIterable<Document> document = mongoDatabaseManager.getLevels()
+            FindIterable<Document> document = mongoDatabaseManager.getUsers()
                     .find(Filters.eq("guildID", guildID))
                     .sort(Sorts.descending("level", "xp"));
 
@@ -104,6 +104,4 @@ public class MongoDataManager {
             consumer.accept(pagination);
         });
     }
-
-
 }

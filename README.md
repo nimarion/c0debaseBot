@@ -16,9 +16,8 @@ Dieser Bot ist ein Discord Bot für den c0debase Server.
 ### Bot starten
 
   - In der `.env` Datei alle Daten eintragen
-  - Einen MySQL Server einrichten falls noch keiner existiert
-    - sudo docker run --name mysql -v /opt/mysql:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=1234 -d mysql
-  - sudo docker run --env-file .env --link mysql:db -d biospheere/codebasebot
+  - Einen MongoDB Server starten
+  - sudo docker run --env-file .env --link mysql_container:mongodb -d biospheere/codebasebot
   
 
 [![Join c0debase Discord](https://discordapp.com/api/guilds/361448651748540426/embed.png?style=banner2)](https://discord.gg/BDwBeZ3)
