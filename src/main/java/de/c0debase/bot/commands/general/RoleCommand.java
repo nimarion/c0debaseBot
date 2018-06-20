@@ -44,15 +44,15 @@ public class RoleCommand extends Command {
             }
             msg.getTextChannel().sendMessage(embedBuilder.build()).queue();
         } else {
-            changeRole(String.join("", args), msg);
+            changeRole(String.join(" ", args).replaceAll(",", " "), msg);
         }
     }
 
     private void changeRole(String args, Message message) {
         List<Role> addRoles = new ArrayList<>();
         List<Role> removeRoles = new ArrayList<>();
-        for (String role : args.split(",")) {
-            if (!message.getGuild().getRolesByName(role, true).isEmpty() && !FORBIDDEN.contains(role)) {
+        for (String role : args.split(" ")) {
+            if (!role.isEmpty() && !message.getGuild().getRolesByName(role, true).isEmpty() && !FORBIDDEN.contains(role)) {
                     Role rrole = message.getGuild().getRolesByName(role, true).get(0);
                     if (PermissionUtil.canInteract(message.getGuild().getSelfMember(), rrole) && !rrole.isManaged()) {
                         if (message.getGuild().getMembersWithRoles(rrole).contains(message.getMember()) && !removeRoles.contains(rrole)) {
