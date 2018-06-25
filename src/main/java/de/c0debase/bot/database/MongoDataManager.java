@@ -57,6 +57,7 @@ public class MongoDataManager {
                 levelUser = new LevelUser();
                 levelUser.setGuildID(guildID);
                 levelUser.setLevel(0);
+                levelUser.setCoins(0.0);
                 levelUser.addXP(50);
                 levelUser.setCoins(levelUser.getXp() * 0.05);
                 levelUser.setLastMessage(System.currentTimeMillis());
