@@ -92,6 +92,7 @@ public class MessageReceiveListener extends ListenerAdapter {
         } else {
             if(lastMessage.containsKey(event.getMember()) && lastMessage.get(event.getMember()).equalsIgnoreCase(event.getMessage().getContentRaw())){
                 event.getMessage().delete().queue();
+                return;
             } else {
                 lastMessage.put(event.getMember(), event.getMessage().getContentRaw());
             }
