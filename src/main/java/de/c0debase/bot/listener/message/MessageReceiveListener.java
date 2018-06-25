@@ -47,7 +47,7 @@ public class MessageReceiveListener extends ListenerAdapter {
             EmbedBuilder embedBuilder = new EmbedBuilder();
             embedBuilder.setColor(Color.GREEN);
             embedBuilder.setFooter("@" + event.getAuthor().getName() + "#" + event.getAuthor().getDiscriminator(), event.getAuthor().getEffectiveAvatarUrl());
-            embedBuilder.setTitle("Feedback");
+            embedBuilder.setTitle("Poll");
             embedBuilder.setDescription(event.getMessage().getContentDisplay());
             event.getMessage().delete().queue();
             event.getTextChannel().sendMessage(embedBuilder.build()).queue(success -> {
