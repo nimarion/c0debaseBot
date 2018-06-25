@@ -6,7 +6,6 @@ import ai.api.model.AIResponse;
 import com.vdurmont.emoji.EmojiManager;
 import de.c0debase.bot.CodebaseBot;
 import de.c0debase.bot.utils.Constants;
-import de.c0debase.bot.utils.Pagination;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.ChannelType;
 import net.dv8tion.jda.core.entities.Member;

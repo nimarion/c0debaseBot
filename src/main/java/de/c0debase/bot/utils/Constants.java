@@ -2,7 +2,6 @@ package de.c0debase.bot.utils;
 
 import com.google.gson.Gson;
 
-import java.text.SimpleDateFormat;
 import java.util.Random;
 
 /**
