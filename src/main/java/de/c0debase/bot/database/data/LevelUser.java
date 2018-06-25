@@ -20,14 +20,14 @@ public class LevelUser {
 
     public boolean addXP(int xp) {
         int morexp = Constants.RANDOM.nextInt(xp);
-        xp +=  morexp;
+        this.xp +=  morexp;
         coins += morexp * 0.01;
         double reach = 1000 * level * 1.2;
-        if (xp >= reach && reach != 0) {
-            xp = 0;
+        if (this.xp >= reach && reach != 0) {
+            this.xp = 0;
             level += 1;
             return true;
-        } else if (xp >= 1000 && level == 0) {
+        } else if (this.xp >= 1000 && level == 0) {
             level +=1;
             return true;
         }
