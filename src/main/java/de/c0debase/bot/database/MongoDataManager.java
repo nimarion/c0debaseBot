@@ -58,12 +58,16 @@ public class MongoDataManager {
                 levelUser.setGuildID(guildID);
                 levelUser.setLevel(0);
                 levelUser.addXP(50);
+                levelUser.setCoins(levelUser.getXp() * 0.05);
                 levelUser.setLastMessage(System.currentTimeMillis());
                 levelUser.setUserID(userID);
                 levelUser.setRoles(new ArrayList<>());
                 mongoDatabaseManager.getUsers().insertOne(Document.parse(Constants.GSON.toJson(levelUser)));
             } else {
                 levelUser = Constants.GSON.fromJson(document.toJson(jsonWriterSettings), LevelUser.class);
+                if(levelUser.getCoins() == null){
+                    levelUser.setCoins(levelUser.getXp() * 0.01);
+                }
             }
             userCache.put(guildID + "-" + userID, levelUser);
             consumer.accept(levelUser);
