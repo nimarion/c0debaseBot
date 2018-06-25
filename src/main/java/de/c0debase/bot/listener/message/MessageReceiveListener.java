@@ -5,12 +5,17 @@ import ai.api.model.AIRequest;
 import ai.api.model.AIResponse;
 import com.vdurmont.emoji.EmojiManager;
 import de.c0debase.bot.CodebaseBot;
+import de.c0debase.bot.utils.Pagination;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.ChannelType;
+import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
+import net.jodah.expiringmap.ExpiringMap;
 
 import java.awt.*;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Biosphere
@@ -18,6 +23,14 @@ import java.awt.*;
  */
 
 public class MessageReceiveListener extends ListenerAdapter {
+
+    private final Map<Member, String> lastMessage;
+
+    public MessageReceiveListener(){
+        final ExpiringMap.Builder<Object, Object> mapBuilder = ExpiringMap.builder();
+        mapBuilder.expiration(30, TimeUnit.SECONDS).build();
+        lastMessage = mapBuilder.build();
+    }
 
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
@@ -77,6 +90,11 @@ public class MessageReceiveListener extends ListenerAdapter {
         if (event.getMessage().getTextChannel().getName().equalsIgnoreCase("bot") && event.getMessage().getContentRaw().startsWith("!")) {
             CodebaseBot.getInstance().getCommandManager().execute(event.getMessage());
         } else {
+            if(lastMessage.containsKey(event.getMember()) && lastMessage.get(event.getMember()).equalsIgnoreCase(event.getMessage().getContentRaw())){
+                event.getMessage().delete().queue();
+            } else {
+                lastMessage.put(event.getMember(), event.getMessage().getContentRaw());
+            }
             CodebaseBot.getInstance().getMongoDataManager().getLevelUser(event.getGuild().getId(), event.getAuthor().getId(), levelUser -> {
                 float time = (System.currentTimeMillis() - levelUser.getLastMessage()) / 1000;
                 if (time >= 50.0f) {
