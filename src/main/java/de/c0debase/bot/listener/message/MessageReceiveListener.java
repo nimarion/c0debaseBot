@@ -5,6 +5,7 @@ import ai.api.model.AIRequest;
 import ai.api.model.AIResponse;
 import com.vdurmont.emoji.EmojiManager;
 import de.c0debase.bot.CodebaseBot;
+import de.c0debase.bot.utils.Constants;
 import de.c0debase.bot.utils.Pagination;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.ChannelType;
@@ -14,6 +15,8 @@ import net.dv8tion.jda.core.hooks.ListenerAdapter;
 import net.jodah.expiringmap.ExpiringMap;
 
 import java.awt.*;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -25,6 +28,22 @@ import java.util.concurrent.TimeUnit;
 public class MessageReceiveListener extends ListenerAdapter {
 
     private final Map<Member, String> lastMessage;
+    private final List<String> gifs = Arrays.asList(
+            "https://media.giphy.com/media/5VKbvrjxpVJCM/giphy.gif",
+            "https://media.giphy.com/media/4cUCFvwICarHq/giphy.gif",
+            "https://media.giphy.com/media/1ym5LJ17vp77BL8X5O/giphy.gif",
+            "https://media.giphy.com/media/KI9oNS4JBemyI/giphy.gif",
+            "https://media.giphy.com/media/l1CC9FjH54QhYHExq/source.gif",
+            "https://media.giphy.com/media/2gYhkl6mLIYZxpMve1/giphy.gif",
+            "https://media.giphy.com/media/kmU72Ms75Zhlu/giphy.gif",
+            "https://media.giphy.com/media/xHMIDAy1qkzNS/giphy.gif",
+            "https://media.giphy.com/media/yJFeycRK2DB4c/giphy.gif",
+            "https://media.giphy.com/media/cbb8zL5wbNnfq/giphy.gif",
+            "https://media.giphy.com/media/aLdiZJmmx4OVW/giphy.gif",
+            "https://media.giphy.com/media/qPcX2mzk3NmjC/giphy.gif",
+            "https://media.giphy.com/media/kjCFOUT3ZIlAA/giphy.gif",
+            "https://media.giphy.com/media/ZisaVxhbs1iDK/giphy.gif"
+    );
 
     public MessageReceiveListener(){
         final ExpiringMap.Builder<Object, Object> mapBuilder = ExpiringMap.builder();
@@ -37,6 +56,7 @@ public class MessageReceiveListener extends ListenerAdapter {
         if (event.getAuthor().isBot()) {
             return;
         }
+
         if (event.isFromType(ChannelType.PRIVATE)) {
             EmbedBuilder embedBuilder = new EmbedBuilder();
             embedBuilder.setColor(Color.RED);
@@ -102,6 +122,7 @@ public class MessageReceiveListener extends ListenerAdapter {
                     if (levelUser.addXP(50)) {
                         EmbedBuilder levelUpEmbed = new EmbedBuilder();
                         levelUpEmbed.appendDescription(event.getAuthor().getAsMention() + " ist nun Level " + levelUser.getLevel());
+                        levelUpEmbed.setImage(gifs.get(Constants.RANDOM.nextInt(gifs.size())));
                         event.getTextChannel().sendMessage(levelUpEmbed.build()).queue();
                     }
                     levelUser.setLastMessage(System.currentTimeMillis());
