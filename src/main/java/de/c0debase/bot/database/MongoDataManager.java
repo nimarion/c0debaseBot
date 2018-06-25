@@ -6,13 +6,11 @@ import com.mongodb.client.model.Sorts;
 import de.c0debase.bot.database.data.LevelUser;
 import de.c0debase.bot.utils.Constants;
 import de.c0debase.bot.utils.Pagination;
-import net.jodah.expiringmap.ExpirationPolicy;
 import net.jodah.expiringmap.ExpiringMap;
 import org.bson.Document;
 import org.bson.json.JsonWriterSettings;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -39,7 +37,9 @@ public class MongoDataManager {
                 .build();
         mongoDatabaseManager = new MongoDatabaseManager(System.getenv("MONGO-HOST"), System.getenv("MONGO-PORT") == null ? 27017 : Integer.valueOf(System.getenv("MONGO-PORT")), null, null);
         final ExpiringMap.Builder<Object, Object> mapBuilder = ExpiringMap.builder();
-        mapBuilder.expirationPolicy(ExpirationPolicy.ACCESSED).expiration(5, TimeUnit.MINUTES);
+        mapBuilder.maxSize(123)
+                .expiration(1, TimeUnit.MINUTES)
+                .build();
         leaderboardCache = mapBuilder.build();
         userCache = mapBuilder.build();
     }
