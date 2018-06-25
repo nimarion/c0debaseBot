@@ -25,7 +25,7 @@ public class CoinCommand extends Command {
         }
         EmbedBuilder embedBuilder = getEmbed(msg.getGuild(), member.getUser());
         CodebaseBot.getInstance().getMongoDataManager().getLevelUser(msg.getGuild().getId(), member.getUser().getId(), levelUser -> {
-            embedBuilder.setDescription(member.getAsMention() + " hat " + levelUser.getCoins() + " Coins");
+            embedBuilder.setDescription(member.getAsMention() + " hat " + String.format("%.2f", levelUser.getCoins()) + " Coins");
             msg.getTextChannel().sendMessage(embedBuilder.build()).queue();
         });
     }
