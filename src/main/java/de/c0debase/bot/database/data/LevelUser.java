@@ -21,7 +21,7 @@ public class LevelUser {
     public boolean addXP(int xp) {
         int morexp = Constants.RANDOM.nextInt(xp);
         this.xp +=  morexp;
-        coins += morexp * 0.01;
+        coins += morexp * 0.03;
         double reach = 1000 * level * 1.2;
         if (this.xp >= reach && reach != 0) {
             this.xp = 0;
