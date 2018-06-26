@@ -120,12 +120,11 @@ public class MessageReceiveListener extends ListenerAdapter {
                     CurrentWeather currentWeather = CodebaseBot.getInstance().getDataWeatherClient().getCurrentWeather(currentWeatherOneLocationQuery);
                     EmbedBuilder embedBuilder = new EmbedBuilder();
                     embedBuilder.setColor(Color.ORANGE);
-                    embedBuilder.setTitle("Wetter in " + currentWeather.getCityName());
+                    embedBuilder.setTitle("Wetter in " + currentWeather.getCityName(), "https://openweathermap.org/city/" + currentWeather.getCityId());
                     embedBuilder.addField("Temperatur",currentWeather.getMainParameters().getTemperature() + "°C", false);
                     embedBuilder.addField("Luftdruck", String.format("%.1f hPa", currentWeather.getMainParameters().getPressure()), false);
                     embedBuilder.addField("Windgeschwindigkeit", String.format("%.1f km/h", currentWeather.getWind().getSpeed()), false);
-                    embedBuilder.addField("Luftfeuchte",  String.format("%.1f", currentWeather.getMainParameters().getHumidity()) + "%", false);
-                    embedBuilder.addField("", "", false);
+                    embedBuilder.addField("Luftfeuchtigkeit",  String.format("%.1f", currentWeather.getMainParameters().getHumidity()) + "%\n", false);
                     if(!currentWeather.getWeather().isEmpty()){
                         embedBuilder.setFooter(currentWeather.getWeather().get(0).getDescription(), event.getGuild().getIconUrl());
                     }
