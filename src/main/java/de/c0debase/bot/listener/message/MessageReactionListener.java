@@ -14,12 +14,22 @@ import net.dv8tion.jda.core.events.message.priv.react.GenericPrivateMessageReact
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
 import java.awt.*;
+import java.util.HashMap;
 
 /**
  * @author Biosphere
  * @date 23.01.18
  */
 public class MessageReactionListener extends ListenerAdapter {
+
+    private final HashMap<String, String> emoteAlias;
+
+    public MessageReactionListener() {
+        emoteAlias = new HashMap<>();
+        emoteAlias.put("cicd", "CI/CD");
+        emoteAlias.put("csharp", "C#");
+        emoteAlias.put("cplusplus", "C++");
+    }
 
     @Override
     public void onGenericPrivateMessageReaction(GenericPrivateMessageReactionEvent event) {
@@ -65,7 +75,11 @@ public class MessageReactionListener extends ListenerAdapter {
                 return;
             }
             if(success.getTextChannel().getTopic() != null && success.getTextChannel().getTopic().contains("✨")){
-                Role role = event.getGuild().getRolesByName(emote, true).isEmpty() ? null : event.getGuild().getRolesByName(emote, true).get(0);
+                String roleEmote = emote;
+                if(emoteAlias.containsKey(emote)){
+                    roleEmote = emoteAlias.get(emote);
+                }
+                Role role = event.getGuild().getRolesByName(roleEmote, true).isEmpty() ? null : event.getGuild().getRolesByName(roleEmote, true).get(0);
                 if(role != null){
                     if(event.getMember().getRoles().contains(role)){
                         event.getGuild().getController().removeRolesFromMember(event.getMember(), role).queue();
