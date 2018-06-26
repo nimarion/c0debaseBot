@@ -30,17 +30,18 @@ public class ReadyListener extends ListenerAdapter {
             }
         });
 
-        for (VoiceChannel voiceChannel : event.getJDA().getGuilds().get(0).getVoiceChannels()) {
-            String name = ("temp-" + voiceChannel.getName().toLowerCase()).replaceAll("\\s+", "-");
-            final TextChannel textChannel = voiceChannel.getGuild().getTextChannelsByName(name, true).isEmpty() ? null : voiceChannel.getGuild().getTextChannelsByName(name, true).get(0);
-            if (textChannel == null) {
-                CodebaseBot.getInstance().getTempchannels().put(voiceChannel.getId(), new Tempchannel());
-            } else {
-                Tempchannel tempchannel = new Tempchannel(textChannel);
-                tempchannel.onLoad(textChannel, voiceChannel);
-                CodebaseBot.getInstance().getTempchannels().put(voiceChannel.getId(), tempchannel);
+        if(!event.getJDA().getGuildsByName("c0debase", true).isEmpty()){
+            for (VoiceChannel voiceChannel : event.getJDA().getGuildsByName("c0debase", true).get(0).getVoiceChannels()) {
+                String name = ("temp-" + voiceChannel.getName().toLowerCase()).replaceAll("\\s+", "-");
+                final TextChannel textChannel = voiceChannel.getGuild().getTextChannelsByName(name, true).isEmpty() ? null : voiceChannel.getGuild().getTextChannelsByName(name, true).get(0);
+                if (textChannel == null) {
+                    CodebaseBot.getInstance().getTempchannels().put(voiceChannel.getId(), new Tempchannel());
+                } else {
+                    Tempchannel tempchannel = new Tempchannel(textChannel);
+                    tempchannel.onLoad(textChannel, voiceChannel);
+                    CodebaseBot.getInstance().getTempchannels().put(voiceChannel.getId(), tempchannel);
+                }
             }
         }
     }
-
 }
