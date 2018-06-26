@@ -3,16 +3,20 @@ package de.c0debase.bot.listener.message;
 import ai.api.AIServiceException;
 import ai.api.model.AIRequest;
 import ai.api.model.AIResponse;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.vdurmont.emoji.EmojiManager;
 import de.c0debase.bot.CodebaseBot;
 import de.c0debase.bot.utils.Constants;
-import de.c0debase.bot.utils.Pagination;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.ChannelType;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 import net.jodah.expiringmap.ExpiringMap;
+import org.openweathermap.api.model.currentweather.CurrentWeather;
+import org.openweathermap.api.query.*;
+import org.openweathermap.api.query.currentweather.CurrentWeatherOneLocationQuery;
 
 import java.awt.*;
 import java.util.Arrays;
@@ -95,6 +99,39 @@ public class MessageReceiveListener extends ListenerAdapter {
                 AIRequest request = new AIRequest(event.getMessage().getContentRaw().replace(event.getGuild().getSelfMember().getAsMention(), ""));
                 AIResponse response = CodebaseBot.getInstance().getAiDataService().request(request);
 
+                if(response.getResult().getAction().contains("weather")){
+                    if(!response.getResult().getParameters().containsKey("address")){
+                        event.getChannel().sendMessage("Leider kann ich nicht verstehen, was du von mir möchtest.").queue();
+                        return;
+                    }
+                    JsonObject jsonObject = new JsonParser().parse(response.getResult().getParameters().get("address").toString()).getAsJsonObject();
+                    if(jsonObject.get("city") == null){
+                        event.getChannel().sendMessage("Leider konnte ich das Wetter in diesem Ort nicht herausfinden").queue();
+                    }
+                    CurrentWeatherOneLocationQuery currentWeatherOneLocationQuery = QueryBuilderPicker.pick()
+                            .currentWeather()
+                            .oneLocation()
+                            .byCityName(jsonObject.get("city").getAsString())
+                            .type(Type.ACCURATE)
+                            .language(Language.GERMAN)
+                            .responseFormat(ResponseFormat.JSON)
+                            .unitFormat(UnitFormat.METRIC)
+                            .build();
+                    CurrentWeather currentWeather = CodebaseBot.getInstance().getDataWeatherClient().getCurrentWeather(currentWeatherOneLocationQuery);
+                    EmbedBuilder embedBuilder = new EmbedBuilder();
+                    embedBuilder.setColor(Color.ORANGE);
+                    embedBuilder.setTitle("Wetter in " + currentWeather.getCityName());
+                    embedBuilder.addField("Temperatur",currentWeather.getMainParameters().getTemperature() + "°C", false);
+                    embedBuilder.addField("Luftdruck", String.format("%.1f hPa", currentWeather.getMainParameters().getPressure()), false);
+                    embedBuilder.addField("Windgeschwindigkeit", String.format("%.1f km/h", currentWeather.getWind().getSpeed()), false);
+                    embedBuilder.addField("Luftfeuchte",  String.format("%.1f", currentWeather.getMainParameters().getHumidity()) + "%", false);
+                    embedBuilder.addField("", "", false);
+                    if(!currentWeather.getWeather().isEmpty()){
+                        embedBuilder.setFooter(currentWeather.getWeather().get(0).getDescription(), event.getGuild().getIconUrl());
+                    }
+                    event.getTextChannel().sendMessage(embedBuilder.build()).queue();
+                    return;
+                }
                 if (response.getStatus().getCode() == 200) {
                     if (response.getResult().getFulfillment().getSpeech().trim().isEmpty()) {
                         event.getChannel().sendMessage("Leider kann ich nicht verstehen, was du von mir möchtest.").queue();
@@ -109,7 +146,7 @@ public class MessageReceiveListener extends ListenerAdapter {
 
         if (event.getMessage().getTextChannel().getName().equalsIgnoreCase("bot") && event.getMessage().getContentRaw().startsWith("!")) {
             CodebaseBot.getInstance().getCommandManager().execute(event.getMessage());
-        } else {
+        } else if(!event.getTextChannel().getName().equalsIgnoreCase("friend")){
             if(lastMessage.containsKey(event.getMember()) && lastMessage.get(event.getMember()).equalsIgnoreCase(event.getMessage().getContentRaw())){
                 event.getMessage().delete().queue();
                 return;
