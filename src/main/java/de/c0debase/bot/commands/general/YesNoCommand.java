@@ -1,12 +1,14 @@
 package de.c0debase.bot.commands.general;
 
 import de.c0debase.bot.commands.Command;
+import de.c0debase.bot.utils.Constants;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Message;
 
 import java.awt.*;
-import java.util.*;
+import java.util.Arrays;
 import java.util.List;
+import java.util.StringJoiner;
 
 /**
  * @author SpigotException
@@ -15,7 +17,6 @@ import java.util.List;
 public class YesNoCommand extends Command {
 
     private StringJoiner stringJoiner;
-    private final Random random = new Random();
 
     private final List<String> yesGifs = Arrays.asList(
             "https://media.giphy.com/media/nFjDu1LjEADh6/giphy.gif",
@@ -59,7 +60,7 @@ public class YesNoCommand extends Command {
             for (int i = 0; i < args.length; i++) {
                 stringJoiner.add(args[i]);
             }
-            boolean yn = random.nextBoolean();
+            boolean yn = Constants.RANDOM.nextBoolean();
             msg.getTextChannel().sendMessage(
                     new EmbedBuilder()
                             .setTitle("Ja oder Nein?")
@@ -67,7 +68,7 @@ public class YesNoCommand extends Command {
                                     "Deine Frage: " + stringJoiner.toString() + "\n\n" +
                                             "Meine Antwort: " + (yn ? "Ja" : "Nein") + "\n")
                             .setColor(yn ? Color.GREEN : Color.RED)
-                            .setImage(yn ? yesGifs.get(random.nextInt(yesGifs.size())) : noGifs.get(random.nextInt(noGifs.size()))).build()
+                            .setImage(yn ? yesGifs.get(Constants.RANDOM.nextInt(yesGifs.size())) : noGifs.get(Constants.RANDOM.nextInt(noGifs.size()))).build()
             ).queue();
         } else {
             msg.getTextChannel().sendMessage(getEmbed(msg.getGuild(), msg.getAuthor()).setDescription("!yn [Deine Frage]").build()).queue();
