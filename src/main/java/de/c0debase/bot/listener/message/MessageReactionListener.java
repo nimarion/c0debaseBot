@@ -10,13 +10,10 @@ import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.message.guild.react.GenericGuildMessageReactionEvent;
 import net.dv8tion.jda.core.events.message.guild.react.GuildMessageReactionAddEvent;
-import net.dv8tion.jda.core.events.message.guild.react.GuildMessageReactionRemoveEvent;
 import net.dv8tion.jda.core.events.message.priv.react.GenericPrivateMessageReactionEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
-import net.dv8tion.jda.core.utils.PermissionUtil;
 
 import java.awt.*;
-import java.util.Optional;
 
 /**
  * @author Biosphere
@@ -41,7 +38,6 @@ public class MessageReactionListener extends ListenerAdapter {
                     success.delete().queue();
                     return;
                 }
-
                 for (Categorie categorie : Categorie.values()) {
                     if (categorie.getEmote().equalsIgnoreCase(emote)) {
                         embedBuilder.setTitle(":question: " + categorie.getName() + " Commands Help");
@@ -64,15 +60,26 @@ public class MessageReactionListener extends ListenerAdapter {
             return;
         }
         event.getChannel().getMessageById(event.getMessageId()).queue(success -> {
-            if (event.getReactionEmote().getName().equalsIgnoreCase("wastebasket") && success.getAuthor().isBot()) {
+            final String emote = getReaction(event.getReactionEmote());
+            if(emote == null){
+                return;
+            }
+            if(success.getTextChannel().getTopic() != null && success.getTextChannel().getTopic().contains("✨")){
+                Role role = event.getGuild().getRolesByName(emote, true).isEmpty() ? null : event.getGuild().getRolesByName(emote, true).get(0);
+                if(role != null){
+                    if(event.getMember().getRoles().contains(role)){
+                        event.getGuild().getController().removeRolesFromMember(event.getMember(), role).queue();
+                    } else {
+                        event.getGuild().getController().addRolesToMember(event.getMember(), role).queue();
+                    }
+                }
+                return;
+            }
+            if (emote.equalsIgnoreCase("wastebasket") && success.getAuthor().isBot()) {
                 success.delete().queue();
                 return;
             }
             if (!success.getEmbeds().isEmpty() && success.getAuthor().isBot()) {
-                final String emote = getReaction(event.getReactionEmote());
-                if (emote == null) {
-                    return;
-                }
                 MessageEmbed messageEmbed = success.getEmbeds().get(0);
                 if (messageEmbed.getFooter() != null && messageEmbed.getFooter().getText().contains("Seite")) {
                     CodebaseBot.getInstance().getMongoDataManager().getLeaderboard(success.getGuild().getId(), leaderboard -> {
@@ -109,26 +116,6 @@ public class MessageReactionListener extends ListenerAdapter {
                             success.editMessage(embedBuilder.build()).queue();
                         }
                     });
-
-                }
-            }
-        });
-    }
-
-    @Override
-    public void onGuildMessageReactionRemove(GuildMessageReactionRemoveEvent event) {
-        if (event.getMember().getUser().isBot()) {
-            return;
-        }
-        event.getChannel().getMessageById(event.getMessageId()).queue(success -> {
-            if (success.getTextChannel().getTopic() != null && success.getTextChannel().getTopic().endsWith("RS")) {
-                final String emote = getReaction(event.getReactionEmote());
-                if (emote == null) {
-                    return;
-                }
-                Role role = success.getGuild().getRolesByName(emote, true).stream().findFirst().orElse(null);
-                if (role != null && PermissionUtil.canInteract(event.getGuild().getSelfMember(), role) && success.getGuild().getMembersWithRoles(role).contains(event.getMember())) {
-                    success.getGuild().getController().removeRolesFromMember(event.getMember(), role).queue();
                 }
             }
         });
@@ -141,11 +128,8 @@ public class MessageReactionListener extends ListenerAdapter {
         }
         event.getChannel().getMessageById(event.getMessageId()).queue(success -> {
             String emote = getReaction(event.getReactionEmote());
-            if (success.getTextChannel().getTopic() != null && success.getTextChannel().getTopic().endsWith("RS")) {
-                Optional<Role> role = success.getGuild().getRolesByName(emote, true).stream().findFirst();
-                if (role.isPresent() && PermissionUtil.canInteract(event.getGuild().getSelfMember(), role.get()) && !success.getGuild().getMembersWithRoles(role.get()).contains(event.getMember())) {
-                    success.getGuild().getController().addRolesToMember(event.getMember(), role.get()).queue();
-                }
+            if(emote == null){
+                return;
             }
             if (emote.equalsIgnoreCase("black_right_pointing_triangle_with_double_vertical_bar") && !StringUtils.extractUrls(success.getContentRaw()).isEmpty() && event.getMember().getVoiceState().inVoiceChannel()) {
                 if (event.getGuild().getAudioManager().getConnectedChannel() == null) {
