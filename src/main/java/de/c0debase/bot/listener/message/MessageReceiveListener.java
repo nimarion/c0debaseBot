@@ -108,7 +108,7 @@ public class MessageReceiveListener extends ListenerAdapter {
 
         if (event.getMessage().getTextChannel().getName().equalsIgnoreCase("bot") && event.getMessage().getContentRaw().startsWith("!")) {
             CodebaseBot.getInstance().getCommandManager().execute(event.getMessage());
-        } else {
+        } else if(event.getTextChannel().getName().equalsIgnoreCase("friend")){
             if(lastMessage.containsKey(event.getMember()) && lastMessage.get(event.getMember()).equalsIgnoreCase(event.getMessage().getContentRaw())){
                 event.getMessage().delete().queue();
                 return;
