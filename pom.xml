@@ -97,11 +97,6 @@
             <artifactId>libai</artifactId>
             <version>1.6.12</version>
         </dependency>
-        <dependency>
-            <groupId>com.frequal.romannumerals</groupId>
-            <artifactId>roman-numerals</artifactId>
-            <version>1.3</version>
-        </dependency>
         <!-- https://mvnrepository.com/artifact/org.mongodb/mongo-java-driver -->
         <dependency>
             <groupId>org.mongodb</groupId>
@@ -113,6 +108,11 @@
             <groupId>net.jodah</groupId>
             <artifactId>expiringmap</artifactId>
             <version>0.5.8</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openweathermap.java-api</groupId>
+            <artifactId>api-core</artifactId>
+            <version>1.2</version>
         </dependency>
     </dependencies>
 

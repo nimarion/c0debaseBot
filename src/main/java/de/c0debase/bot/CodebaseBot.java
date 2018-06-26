@@ -14,6 +14,8 @@ import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.OnlineStatus;
 import net.dv8tion.jda.core.entities.Game;
+import org.openweathermap.api.DataWeatherClient;
+import org.openweathermap.api.UrlConnectionDataWeatherClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,6 +38,7 @@ public class CodebaseBot {
     private final Logger logger = LoggerFactory.getLogger("de.c0debase.bot");
     private final HashMap<String, Tempchannel> tempchannels;
     private final ScheduledExecutorService executorService;
+    private DataWeatherClient dataWeatherClient;
     private JDA jda;
     private AIDataService aiDataService;
     private MusicManager musicManager;
@@ -51,6 +54,9 @@ public class CodebaseBot {
         tempchannels = new HashMap<>();
         if (System.getenv("APIAI-TOKEN") != null) {
             aiDataService = new AIDataService(new AIConfiguration(System.getenv("APIAI-TOKEN")));
+        }
+        if(System.getenv("WEATHER-TOKEN") != null){
+            dataWeatherClient = new UrlConnectionDataWeatherClient(System.getenv("WEATHER-TOKEN"));
         }
 
 
