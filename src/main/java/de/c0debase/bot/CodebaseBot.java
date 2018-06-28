@@ -4,6 +4,7 @@ import ai.api.AIConfiguration;
 import ai.api.AIDataService;
 import de.c0debase.bot.commands.CommandManager;
 import de.c0debase.bot.database.MongoDataManager;
+import de.c0debase.bot.dialogflow.ActionHandler;
 import de.c0debase.bot.listener.other.ReadyListener;
 import de.c0debase.bot.music.MusicManager;
 import de.c0debase.bot.tempchannel.Tempchannel;
@@ -16,10 +17,11 @@ import net.dv8tion.jda.core.OnlineStatus;
 import net.dv8tion.jda.core.entities.Game;
 import org.openweathermap.api.DataWeatherClient;
 import org.openweathermap.api.UrlConnectionDataWeatherClient;
+import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.HashMap;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -36,8 +38,9 @@ public class CodebaseBot {
     private final CommandManager commandManager;
     private final MongoDataManager mongoDataManager;
     private final Logger logger = LoggerFactory.getLogger("de.c0debase.bot");
-    private final HashMap<String, Tempchannel> tempchannels;
+    private final Map<String, Tempchannel> tempchannels;
     private final ScheduledExecutorService executorService;
+    private final Map<String, ActionHandler> actionHandlerMap;
     private DataWeatherClient dataWeatherClient;
     private JDA jda;
     private AIDataService aiDataService;
@@ -52,8 +55,20 @@ public class CodebaseBot {
         executorService = Executors.newScheduledThreadPool(1);
         commandManager = new CommandManager();
         tempchannels = new HashMap<>();
+        actionHandlerMap = new HashMap<>();
+
         if (System.getenv("APIAI-TOKEN") != null) {
             aiDataService = new AIDataService(new AIConfiguration(System.getenv("APIAI-TOKEN")));
+
+            Set<Class<? extends ActionHandler>> classes = new Reflections("de.c0debase.bot.dialogflow.action").getSubTypesOf(ActionHandler.class);
+            classes.forEach(actionHandlerClass -> {
+                try {
+                    ActionHandler actionHandler = actionHandlerClass.newInstance();
+                    actionHandlerMap.put(actionHandler.getName(), actionHandler);
+                } catch (InstantiationException | IllegalAccessException exception){
+                    exception.printStackTrace();
+                }
+            });
         }
         if(System.getenv("WEATHER-TOKEN") != null){
             dataWeatherClient = new UrlConnectionDataWeatherClient(System.getenv("WEATHER-TOKEN"));
