@@ -23,10 +23,6 @@
             <name>jcenter-bintray</name>
             <url>http://jcenter.bintray.com</url>
         </repository>
-        <repository>
-            <id>frequal.com</id>
-            <url>http://frequal.com/maven-repository</url>
-        </repository>
     </repositories>
 
     <dependencies>
@@ -109,6 +105,7 @@
             <artifactId>expiringmap</artifactId>
             <version>0.5.8</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.openweathermap.java-api/api-core -->
         <dependency>
             <groupId>org.openweathermap.java-api</groupId>
             <artifactId>api-core</artifactId>
