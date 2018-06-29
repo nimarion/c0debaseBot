@@ -23,6 +23,10 @@
             <name>jcenter-bintray</name>
             <url>http://jcenter.bintray.com</url>
         </repository>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -110,6 +114,12 @@
             <groupId>org.openweathermap.java-api</groupId>
             <artifactId>api-core</artifactId>
             <version>1.2</version>
+        </dependency>
+        <!-- https://jitpack.io/#Biospheere/DeepLTranslator -->
+        <dependency>
+            <groupId>com.github.Biospheere</groupId>
+            <artifactId>DeepLTranslator</artifactId>
+            <version>v1.0</version>
         </dependency>
     </dependencies>
 
