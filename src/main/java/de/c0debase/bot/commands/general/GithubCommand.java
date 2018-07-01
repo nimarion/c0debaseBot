@@ -18,7 +18,7 @@ import java.net.URL;
 public class GithubCommand extends Command {
 
     public GithubCommand() {
-        super("github", "Zeigt einige Informationen über das Repo des Bots", Categorie.GENERAL, "code", "source");
+        super("github", "Zeigt einige Informationen über das Repo des Bots", Category.GENERAL, "code", "source");
     }
 
     @Override

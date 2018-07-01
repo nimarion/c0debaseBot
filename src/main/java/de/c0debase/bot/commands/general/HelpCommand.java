@@ -16,7 +16,7 @@ import java.util.Arrays;
 public class HelpCommand extends Command {
 
     public HelpCommand() {
-        super("help", "Zeige diese Hilfe", Categorie.GENERAL, "hilfe");
+        super("help", "Zeige diese Hilfe", Category.GENERAL, "hilfe");
     }
 
     @Override
@@ -30,10 +30,10 @@ public class HelpCommand extends Command {
         embedBuilder.setTitle("Hilfe");
         embedBuilder.setColor(Color.GREEN);
         embedBuilder.appendDescription(":question: Help\nKlicke den entsprechenden Emote an für mehr Infos.\n");
-        Arrays.stream(Categorie.values()).map(categorie -> "**" + (categorie.ordinal() + 1) + " - " + categorie.getName() + " Commands**\n" + categorie.getDescription() + "\n").forEach(embedBuilder::appendDescription);
+        Arrays.stream(Category.values()).map(categorie -> "**" + (categorie.ordinal() + 1) + " - " + categorie.getName() + " Commands**\n" + categorie.getDescription() + "\n").forEach(embedBuilder::appendDescription);
 
         msg.getMember().getUser().openPrivateChannel().queue(success -> success.sendMessage(embedBuilder.build()).queue(message -> {
-            Arrays.stream(Categorie.values()).forEach(categorie -> message.addReaction(EmojiManager.getForAlias(categorie.getEmote()).getUnicode()).queue());
+            Arrays.stream(Category.values()).forEach(categorie -> message.addReaction(EmojiManager.getForAlias(categorie.getEmote()).getUnicode()).queue());
             message.addReaction(EmojiManager.getForAlias("wastebasket").getUnicode()).queue();
         }));
 

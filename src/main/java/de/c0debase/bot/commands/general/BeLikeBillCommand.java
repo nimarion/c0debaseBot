@@ -10,7 +10,7 @@ import net.dv8tion.jda.core.entities.Message;
 public class BeLikeBillCommand extends Command {
 
     public BeLikeBillCommand() {
-        super("belikebill", "Zeigt ein BeLikeBill Bild", Categorie.GENERAL, "blb");
+        super("belikebill", "Zeigt ein BeLikeBill Bild", Category.GENERAL, "blb");
     }
 
     @Override

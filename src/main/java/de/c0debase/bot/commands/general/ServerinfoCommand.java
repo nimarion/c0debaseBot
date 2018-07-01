@@ -17,7 +17,7 @@ import java.time.temporal.ChronoUnit;
 public class ServerinfoCommand extends Command {
 
     public ServerinfoCommand() {
-        super("serverinfo", "Listet einige Informationen über den Server", Categorie.GENERAL);
+        super("serverinfo", "Listet einige Informationen über den Server", Category.GENERAL);
     }
 
     @Override

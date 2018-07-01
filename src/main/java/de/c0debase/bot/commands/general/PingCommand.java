@@ -14,7 +14,7 @@ import java.awt.*;
 public class PingCommand extends Command {
 
     public PingCommand() {
-        super("ping", "Zeigt dir den Ping des Bots zu Discord", Categorie.GENERAL);
+        super("ping", "Zeigt dir den Ping des Bots zu Discord", Category.GENERAL);
     }
 
     @Override

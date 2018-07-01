@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 public class SkipCommand extends Command {
 
     public SkipCommand() {
-        super("skip", "Überspringe einen Track", Categorie.MUSIC, "next");
+        super("skip", "Überspringe einen Track", Category.MUSIC, "next");
     }
 
     @Override

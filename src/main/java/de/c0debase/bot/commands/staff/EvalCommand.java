@@ -17,7 +17,7 @@ public class EvalCommand extends Command {
     private static final ScriptEngine SCRIPT_ENGINE = new ScriptEngineManager().getEngineByName("Nashorn");
 
     public EvalCommand() {
-        super("eval", "", Categorie.STAFF);
+        super("eval", "", Category.STAFF);
     }
 
     @Override

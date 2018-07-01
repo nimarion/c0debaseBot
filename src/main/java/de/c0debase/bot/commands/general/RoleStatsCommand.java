@@ -26,7 +26,7 @@ public class RoleStatsCommand extends Command {
     }
 
     public RoleStatsCommand() {
-        super("rolestats", "Zeigt wie viele Mitglieder eine Rolle haben", Categorie.GENERAL);
+        super("rolestats", "Zeigt wie viele Mitglieder eine Rolle haben", Category.GENERAL);
     }
 
     @Override

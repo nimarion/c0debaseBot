@@ -20,7 +20,7 @@ import java.net.URLEncoder;
 public class UrbandirectoryCommand extends Command {
 
     public UrbandirectoryCommand() {
-        super("urbandirectory", "Sucht im Urban Dictionary etwas für dich", Categorie.GENERAL, "ud");
+        super("urbandirectory", "Sucht im Urban Dictionary etwas für dich", Category.GENERAL, "ud");
     }
 
     @Override

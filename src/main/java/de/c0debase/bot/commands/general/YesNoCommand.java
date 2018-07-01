@@ -50,7 +50,7 @@ public class YesNoCommand extends Command {
     );
 
     public YesNoCommand() {
-        super("yn", "Answers to a question with \"yes\" or \"no\"", Categorie.GENERAL, "yesno", "jn", "janein");
+        super("yn", "Answers to a question with \"yes\" or \"no\"", Category.GENERAL, "yesno", "jn", "janein");
     }
 
     @Override
