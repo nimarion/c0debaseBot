@@ -52,7 +52,7 @@ public class MessageReactionListener extends ListenerAdapter {
                     if (categorie.getEmote().equalsIgnoreCase(emote)) {
                         embedBuilder.setTitle(":question: " + categorie.getName() + " Commands Help");
                         for (Command command : CodebaseBot.getInstance().getCommandManager().getAvailableCommands()) {
-                            if (command.getCategorie() == categorie) {
+                            if (command.getCategory() == categorie) {
                                 embedBuilder.appendDescription("**!" + command.getCommand() + "**\n" + command.getDescription() + "\n\n");
                             }
                         }
