@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 public class StatsCommand extends Command {
 
     public StatsCommand() {
-        super("stats", "Zeigt dir einige Informationen über den Bot", Categorie.GENERAL, "info");
+        super("stats", "Zeigt dir einige Informationen über den Bot", Category.GENERAL, "info");
     }
 
     @Override

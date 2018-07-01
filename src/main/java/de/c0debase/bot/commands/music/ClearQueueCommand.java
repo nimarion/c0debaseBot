@@ -12,7 +12,7 @@ import net.dv8tion.jda.core.entities.Message;
 public class ClearQueueCommand extends Command {
 
     public ClearQueueCommand() {
-        super("clearqueue", "Leert die Warteschlange", Categorie.MUSIC, "cq");
+        super("clearqueue", "Leert die Warteschlange", Category.MUSIC, "cq");
     }
 
     @Override

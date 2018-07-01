@@ -13,7 +13,7 @@ import net.dv8tion.jda.core.managers.AudioManager;
 public class JoinCommand extends Command {
 
     public JoinCommand() {
-        super("join", "Betritt einen Voicechannel", Categorie.MUSIC, "summon");
+        super("join", "Betritt einen Voicechannel", Category.MUSIC, "summon");
     }
 
     @Override

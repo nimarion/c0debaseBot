@@ -12,7 +12,7 @@ import net.dv8tion.jda.core.entities.Message;
 public class PauseCommand extends Command {
 
     public PauseCommand() {
-        super("pause", "Pausiert einen Track", Categorie.MUSIC);
+        super("pause", "Pausiert einen Track", Category.MUSIC);
     }
 
     @Override

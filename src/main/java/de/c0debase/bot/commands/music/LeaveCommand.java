@@ -11,7 +11,7 @@ import net.dv8tion.jda.core.entities.Message;
 public class LeaveCommand extends Command {
 
     public LeaveCommand() {
-        super("leave", "Verlässt einen Voicechannel", Categorie.MUSIC, "disconnect");
+        super("leave", "Verlässt einen Voicechannel", Category.MUSIC, "disconnect");
     }
 
     @Override
