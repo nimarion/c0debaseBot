@@ -6,7 +6,6 @@ import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.net.URL;
 import java.net.URLConnection;
@@ -18,7 +17,7 @@ import java.net.URLConnection;
 public class TriggeredCommand extends Command {
 
     public TriggeredCommand() {
-        super("triggered", "Erstellt ein Bild ^^", Categorie.GENERAL);
+        super("triggered", "Erstellt ein Bild ^^", Category.GENERAL);
     }
 
     @Override

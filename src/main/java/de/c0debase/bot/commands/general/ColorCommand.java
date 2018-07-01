@@ -16,7 +16,7 @@ public class ColorCommand extends Command {
 
 
     public ColorCommand() {
-        super("color", "Show a image of a color", Categorie.GENERAL);
+        super("color", "Show a image of a color", Category.GENERAL);
     }
 
     @Override

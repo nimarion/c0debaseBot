@@ -13,7 +13,7 @@ import net.dv8tion.jda.core.entities.Message;
 public class CoinCommand extends Command {
 
     public CoinCommand() {
-        super("coins", "Zeigt dir deine Coins", Categorie.GENERAL, "money");
+        super("coins", "Zeigt dir deine Coins", Category.GENERAL, "money");
     }
 
     @Override

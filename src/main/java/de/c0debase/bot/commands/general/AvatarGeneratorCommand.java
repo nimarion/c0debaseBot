@@ -13,7 +13,7 @@ import java.net.URLConnection;
 public class AvatarGeneratorCommand extends Command {
 
     public AvatarGeneratorCommand() {
-        super("avatargenerator", "Erstellt ein Avatar", Categorie.GENERAL, "ag");
+        super("avatargenerator", "Erstellt ein Avatar", Category.GENERAL, "ag");
     }
 
     @Override

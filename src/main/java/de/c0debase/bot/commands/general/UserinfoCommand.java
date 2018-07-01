@@ -15,7 +15,7 @@ import java.time.format.DateTimeFormatter;
 public class UserinfoCommand extends Command {
 
     public UserinfoCommand() {
-        super("userinfo", "Zeigt ein paar Infos über einen Nutzer", Categorie.GENERAL);
+        super("userinfo", "Zeigt ein paar Infos über einen Nutzer", Category.GENERAL);
     }
 
     @Override

@@ -11,7 +11,7 @@ import net.dv8tion.jda.core.entities.Message;
 public class SetgameCommand extends Command {
 
     public SetgameCommand() {
-        super("setgame", "Ändert den Status des Bots", Categorie.STAFF, "presence");
+        super("setgame", "Ändert den Status des Bots", Category.STAFF, "presence");
     }
 
     @Override

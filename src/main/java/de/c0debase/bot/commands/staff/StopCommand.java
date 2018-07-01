@@ -10,7 +10,7 @@ import net.dv8tion.jda.core.entities.Message;
 public class StopCommand extends Command {
 
     public StopCommand() {
-        super("stop", "Stoppt den Bot", Categorie.STAFF);
+        super("stop", "Stoppt den Bot", Category.STAFF);
     }
 
     @Override

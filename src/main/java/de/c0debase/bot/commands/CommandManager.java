@@ -30,7 +30,7 @@ public class CommandManager {
     public void execute(Message msg) {
         String[] arguments = msg.getContentRaw().split(" ");
         for (Command command : this.availableCommands) {
-            if (command.getCategorie().equals(Command.Categorie.STAFF) && !msg.getMember().hasPermission(Permission.BAN_MEMBERS)) {
+            if (command.getCategory().equals(Command.Category.STAFF) && !msg.getMember().hasPermission(Permission.BAN_MEMBERS)) {
                 continue;
             }
             if (("!" + command.getCommand()).equalsIgnoreCase(arguments[0])) {

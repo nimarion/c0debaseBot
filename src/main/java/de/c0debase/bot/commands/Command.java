@@ -18,12 +18,12 @@ public abstract class Command {
     private String command;
     private String[] aliases;
     private String description;
-    private Categorie categorie;
+    private Category category;
 
-    public Command(String command, String description, Categorie categorie, String... alias) {
+    public Command(String command, String description, Category category, String... alias) {
         this.command = command;
         this.description = description;
-        this.categorie = categorie;
+        this.category = category;
         this.aliases = alias;
     }
 
@@ -35,7 +35,7 @@ public abstract class Command {
 
     @Getter
     @AllArgsConstructor
-    public enum Categorie {
+    public enum Category {
         GENERAL("General", "one", "Öffentliche Commands"),
         STAFF("Team", "two", "Commands für das Team"),
         MUSIC("Musik", "musical_score", "Alle Commands für die Musik");
