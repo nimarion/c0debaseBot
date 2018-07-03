@@ -12,7 +12,7 @@ import net.dv8tion.jda.core.entities.Message;
 public class PlayCommand extends Command {
 
     public PlayCommand() {
-        super("play", "Spiele etwas Musik", Categorie.MUSIC, "add");
+        super("play", "Spiele etwas Musik", Category.MUSIC, "add");
     }
 
     @Override

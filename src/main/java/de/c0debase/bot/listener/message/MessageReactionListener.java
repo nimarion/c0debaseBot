@@ -3,7 +3,7 @@ package de.c0debase.bot.listener.message;
 import com.vdurmont.emoji.EmojiManager;
 import de.c0debase.bot.CodebaseBot;
 import de.c0debase.bot.commands.Command;
-import de.c0debase.bot.commands.Command.Categorie;
+import de.c0debase.bot.commands.Command.Category;
 import de.c0debase.bot.database.data.LevelUser;
 import de.c0debase.bot.utils.StringUtils;
 import net.dv8tion.jda.core.EmbedBuilder;
@@ -48,11 +48,11 @@ public class MessageReactionListener extends ListenerAdapter {
                     success.delete().queue();
                     return;
                 }
-                for (Categorie categorie : Categorie.values()) {
+                for (Category categorie : Category.values()) {
                     if (categorie.getEmote().equalsIgnoreCase(emote)) {
                         embedBuilder.setTitle(":question: " + categorie.getName() + " Commands Help");
                         for (Command command : CodebaseBot.getInstance().getCommandManager().getAvailableCommands()) {
-                            if (command.getCategorie() == categorie) {
+                            if (command.getCategory() == categorie) {
                                 embedBuilder.appendDescription("**!" + command.getCommand() + "**\n" + command.getDescription() + "\n\n");
                             }
                         }

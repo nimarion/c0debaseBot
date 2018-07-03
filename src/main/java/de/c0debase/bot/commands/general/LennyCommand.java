@@ -17,7 +17,7 @@ import java.net.URL;
 public class LennyCommand extends Command {
 
     public LennyCommand() {
-        super("lenny", "Get a random Lenny", Categorie.GENERAL);
+        super("lenny", "Get a random Lenny", Category.GENERAL);
     }
 
     @Override

@@ -14,7 +14,7 @@ import java.util.List;
 public class ClearCommand extends Command {
 
     public ClearCommand() {
-        super("clear", "Löscht eine bestimmte Anzahl an Nachrichten", Categorie.STAFF);
+        super("clear", "Löscht eine bestimmte Anzahl an Nachrichten", Category.STAFF);
     }
 
     @Override

@@ -17,7 +17,7 @@ import net.dv8tion.jda.core.entities.Message;
 public class LeaderboardCommand extends Command {
 
     public LeaderboardCommand() {
-        super("leaderboard", "Zeigt dir das Leaderboard", Categorie.GENERAL);
+        super("leaderboard", "Zeigt dir das Leaderboard", Category.GENERAL);
     }
 
     @Override

@@ -13,7 +13,7 @@ import net.dv8tion.jda.core.entities.Message;
 public class NowPlayingCommand extends Command {
 
     public NowPlayingCommand() {
-        super("nowplaying", "Zeigt den Namen des aktuellen Tracks", Categorie.MUSIC, "np");
+        super("nowplaying", "Zeigt den Namen des aktuellen Tracks", Category.MUSIC, "np");
     }
 
     @Override

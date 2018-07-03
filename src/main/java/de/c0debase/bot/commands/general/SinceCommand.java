@@ -14,7 +14,7 @@ import java.time.temporal.ChronoUnit;
 public class SinceCommand extends Command {
 
     public SinceCommand() {
-        super("since", "Zeigt wie lang du schon auf dem Server bist", Categorie.GENERAL);
+        super("since", "Zeigt wie lang du schon auf dem Server bist", Category.GENERAL);
     }
 
     @Override

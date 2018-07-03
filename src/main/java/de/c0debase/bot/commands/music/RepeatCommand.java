@@ -12,7 +12,7 @@ import net.dv8tion.jda.core.entities.Message;
 public class RepeatCommand extends Command {
 
     public RepeatCommand() {
-        super("repeat", "Wiederhole alle Tracks", Categorie.MUSIC);
+        super("repeat", "Wiederhole alle Tracks", Category.MUSIC);
     }
 
     @Override

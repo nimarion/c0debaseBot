@@ -25,7 +25,7 @@ public class RoleCommand extends Command {
     }
 
     public RoleCommand() {
-        super("role", "Weise dir eine Programmiersprache zu", Categorie.GENERAL, "rolle");
+        super("role", "Weise dir eine Programmiersprache zu", Category.GENERAL, "rolle");
     }
 
     @Override

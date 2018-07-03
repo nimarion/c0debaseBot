@@ -13,7 +13,7 @@ import net.dv8tion.jda.core.entities.Message;
 public class RankCommand extends Command {
 
     public RankCommand() {
-        super("rank", "Zeigt dir deine Level", Categorie.GENERAL, "level");
+        super("rank", "Zeigt dir deine Level", Category.GENERAL, "level");
     }
 
     @Override
