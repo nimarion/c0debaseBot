@@ -3,8 +3,6 @@ package de.c0debase.bot.listener.message;
 import ai.api.AIServiceException;
 import ai.api.model.AIRequest;
 import ai.api.model.AIResponse;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.vdurmont.emoji.EmojiManager;
 import de.c0debase.bot.CodebaseBot;
 import de.c0debase.bot.utils.Constants;
@@ -14,12 +12,10 @@ import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 import net.jodah.expiringmap.ExpiringMap;
-import org.openweathermap.api.model.currentweather.CurrentWeather;
-import org.openweathermap.api.query.*;
-import org.openweathermap.api.query.currentweather.CurrentWeatherOneLocationQuery;
 
 import java.awt.*;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -122,6 +118,14 @@ public class MessageReceiveListener extends ListenerAdapter {
             } else {
                 lastMessage.put(event.getMember(), event.getMessage().getContentRaw());
             }
+            CodebaseBot.getInstance().getMongoDataManager().getActivity(new Date(), event.getGuild().getId(), activity -> {
+                if(!activity.getUsers().contains(event.getAuthor().getId())){
+                    activity.getUsers().add(event.getAuthor().getId());
+                }
+                activity.getChannel().put(event.getChannel().getId(), activity.getChannel().containsKey(event.getChannel().getId()) ? activity.getChannel().get(event.getChannel().getId()) + 1 : 1);
+                activity.setMessages(activity.getMessages() + 1);
+                CodebaseBot.getInstance().getMongoDataManager().updateActivity(activity);
+            });
             CodebaseBot.getInstance().getMongoDataManager().getLevelUser(event.getGuild().getId(), event.getAuthor().getId(), levelUser -> {
                 float time = (System.currentTimeMillis() - levelUser.getLastMessage()) / 1000;
                 if (time >= 50.0f) {

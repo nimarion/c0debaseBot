@@ -22,7 +22,7 @@ public class TriggeredCommand extends Command {
 
     @Override
     public void execute(String[] args, Message msg) {
-        Member member = msg.getMentionedMembers().isEmpty() ? msg.getMember() : msg.getMentionedMembers().get(0);
+        Member member = args.length == 0 ? msg.getMember() : searchMember(args[0], msg.getMember());
         if(member.getUser().getAvatarUrl() == null){
             msg.getTextChannel().sendMessage("Dieser Command geht nicht mit default Avatar").queue();
             return;

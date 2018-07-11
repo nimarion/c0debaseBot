@@ -18,7 +18,7 @@ public class CoinCommand extends Command {
 
     @Override
     public void execute(String[] args, Message msg) {
-        final Member member = msg.getMentionedMembers().isEmpty() ? msg.getMember() : msg.getMentionedMembers().get(0);
+        Member member = args.length == 0 ? msg.getMember() : searchMember(args[0], msg.getMember());
         if (member.getUser().isBot()) {
             msg.getTextChannel().sendMessage(new EmbedBuilder().setDescription(member.getAsMention() + " kann keine Coins haben").build()).queue();
             return;

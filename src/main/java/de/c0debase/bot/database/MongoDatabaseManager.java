@@ -14,17 +14,21 @@ import org.bson.Document;
  * @author Biosphere
  * @date 27.04.18
  */
+@Getter
 public class MongoDatabaseManager {
 
     private static final String DATABASE_NAME = "codebase";
     private static final String USER_COLLECTION_NAME = "user";
+    private static final String ACTIVITY_COLLECTION_NAME = "activity";
 
 
-    private final MongoClient mongoClient;
-    @Getter
     private final MongoCollection<Document> users;
+    private final MongoCollection<Document> activity;
+
+
 
     public MongoDatabaseManager(final String host, final int port, final String username, final String password) {
+        MongoClient mongoClient;
         if (username != null && password != null) {
             mongoClient = new MongoClient(new ServerAddress(host, port),
                     MongoCredential.createCredential(username, DATABASE_NAME, password.toCharArray()),
@@ -35,7 +39,7 @@ public class MongoDatabaseManager {
         CodebaseBot.getInstance().getLogger().info("Connected to MongoDB " + mongoClient.getAddress());
         final MongoDatabase database = mongoClient.getDatabase(DATABASE_NAME);
         users = database.getCollection(USER_COLLECTION_NAME);
-
+        activity = database.getCollection(ACTIVITY_COLLECTION_NAME);
     }
 
 }

@@ -3,6 +3,7 @@ package de.c0debase.bot.database;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Sorts;
+import de.c0debase.bot.database.data.Activity;
 import de.c0debase.bot.database.data.LevelUser;
 import de.c0debase.bot.utils.Constants;
 import de.c0debase.bot.utils.Pagination;
@@ -10,9 +11,7 @@ import net.jodah.expiringmap.ExpiringMap;
 import org.bson.Document;
 import org.bson.json.JsonWriterSettings;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -37,9 +36,7 @@ public class MongoDataManager {
                 .build();
         mongoDatabaseManager = new MongoDatabaseManager(System.getenv("MONGO-HOST"), System.getenv("MONGO-PORT") == null ? 27017 : Integer.valueOf(System.getenv("MONGO-PORT")), null, null);
         final ExpiringMap.Builder<Object, Object> mapBuilder = ExpiringMap.builder();
-        mapBuilder.maxSize(123)
-                .expiration(1, TimeUnit.MINUTES)
-                .build();
+        mapBuilder.maxSize(123).expiration(1, TimeUnit.MINUTES).build();
         leaderboardCache = mapBuilder.build();
         userCache = mapBuilder.build();
     }
@@ -109,4 +106,29 @@ public class MongoDataManager {
             consumer.accept(pagination);
         });
     }
+
+    public void getActivity(Date date, String guildID, Consumer<Activity> consumer){
+        executorService.execute(() -> {
+            Document document = mongoDatabaseManager.getActivity().find(Filters.and(Filters.eq("guildID", guildID), Filters.eq("day", date.getDay()), Filters.eq("year", date.getYear()))).first();
+            Activity activity;
+            if(document == null){
+                activity = new Activity();
+                activity.setDay(date.getDay());
+                activity.setYear(date.getYear());
+                activity.setGuildID(guildID);
+                activity.setMessages(0);
+                activity.setUsers(new ArrayList<>());
+                activity.setChannel(new HashMap<>());
+                mongoDatabaseManager.getActivity().insertOne(Document.parse(Constants.GSON.toJson(activity)));
+            } else {
+                activity = Constants.GSON.fromJson(document.toJson(jsonWriterSettings), Activity.class);
+            }
+            consumer.accept(activity);
+        });
+    }
+
+    public void updateActivity(Activity activity) {
+        executorService.execute(() -> mongoDatabaseManager.getActivity().replaceOne(Filters.and(Filters.eq("guildID", activity.getGuildID()), Filters.eq("day", activity.getDay()), Filters.eq("year", activity.getYear())), Document.parse(Constants.GSON.toJson(activity))));
+    }
+
 }

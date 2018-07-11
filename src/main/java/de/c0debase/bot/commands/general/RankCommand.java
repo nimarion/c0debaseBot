@@ -18,7 +18,7 @@ public class RankCommand extends Command {
 
     @Override
     public void execute(String[] args, Message msg) {
-        Member member = msg.getMentionedMembers().isEmpty() ? msg.getMember() : msg.getMentionedMembers().get(0);
+        Member member = args.length == 0 ? msg.getMember() : searchMember(args[0], msg.getMember());
         if (member.getUser().isBot()) {
             member = msg.getMember();
         }
