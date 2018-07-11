@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.User;
 
@@ -31,6 +32,18 @@ public abstract class Command {
 
     protected EmbedBuilder getEmbed(Guild guild, User requester) {
         return new EmbedBuilder().setFooter("@" + requester.getName() + "#" + requester.getDiscriminator(), requester.getEffectiveAvatarUrl()).setColor(guild.getSelfMember().getColor());
+    }
+
+    protected Member searchMember(String name, Member member){
+        for(Member members : member.getGuild().getMembers()){
+            if(members.getUser().getName().toLowerCase().contains(name.toLowerCase())) {
+                return members;
+            }
+            if(members.getNickname() != null && members.getNickname().toLowerCase().contains(name.toLowerCase())){
+                return members;
+            }
+        }
+        return member;
     }
 
     @Getter

@@ -20,7 +20,7 @@ public class UserinfoCommand extends Command {
 
     @Override
     public void execute(String[] args, Message message) {
-        Member member = message.getMentionedMembers().isEmpty() ? message.getMember() : message.getMentionedMembers().get(0);
+        Member member = args.length == 0 ? message.getMember() : searchMember(args[0], message.getMember());
 
         EmbedBuilder embedBuilder = new EmbedBuilder();
         embedBuilder.setThumbnail(member.getUser().getAvatarUrl());
