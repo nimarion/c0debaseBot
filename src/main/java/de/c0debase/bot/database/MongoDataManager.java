@@ -11,6 +11,7 @@ import net.jodah.expiringmap.ExpiringMap;
 import org.bson.Document;
 import org.bson.json.JsonWriterSettings;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -113,8 +114,8 @@ public class MongoDataManager {
             Activity activity;
             if(document == null){
                 activity = new Activity();
-                activity.setDay(date.getDay());
-                activity.setYear(date.getYear());
+                activity.setDay(LocalDateTime.now().getDayOfMonth());
+                activity.setYear(LocalDateTime.now().getYear());
                 activity.setGuildID(guildID);
                 activity.setMessages(0);
                 activity.setUsers(new ArrayList<>());
