@@ -114,8 +114,8 @@ public class MongoDataManager {
             Activity activity;
             if(document == null){
                 activity = new Activity();
-                activity.setDay(LocalDateTime.now().getDayOfMonth());
-                activity.setYear(LocalDateTime.now().getYear());
+                activity.setDay(day);
+                activity.setYear(year);
                 activity.setGuildID(guildID);
                 activity.setMessages(0);
                 activity.setUsers(new ArrayList<>());
