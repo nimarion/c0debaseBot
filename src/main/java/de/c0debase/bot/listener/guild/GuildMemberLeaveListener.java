@@ -1,8 +1,11 @@
 package de.c0debase.bot.listener.guild;
 
+import de.c0debase.bot.CodebaseBot;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.events.guild.member.GuildMemberLeaveEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
+
+import java.time.LocalDateTime;
 
 /**
  * @author Biosphere
@@ -17,6 +20,10 @@ public class GuildMemberLeaveListener extends ListenerAdapter {
             embedBuilder.setFooter("@" + event.getMember().getUser().getName() + "#" + event.getMember().getUser().getDiscriminator(), event.getMember().getUser().getEffectiveAvatarUrl());
             embedBuilder.appendDescription(event.getMember().getEffectiveName() + " hat c0debase verlassen");
             channel.sendMessage(embedBuilder.build()).queue();
+        });
+        CodebaseBot.getInstance().getMongoDataManager().getActivity(LocalDateTime.now().getDayOfMonth(), LocalDateTime.now().getYear(), event.getGuild().getId(), activity -> {
+            activity.setMembers(event.getGuild().getMembers().size());
+            CodebaseBot.getInstance().getMongoDataManager().updateActivity(activity);
         });
     }
 

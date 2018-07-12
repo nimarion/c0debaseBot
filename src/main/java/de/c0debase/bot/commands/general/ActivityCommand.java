@@ -5,6 +5,7 @@ import de.c0debase.bot.commands.Command;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Message;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
@@ -19,7 +20,7 @@ public class ActivityCommand extends Command {
 
     @Override
     public void execute(String[] args, Message msg) {
-        CodebaseBot.getInstance().getMongoDataManager().getActivity(new Date(), msg.getGuild().getId(), activity -> {
+        CodebaseBot.getInstance().getMongoDataManager().getActivity(LocalDateTime.now().getDayOfMonth(), LocalDateTime.now().getYear(), msg.getGuild().getId(), activity -> {
             EmbedBuilder embedBuilder = getEmbed(msg.getGuild(), msg.getAuthor());
             embedBuilder.setTitle("Heutige Statistik");
             embedBuilder.addField("Aktive Nutzer", String.valueOf(activity.getUsers().size()), true);

@@ -7,6 +7,7 @@ import net.dv8tion.jda.core.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 import net.dv8tion.jda.core.utils.PermissionUtil;
 
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,6 +49,10 @@ public class GuildMemberJoinListener extends ListenerAdapter {
                 }
             });
             event.getGuild().getController().addRolesToMember(event.getMember(), roles).reason("Autorole").queue();
+        });
+        CodebaseBot.getInstance().getMongoDataManager().getActivity(LocalDateTime.now().getDayOfMonth(), LocalDateTime.now().getYear(), event.getGuild().getId(), activity -> {
+            activity.setMembers(event.getGuild().getMembers().size());
+            CodebaseBot.getInstance().getMongoDataManager().updateActivity(activity);
         });
     }
 }
