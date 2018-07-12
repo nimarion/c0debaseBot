@@ -12,7 +12,7 @@ import java.util.Map;
 @Data
 public class Activity {
 
-    private int year, day, messages;
+    private Integer year, day, messages, members;
     private String guildID;
     private List<String> users;
     private Map<String, Integer> channel;

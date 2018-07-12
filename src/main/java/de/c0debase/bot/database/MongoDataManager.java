@@ -3,6 +3,7 @@ package de.c0debase.bot.database;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Sorts;
+import de.c0debase.bot.CodebaseBot;
 import de.c0debase.bot.database.data.Activity;
 import de.c0debase.bot.database.data.LevelUser;
 import de.c0debase.bot.utils.Constants;
@@ -11,7 +12,6 @@ import net.jodah.expiringmap.ExpiringMap;
 import org.bson.Document;
 import org.bson.json.JsonWriterSettings;
 
-import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -120,9 +120,21 @@ public class MongoDataManager {
                 activity.setMessages(0);
                 activity.setUsers(new ArrayList<>());
                 activity.setChannel(new HashMap<>());
+                if(CodebaseBot.getInstance().getJda().getGuildById("361448651748540426") != null){
+                    activity.setMembers(CodebaseBot.getInstance().getJda().getGuildById("361448651748540426").getMembers().size());
+                } else {
+                    activity.setMembers(0);
+                }
                 mongoDatabaseManager.getActivity().insertOne(Document.parse(Constants.GSON.toJson(activity)));
             } else {
                 activity = Constants.GSON.fromJson(document.toJson(jsonWriterSettings), Activity.class);
+                if(activity.getMembers() == null){
+                    if(CodebaseBot.getInstance().getJda().getGuildById("361448651748540426") != null){
+                        activity.setMembers(CodebaseBot.getInstance().getJda().getGuildById("361448651748540426").getMembers().size());
+                    } else {
+                        activity.setMembers(0);
+                    }
+                }
             }
             consumer.accept(activity);
         });
