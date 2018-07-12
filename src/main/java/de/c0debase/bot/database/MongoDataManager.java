@@ -108,9 +108,9 @@ public class MongoDataManager {
         });
     }
 
-    public void getActivity(Date date, String guildID, Consumer<Activity> consumer){
+    public void getActivity(int day, int year,  String guildID, Consumer<Activity> consumer){
         executorService.execute(() -> {
-            Document document = mongoDatabaseManager.getActivity().find(Filters.and(Filters.eq("guildID", guildID), Filters.eq("day", date.getDay()), Filters.eq("year", date.getYear()))).first();
+            Document document = mongoDatabaseManager.getActivity().find(Filters.and(Filters.eq("guildID", guildID), Filters.eq("day", day), Filters.eq("year", year))).first();
             Activity activity;
             if(document == null){
                 activity = new Activity();

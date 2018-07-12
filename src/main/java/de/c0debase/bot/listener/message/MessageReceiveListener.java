@@ -14,6 +14,7 @@ import net.dv8tion.jda.core.hooks.ListenerAdapter;
 import net.jodah.expiringmap.ExpiringMap;
 
 import java.awt.*;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -118,7 +119,7 @@ public class MessageReceiveListener extends ListenerAdapter {
             } else {
                 lastMessage.put(event.getMember(), event.getMessage().getContentRaw());
             }
-            CodebaseBot.getInstance().getMongoDataManager().getActivity(new Date(), event.getGuild().getId(), activity -> {
+            CodebaseBot.getInstance().getMongoDataManager().getActivity(LocalDateTime.now().getDayOfMonth(), LocalDateTime.now().getYear(), event.getGuild().getId(), activity -> {
                 if(!activity.getUsers().contains(event.getAuthor().getId())){
                     activity.getUsers().add(event.getAuthor().getId());
                 }
