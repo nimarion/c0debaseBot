@@ -9,7 +9,7 @@ public class TableFlipListener extends ListenerAdapter {
 
     @Override
     public void onMessageReceived(final MessageReceivedEvent event) {
-        if (event.getMessage().getContentRaw().equals(TABLE_FLIP)) {
+        if (event.getMessage().getContentRaw().contains(TABLE_FLIP)) {
             event.getChannel().sendMessage(UNFLIP).queue(null, ignored -> {});
         }
     }
