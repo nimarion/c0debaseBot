@@ -3,8 +3,7 @@
 [![GitHub contributors](https://img.shields.io/github/contributors/biospheere/c0debaseBot.svg)](https://github.com/Biospheere/c0debaseBot/graphs/contributors/)
 [![c0debase Discord](https://discordapp.com/api/guilds/361448651748540426/embed.png)](https://discord.gg/BDwBeZ3)
 
-# c0debaseBot 
-
+# c0debaseBot - Der Bot wird durch einen Recode ersetzt!
 Dieser Bot ist ein Discord Bot für den c0debase Server.
 
 ### Anforderungen
