@@ -30,20 +30,11 @@ public class MessageReceiveListener extends ListenerAdapter {
 
     private final Map<Member, String> lastMessage;
     private final List<String> gifs = Arrays.asList(
-            "https://media.giphy.com/media/5VKbvrjxpVJCM/giphy.gif",
-            "https://media.giphy.com/media/4cUCFvwICarHq/giphy.gif",
-            "https://media.giphy.com/media/1ym5LJ17vp77BL8X5O/giphy.gif",
-            "https://media.giphy.com/media/KI9oNS4JBemyI/giphy.gif",
-            "https://media.giphy.com/media/l1CC9FjH54QhYHExq/source.gif",
-            "https://media.giphy.com/media/2gYhkl6mLIYZxpMve1/giphy.gif",
-            "https://media.giphy.com/media/kmU72Ms75Zhlu/giphy.gif",
-            "https://media.giphy.com/media/xHMIDAy1qkzNS/giphy.gif",
-            "https://media.giphy.com/media/yJFeycRK2DB4c/giphy.gif",
-            "https://media.giphy.com/media/cbb8zL5wbNnfq/giphy.gif",
-            "https://media.giphy.com/media/aLdiZJmmx4OVW/giphy.gif",
-            "https://media.giphy.com/media/qPcX2mzk3NmjC/giphy.gif",
-            "https://media.giphy.com/media/kjCFOUT3ZIlAA/giphy.gif",
-            "https://media.giphy.com/media/ZisaVxhbs1iDK/giphy.gif"
+            "https://media.giphy.com/media/uhDDQ9UNoXISQ/giphy.gif",
+            "https://media.giphy.com/media/IRZE8JX2BQikM/giphy.gif",
+            "https://media.giphy.com/media/Z4Sek3StLGVO0/giphy.gif",
+            "https://media.giphy.com/media/JtwMddKpsF9Hq/giphy.gif",
+            "https://media.giphy.com/media/3ov9k9vVSTn6DevZsY/giphy.gif"
     );
 
     public MessageReceiveListener(){
