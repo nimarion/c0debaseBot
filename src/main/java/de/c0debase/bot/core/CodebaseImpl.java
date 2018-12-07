@@ -27,13 +27,12 @@ public class CodebaseImpl implements Codebase {
 
     private static final Logger logger = LoggerFactory.getLogger(Codebase.class);
 
-    private JDA jda;
-    private DataManager dataManager;
-    private CommandManager commandManager;
-    private Map<String, Tempchannel> tempchannels;
+    private final JDA jda;
+    private final DataManager dataManager;
+    private final CommandManager commandManager;
+    private final Map<String, Tempchannel> tempchannels;
 
-    @Override
-    public void init() throws Exception {
+    public CodebaseImpl() throws Exception {
         final long startTime = System.currentTimeMillis();
         logger.info("Starting c0debase");
 
@@ -62,10 +61,11 @@ public class CodebaseImpl implements Codebase {
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             try {
-                close();
+                dataManager.close();
             } catch (final Exception exception) {
                 exception.printStackTrace();
             }
+            jda.shutdown();
         }));
         logger.info(String.format("Startup finished in %dms!", System.currentTimeMillis() - startTime));
     }
@@ -93,7 +93,7 @@ public class CodebaseImpl implements Codebase {
             final JDABuilder jdaBuilder = new JDABuilder(AccountType.BOT);
             jdaBuilder.setToken(System.getenv("DISCORD-TOKEN"));
             jdaBuilder.setGame(Game.playing("auf c0debase"));
-            return jdaBuilder.buildBlocking();
+            return jdaBuilder.build().awaitReady();
         } catch (Exception exception) {
             logger.error("Encountered exception while initializing ShardManager!");
             throw exception;
@@ -118,15 +118,5 @@ public class CodebaseImpl implements Codebase {
     @Override
     public Map<String, Tempchannel> getTempchannels() {
         return tempchannels;
-    }
-
-    @Override
-    public void close() throws Exception {
-        if (dataManager != null) {
-            dataManager.close();
-        }
-        if (jda != null) {
-            jda.shutdown();
-        }
     }
 }

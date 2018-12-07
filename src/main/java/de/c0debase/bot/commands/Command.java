@@ -8,13 +8,9 @@ import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.User;
 
-/**
- * @author Biosphere
- * @date 23.01.18
- */
-
 @Getter
 public abstract class Command {
+    protected Codebase bot = null;
 
     private final String command;
     private final String[] aliases;
@@ -28,10 +24,18 @@ public abstract class Command {
         this.aliases = alias;
     }
 
-    public abstract void execute(final Codebase bot, final String[] args, final Message message);
+    public abstract void execute(final String[] args, final Message message);
 
     protected EmbedBuilder getEmbed(final Guild guild, final User requester) {
-        return new EmbedBuilder().setFooter("@" + requester.getName() + "#" + requester.getDiscriminator(), requester.getEffectiveAvatarUrl()).setColor(guild.getSelfMember().getColor());
+        return new EmbedBuilder().setFooter("@" + requester.getName() + "#" + requester.getDiscriminator(),
+                requester.getEffectiveAvatarUrl()).setColor(guild.getSelfMember().getColor());
+    }
+
+    public void setInstance(final Codebase instance) {
+        if (bot != null) {
+            throw new IllegalStateException("Can only initialize once!");
+        }
+        bot = instance;
     }
 
     @Getter

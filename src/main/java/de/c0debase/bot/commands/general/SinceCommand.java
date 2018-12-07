@@ -9,10 +9,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 
-/**
- * @author Biosphere
- * @date 24.03.18
- */
 public class SinceCommand extends Command {
 
     public SinceCommand() {
@@ -20,7 +16,7 @@ public class SinceCommand extends Command {
     }
 
     @Override
-    public void execute(final Codebase bot, final String[] args, final Message message) {
+    public void execute(final String[] args, final Message message) {
         final Member member = message.getMentionedMembers().size() == 0 ? message.getMember() : message.getMentionedMembers().get(0);
         message.getTextChannel().sendMessage(getEmbed(message.getGuild(), message.getAuthor())
                 .setDescription(member.getAsMention() + " ist seit " + ChronoUnit.DAYS.between(member.getJoinDate(), LocalDateTime.now().atOffset(ZoneOffset.UTC)) + " Tagen auf " + message.getGuild().getName())

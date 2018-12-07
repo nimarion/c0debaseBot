@@ -9,11 +9,6 @@ import net.dv8tion.jda.core.entities.Message;
 import java.awt.*;
 import java.util.Arrays;
 
-/**
- * @author Biosphere
- * @date 23.01.18
- */
-
 public class HelpCommand extends Command {
 
     public HelpCommand() {
@@ -21,7 +16,7 @@ public class HelpCommand extends Command {
     }
 
     @Override
-    public void execute(final Codebase bot, final String[] args, final Message message) {
+    public void execute(final String[] args, final Message message) {
         final EmbedBuilder infoEmbed = new EmbedBuilder();
         infoEmbed.setColor(message.getGuild().getSelfMember().getColor());
         infoEmbed.appendDescription(message.getAuthor().getAsMention() + " schau mal in deine DMs");
@@ -31,12 +26,13 @@ public class HelpCommand extends Command {
         embedBuilder.setTitle("Hilfe");
         embedBuilder.setColor(Color.GREEN);
         embedBuilder.appendDescription(":question: Help\nKlicke den entsprechenden Emote an für mehr Infos.\n");
-        Arrays.stream(Category.values()).map(categorie -> "**" + (categorie.ordinal() + 1) + " - " + categorie.getName() + " Commands**\n" + categorie.getDescription() + "\n").forEach(embedBuilder::appendDescription);
+        Arrays.stream(Category.values())
+                .map(category -> "**" + (category.ordinal() + 1) + " - " + category.getName() + " Commands**\n" +
+                        category.getDescription() + "\n").forEach(embedBuilder::appendDescription);
 
         message.getMember().getUser().openPrivateChannel().queue(success -> success.sendMessage(embedBuilder.build()).queue(msg -> {
             Arrays.stream(Category.values()).forEach(categorie -> message.addReaction(EmojiManager.getForAlias(categorie.getEmote()).getUnicode()).queue());
             message.addReaction(EmojiManager.getForAlias("wastebasket").getUnicode()).queue();
         }));
-
     }
 }

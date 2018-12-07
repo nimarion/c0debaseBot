@@ -13,10 +13,6 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-/**
- * @author Biosphere
- * @date 21.04.18
- */
 public class RoleStatsCommand extends Command {
 
     private static final List<String> FORBIDDEN;
@@ -31,7 +27,7 @@ public class RoleStatsCommand extends Command {
     }
 
     @Override
-    public void execute(final Codebase bot, final String[] args, final Message message) {
+    public void execute(final String[] args, final Message message) {
         final Guild guild = message.getGuild();
         final EmbedBuilder embedBuilder = getEmbed(guild, message.getAuthor());
         embedBuilder.setTitle("Rollen Statistiken");

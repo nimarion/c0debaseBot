@@ -7,11 +7,6 @@ import net.dv8tion.jda.core.entities.VoiceChannel;
 import net.dv8tion.jda.core.events.ReadyEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
-/**
- * @author Biosphere
- * @date 23.01.18
- */
-
 public class ReadyListener extends ListenerAdapter {
 
     private final Codebase bot;

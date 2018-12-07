@@ -11,10 +11,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.StringJoiner;
 
-/**
- * @author SpigotException
- * created at the 29.03.2018 at 13:15
- */
 public class YesNoCommand extends Command {
 
     private final List<String> yesGifs = Arrays.asList(
@@ -53,7 +49,7 @@ public class YesNoCommand extends Command {
     }
 
     @Override
-    public void execute(final Codebase bot, final String[] args, final Message message) {
+    public void execute(final String[] args, final Message message) {
         if (args.length > 0) {
             final StringJoiner stringJoiner = new StringJoiner(" ");
             for (int i = 0; i < args.length; i++) {

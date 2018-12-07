@@ -22,7 +22,7 @@ public class LeaderboardCommand extends Command {
     }
 
     @Override
-    public void execute(final Codebase bot, final String[] args, final Message message) {
+    public void execute(final String[] args, final Message message) {
         final EmbedBuilder embedBuilder = new EmbedBuilder();
         embedBuilder.setColor(message.getGuild().getSelfMember().getColor());
         embedBuilder.setTitle("Leaderboard: " + message.getGuild().getName());

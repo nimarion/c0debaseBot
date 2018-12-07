@@ -5,10 +5,6 @@ import lombok.Data;
 
 import java.util.List;
 
-/**
- * @author Biosphere
- * @date 23.02.18
- */
 @Data
 public class CodebaseUser {
 

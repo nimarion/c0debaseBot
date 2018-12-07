@@ -7,9 +7,7 @@ import net.dv8tion.jda.core.JDA;
 
 import java.util.Map;
 
-public interface Codebase extends AutoCloseable {
-
-    void init() throws Exception;
+public interface Codebase {
 
     DataManager getDataManager();
 

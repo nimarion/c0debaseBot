@@ -7,10 +7,6 @@ import com.mongodb.client.MongoDatabase;
 import lombok.Getter;
 import org.bson.Document;
 
-/**
- * @author Biosphere
- * @date 27.04.18
- */
 @Getter
 public class MongoDatabaseManager implements AutoCloseable {
 

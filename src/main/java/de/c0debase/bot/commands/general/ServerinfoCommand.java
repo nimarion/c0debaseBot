@@ -11,10 +11,6 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 
-/**
- * @author Biosphere
- * @date 23.01.18
- */
 public class ServerinfoCommand extends Command {
 
     public ServerinfoCommand() {
@@ -22,7 +18,7 @@ public class ServerinfoCommand extends Command {
     }
 
     @Override
-    public void execute(final Codebase bot, final String[] args, final Message message) {
+    public void execute(final String[] args, final Message message) {
         final EmbedBuilder embedBuilder = new EmbedBuilder();
         embedBuilder.setTitle(message.getGuild().getName(), "https://c0debase.de");
         embedBuilder.setThumbnail(message.getGuild().getIconUrl());

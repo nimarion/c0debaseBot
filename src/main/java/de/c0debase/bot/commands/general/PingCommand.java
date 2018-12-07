@@ -7,10 +7,6 @@ import net.dv8tion.jda.core.entities.Message;
 
 import java.awt.*;
 
-/**
- * @author Biosphere
- * @date 23.01.18
- */
 public class PingCommand extends Command {
 
     public PingCommand() {
@@ -18,7 +14,7 @@ public class PingCommand extends Command {
     }
 
     @Override
-    public void execute(final Codebase bot, final String[] args, final Message message) {
+    public void execute(final String[] args, final Message message) {
         final EmbedBuilder embedBuilder = new EmbedBuilder();
         embedBuilder.appendDescription(":stopwatch: " + message.getJDA().getPing());
         embedBuilder.setColor(Color.GREEN);

@@ -17,11 +17,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-/**
- * @author Biosphere
- * @date 23.01.18
- */
-
 public class MessageReceiveListener extends ListenerAdapter {
 
     private final Codebase bot;

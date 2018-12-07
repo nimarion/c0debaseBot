@@ -5,10 +5,6 @@ import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.events.guild.member.GuildMemberLeaveEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
-/**
- * @author Biosphere
- * @date 23.01.18
- */
 public class GuildMemberLeaveListener extends ListenerAdapter {
 
     public GuildMemberLeaveListener(final Codebase bot) {

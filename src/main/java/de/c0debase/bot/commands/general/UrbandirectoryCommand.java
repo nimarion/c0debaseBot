@@ -7,6 +7,7 @@ import de.c0debase.bot.commands.Command;
 import de.c0debase.bot.core.Codebase;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.core.entities.TextChannel;
 import org.apache.commons.io.IOUtils;
 
 import java.io.InputStream;
@@ -14,10 +15,6 @@ import java.io.StringWriter;
 import java.net.URL;
 import java.net.URLEncoder;
 
-/**
- * @author Biosphere
- * @date 23.01.18
- */
 public class UrbandirectoryCommand extends Command {
 
     public UrbandirectoryCommand() {
@@ -25,11 +22,14 @@ public class UrbandirectoryCommand extends Command {
     }
 
     @Override
-    public void execute(final Codebase bot, final String[] args, final Message message) {
+    public void execute(final String[] args, final Message message) {
+        final TextChannel channel = message.getTextChannel();
         if (args.length < 1) {
-            message.getTextChannel().sendMessage(getEmbed(message.getGuild(), message.getAuthor()).setDescription("!ud [term]").build()).queue();
+            channel
+                    .sendMessage(getEmbed(message.getGuild(), message.getAuthor()).setDescription("!ud [term]").build())
+                    .queue();
         } else {
-            message.getTextChannel().sendTyping().queue();
+            channel.sendTyping().queue();
             final String search = String.join(" ", args);
 
             final StringWriter writer = new StringWriter();
@@ -38,8 +38,9 @@ public class UrbandirectoryCommand extends Command {
                 try (final InputStream inputStream = url.openConnection().getInputStream()) {
                     IOUtils.copy(inputStream, writer, "UTF-8");
                 }
-            } catch (Exception ex) {
-                ex.printStackTrace();
+            } catch (Exception exception) {
+                channel.sendMessage("Ein Fehler ist aufgetreten!").queue();
+                return;
             }
             final EmbedBuilder embedBuilder = getEmbed(message.getGuild(), message.getAuthor());
             embedBuilder.setTitle("Definition: " + search);
@@ -50,7 +51,7 @@ public class UrbandirectoryCommand extends Command {
             } catch (JsonParseException ex) {
                 embedBuilder.appendDescription("An error occurred.");
             } finally {
-                message.getTextChannel().sendMessage(embedBuilder.build()).queue();
+                channel.sendMessage(embedBuilder.build()).queue();
             }
         }
     }
