@@ -34,7 +34,7 @@
         <dependency>
             <groupId>net.dv8tion</groupId>
             <artifactId>JDA</artifactId>
-            <version>LATEST</version>
+            <version>3.8.1_437</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
         <dependency>
@@ -52,7 +52,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.16.20</version>
+            <version>1.18.4</version>
             <scope>provided</scope>
         </dependency>
         <!-- https://mvnrepository.com/artifact/com.google.api.client/google-api-client-repackaged-com-google-common-base -->
@@ -83,43 +83,25 @@
         <dependency>
             <groupId>com.sedmelluq</groupId>
             <artifactId>lavaplayer</artifactId>
-            <version>1.2.56</version>
+            <version>1.3.10</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/io.sentry/sentry-logback -->
         <dependency>
             <groupId>io.sentry</groupId>
             <artifactId>sentry-logback</artifactId>
-            <version>1.6.8</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/ai.api/libai -->
-        <dependency>
-            <groupId>ai.api</groupId>
-            <artifactId>libai</artifactId>
-            <version>1.6.12</version>
+            <version>1.7.14</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.mongodb/mongo-java-driver -->
         <dependency>
             <groupId>org.mongodb</groupId>
             <artifactId>mongo-java-driver</artifactId>
-            <version>3.6.3</version>
+            <version>3.8.2</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/net.jodah/expiringmap -->
         <dependency>
             <groupId>net.jodah</groupId>
             <artifactId>expiringmap</artifactId>
             <version>0.5.8</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.openweathermap.java-api/api-core -->
-        <dependency>
-            <groupId>org.openweathermap.java-api</groupId>
-            <artifactId>api-core</artifactId>
-            <version>1.2</version>
-        </dependency>
-        <!-- https://jitpack.io/#Biospheere/DeepLTranslator -->
-        <dependency>
-            <groupId>com.github.Biospheere</groupId>
-            <artifactId>DeepLTranslator</artifactId>
-            <version>v1.0</version>
         </dependency>
     </dependencies>
 

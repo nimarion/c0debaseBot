@@ -1,6 +1,7 @@
 package de.c0debase.bot.commands.general;
 
 import de.c0debase.bot.commands.Command;
+import de.c0debase.bot.core.Codebase;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
@@ -30,7 +31,7 @@ public class RoleStatsCommand extends Command {
     }
 
     @Override
-    public void execute(final String[] args, final Message message) {
+    public void execute(final Codebase bot, final String[] args, final Message message) {
         final Guild guild = message.getGuild();
         final EmbedBuilder embedBuilder = getEmbed(guild, message.getAuthor());
         embedBuilder.setTitle("Rollen Statistiken");

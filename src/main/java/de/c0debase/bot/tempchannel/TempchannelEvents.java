@@ -10,10 +10,10 @@ import net.dv8tion.jda.core.entities.VoiceChannel;
  */
 public interface TempchannelEvents {
 
-    void onTempchannelJoin(VoiceChannel voiceChannel, Member member);
+    void onTempchannelJoin(final VoiceChannel voiceChannel, final Member member);
 
-    void onTempchannelLeave(VoiceChannel voiceChannel, Member member);
+    void onTempchannelLeave(final VoiceChannel voiceChannel, final Member member);
 
-    void onLoad(TextChannel textChannel, VoiceChannel voiceChannel);
+    void onLoad(final TextChannel textChannel, final VoiceChannel voiceChannel);
 
 }

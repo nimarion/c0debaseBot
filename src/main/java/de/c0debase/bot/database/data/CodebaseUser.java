@@ -10,7 +10,7 @@ import java.util.List;
  * @date 23.02.18
  */
 @Data
-public class LevelUser {
+public class CodebaseUser {
 
     private String userID, guildID;
     private int level, xp;
@@ -20,7 +20,7 @@ public class LevelUser {
 
     public boolean addXP(int xp) {
         int morexp = Constants.RANDOM.nextInt(xp);
-        this.xp +=  morexp;
+        this.xp += morexp;
         coins += morexp * 0.03;
         double reach = 1000 * level * 1.2;
         if (this.xp >= reach && reach != 0) {
@@ -28,7 +28,7 @@ public class LevelUser {
             level += 1;
             return true;
         } else if (this.xp >= 1000 && level == 0) {
-            level +=1;
+            level += 1;
             return true;
         }
         return false;

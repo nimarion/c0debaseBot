@@ -3,6 +3,7 @@ package de.c0debase.bot.commands.general;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import de.c0debase.bot.commands.Command;
+import de.c0debase.bot.core.Codebase;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Message;
 import org.apache.commons.io.IOUtils;
@@ -22,25 +23,24 @@ public class GithubCommand extends Command {
     }
 
     @Override
-    public void execute(String[] args, Message msg) {
+    public void execute(final Codebase bot, final String[] args, final Message message) {
         final StringWriter writer = new StringWriter();
         try {
-            URL url = new URL("https://api.github.com/repos/Biospheere/c0debaseBot");
-            try (final InputStream inputStream = url.openConnection().getInputStream()) {
+            try (final InputStream inputStream = new URL("https://api.github.com/repos/Biospheere/c0debaseBot").openConnection().getInputStream()) {
                 IOUtils.copy(inputStream, writer, "UTF-8");
             }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        JsonObject jsonObject = new JsonParser().parse(writer.toString()).getAsJsonObject();
+        final JsonObject jsonObject = new JsonParser().parse(writer.toString()).getAsJsonObject();
 
-        EmbedBuilder embedBuilder = getEmbed(msg.getGuild(), msg.getAuthor());
+        final EmbedBuilder embedBuilder = getEmbed(message.getGuild(), message.getAuthor());
         embedBuilder.setTitle("c0debaseBot", "https://github.com/Biospheere/c0debaseBot");
         embedBuilder.addField("Sprache", jsonObject.get("language").getAsString(), false);
         embedBuilder.addField("Stars", String.valueOf(jsonObject.get("stargazers_count").getAsInt()), false);
         embedBuilder.addField("Forks", String.valueOf(jsonObject.get("forks_count").getAsInt()), false);
         embedBuilder.addField("Issues", String.valueOf(jsonObject.get("open_issues_count").getAsInt()), false);
         embedBuilder.addField("Clonen", "`git clone " + jsonObject.get("ssh_url").getAsString() + "`", false);
-        msg.getTextChannel().sendMessage(embedBuilder.build()).queue();
+        message.getTextChannel().sendMessage(embedBuilder.build()).queue();
     }
 }

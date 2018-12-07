@@ -1,5 +1,6 @@
 package de.c0debase.bot.listener.guild;
 
+import de.c0debase.bot.core.Codebase;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.events.guild.member.GuildMemberNickChangeEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
@@ -10,10 +11,14 @@ import net.dv8tion.jda.core.hooks.ListenerAdapter;
  */
 public class GuildMemberNickChangeListener extends ListenerAdapter {
 
+    public GuildMemberNickChangeListener(final Codebase bot) {
+        bot.getJDA().addEventListener(this);
+    }
+
     @Override
-    public void onGuildMemberNickChange(GuildMemberNickChangeEvent event) {
+    public void onGuildMemberNickChange(final GuildMemberNickChangeEvent event) {
         event.getGuild().getTextChannelsByName("log", true).forEach(channel -> {
-            EmbedBuilder logBuilder = new EmbedBuilder();
+            final EmbedBuilder logBuilder = new EmbedBuilder();
             logBuilder.setTitle("Nickname geändert");
             logBuilder.appendDescription("Neuer Nickname:" + event.getNewNick() + "\n");
             logBuilder.appendDescription("Alter Nickname: " + event.getPrevNick());

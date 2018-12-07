@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import de.c0debase.bot.commands.Command;
+import de.c0debase.bot.core.Codebase;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Message;
 import org.apache.commons.io.IOUtils;
@@ -24,7 +25,7 @@ public class UrbandirectoryCommand extends Command {
     }
 
     @Override
-    public void execute(String[] args, Message message) {
+    public void execute(final Codebase bot, final String[] args, final Message message) {
         if (args.length < 1) {
             message.getTextChannel().sendMessage(getEmbed(message.getGuild(), message.getAuthor()).setDescription("!ud [term]").build()).queue();
         } else {
@@ -33,18 +34,18 @@ public class UrbandirectoryCommand extends Command {
 
             final StringWriter writer = new StringWriter();
             try {
-                URL url = new URL("http://api.urbandictionary.com/v0/define?term=" + URLEncoder.encode(search, "UTF-8"));
+                final URL url = new URL("http://api.urbandictionary.com/v0/define?term=" + URLEncoder.encode(search, "UTF-8"));
                 try (final InputStream inputStream = url.openConnection().getInputStream()) {
                     IOUtils.copy(inputStream, writer, "UTF-8");
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            EmbedBuilder embedBuilder = getEmbed(message.getGuild(), message.getAuthor());
+            final EmbedBuilder embedBuilder = getEmbed(message.getGuild(), message.getAuthor());
             embedBuilder.setTitle("Definition: " + search);
 
             try {
-                JsonArray jsonResult = new JsonParser().parse(writer.toString()).getAsJsonObject().getAsJsonArray("list");
+                final JsonArray jsonResult = new JsonParser().parse(writer.toString()).getAsJsonObject().getAsJsonArray("list");
                 embedBuilder.appendDescription(jsonResult.size() != 0 ? jsonResult.get(0).getAsJsonObject().get("definition").getAsString() : "Search term not found.");
             } catch (JsonParseException ex) {
                 embedBuilder.appendDescription("An error occurred.");

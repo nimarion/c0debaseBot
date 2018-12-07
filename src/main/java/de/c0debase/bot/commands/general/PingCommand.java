@@ -1,7 +1,7 @@
 package de.c0debase.bot.commands.general;
 
-import de.c0debase.bot.CodebaseBot;
 import de.c0debase.bot.commands.Command;
+import de.c0debase.bot.core.Codebase;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Message;
 
@@ -18,10 +18,10 @@ public class PingCommand extends Command {
     }
 
     @Override
-    public void execute(String[] args, Message msg) {
-        EmbedBuilder embedBuilder = new EmbedBuilder();
-        embedBuilder.appendDescription(":stopwatch: " + CodebaseBot.getInstance().getJda().getPing());
+    public void execute(final Codebase bot, final String[] args, final Message message) {
+        final EmbedBuilder embedBuilder = new EmbedBuilder();
+        embedBuilder.appendDescription(":stopwatch: " + message.getJDA().getPing());
         embedBuilder.setColor(Color.GREEN);
-        msg.getTextChannel().sendMessage(embedBuilder.build()).queue();
+        message.getTextChannel().sendMessage(embedBuilder.build()).queue();
     }
 }

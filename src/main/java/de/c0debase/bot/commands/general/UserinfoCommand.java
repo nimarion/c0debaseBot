@@ -1,6 +1,7 @@
 package de.c0debase.bot.commands.general;
 
 import de.c0debase.bot.commands.Command;
+import de.c0debase.bot.core.Codebase;
 import de.c0debase.bot.utils.StringUtils;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Member;
@@ -19,10 +20,10 @@ public class UserinfoCommand extends Command {
     }
 
     @Override
-    public void execute(String[] args, Message message) {
-        Member member = args.length == 0 ? message.getMember() : searchMember(args[0], message.getMember());
+    public void execute(final Codebase bot, final String[] args, final Message message) {
+        final Member member = message.getMentionedMembers().size() == 0 ? message.getMember() : ((message.getMentionedMembers().get(0).getUser().isBot()) ? message.getMember() : message.getMentionedMembers().get(0));
 
-        EmbedBuilder embedBuilder = new EmbedBuilder();
+        final EmbedBuilder embedBuilder = new EmbedBuilder();
         embedBuilder.setThumbnail(member.getUser().getAvatarUrl());
         embedBuilder.addField("Name", StringUtils.replaceCharacter(member.getUser().getName()), true);
         embedBuilder.addField("Nickname", member.getNickname() == null ? StringUtils.replaceCharacter(member.getUser().getName()) : StringUtils.replaceCharacter(member.getNickname()), true);
@@ -36,4 +37,5 @@ public class UserinfoCommand extends Command {
 
         message.getTextChannel().sendMessage(embedBuilder.build()).queue();
     }
+
 }

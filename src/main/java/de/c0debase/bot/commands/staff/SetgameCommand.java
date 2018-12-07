@@ -1,6 +1,7 @@
 package de.c0debase.bot.commands.staff;
 
 import de.c0debase.bot.commands.Command;
+import de.c0debase.bot.core.Codebase;
 import net.dv8tion.jda.core.entities.Game;
 import net.dv8tion.jda.core.entities.Message;
 
@@ -15,7 +16,7 @@ public class SetgameCommand extends Command {
     }
 
     @Override
-    public void execute(String[] args, Message msg) {
-        msg.getJDA().getPresence().setGame(Game.of(Game.GameType.DEFAULT, String.join(" ", args)));
+    public void execute(final Codebase bot, final String[] args, final Message message) {
+        message.getJDA().getPresence().setGame(Game.of(Game.GameType.DEFAULT, String.join(" ", args)));
     }
 }

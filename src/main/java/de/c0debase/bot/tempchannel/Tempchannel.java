@@ -15,6 +15,7 @@ import java.util.List;
  * @date 27.03.18
  */
 public class Tempchannel implements TempchannelEvents {
+
     private static final List<Permission> MEMBER_PERMISSIONS;
 
     static {
@@ -26,12 +27,12 @@ public class Tempchannel implements TempchannelEvents {
     public Tempchannel() {
     }
 
-    public Tempchannel(TextChannel textChannel) {
+    public Tempchannel(final TextChannel textChannel) {
         this.textChannel = textChannel;
     }
 
     @Override
-    public void onTempchannelJoin(VoiceChannel voiceChannel, Member member) {
+    public void onTempchannelJoin(final VoiceChannel voiceChannel, final Member member) {
         if (voiceChannel.equals(voiceChannel.getGuild().getAfkChannel())) {
             return;
         }
@@ -59,7 +60,7 @@ public class Tempchannel implements TempchannelEvents {
     }
 
     @Override
-    public void onTempchannelLeave(VoiceChannel voiceChannel, Member member) {
+    public void onTempchannelLeave(final VoiceChannel voiceChannel, final Member member) {
         if (voiceChannel.equals(voiceChannel.getGuild().getAfkChannel())) {
             return;
         }
@@ -79,7 +80,7 @@ public class Tempchannel implements TempchannelEvents {
     }
 
     @Override
-    public void onLoad(TextChannel textChannel, VoiceChannel voiceChannel) {
+    public void onLoad(final TextChannel textChannel, final VoiceChannel voiceChannel) {
         if (voiceChannel.getMembers().isEmpty()) {
             textChannel.delete().queue();
             setTextChannel(null);
