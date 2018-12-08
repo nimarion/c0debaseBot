@@ -72,7 +72,7 @@ public class CodebaseImpl implements Codebase {
 
     protected DataManager initializeDataManager() throws Exception {
         try {
-            return new MongoDataManager(System.getenv("MONGO_HOST") == null ? "localhost" : System.getenv("MONGO_HOST"), System.getenv("MONGO-PORT") == null ? 27017 : Integer.valueOf(System.getenv("MONGO-PORT")));
+            return new MongoDataManager(System.getenv("MONGO_HOST") == null ? "localhost" : System.getenv("MONGO_HOST"), System.getenv("MONGO_PORT") == null ? 27017 : Integer.valueOf(System.getenv("MONGO_PORT")));
         } catch (final Exception exception) {
             logger.error("Encountered exception while initializing Database-Connection!");
             throw exception;
@@ -91,7 +91,7 @@ public class CodebaseImpl implements Codebase {
     protected JDA initializeJDA() throws Exception {
         try {
             final JDABuilder jdaBuilder = new JDABuilder(AccountType.BOT);
-            jdaBuilder.setToken(System.getenv("DISCORD-TOKEN"));
+            jdaBuilder.setToken(System.getenv("DISCORD_TOKEN"));
             jdaBuilder.setGame(Game.playing("auf c0debase"));
             return jdaBuilder.build().awaitReady();
         } catch (Exception exception) {
