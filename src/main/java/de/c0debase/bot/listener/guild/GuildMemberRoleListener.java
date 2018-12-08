@@ -6,10 +6,6 @@ import net.dv8tion.jda.core.events.guild.member.GuildMemberRoleAddEvent;
 import net.dv8tion.jda.core.events.guild.member.GuildMemberRoleRemoveEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
-/**
- * @author Biosphere
- * @date 29.04.18
- */
 public class GuildMemberRoleListener extends ListenerAdapter {
 
     private final Codebase bot;

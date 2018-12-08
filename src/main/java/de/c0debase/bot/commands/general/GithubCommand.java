@@ -12,10 +12,6 @@ import java.io.InputStream;
 import java.io.StringWriter;
 import java.net.URL;
 
-/**
- * @author Biosphere
- * @date 16.04.18
- */
 public class GithubCommand extends Command {
 
     public GithubCommand() {
@@ -23,7 +19,7 @@ public class GithubCommand extends Command {
     }
 
     @Override
-    public void execute(final Codebase bot, final String[] args, final Message message) {
+    public void execute(final String[] args, final Message message) {
         final StringWriter writer = new StringWriter();
         try {
             try (final InputStream inputStream = new URL("https://api.github.com/repos/Biospheere/c0debaseBot").openConnection().getInputStream()) {

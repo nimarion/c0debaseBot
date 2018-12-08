@@ -3,12 +3,7 @@ package de.c0debase.bot.utils;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * @author Biosphere
- * @date 23.01.18
- */
 public class StringUtils {
-
 
     private static final List<Character> ESCAPE_CHARACTERS;
 

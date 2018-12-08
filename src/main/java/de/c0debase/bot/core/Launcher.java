@@ -9,12 +9,11 @@ public class Launcher {
         if (System.getenv("SENTRY_DSN") != null || System.getProperty("sentry.properties") != null) {
             Sentry.init();
         }
-        final Codebase codebase = new CodebaseImpl();
         try {
-            codebase.init();
+            new CodebaseImpl();
         } catch (Exception exception) {
             LoggerFactory.getLogger(Launcher.class).error("Encountered exception while initializing the bot!", exception);
-            codebase.close();
+            System.exit(1);
         }
     }
 }

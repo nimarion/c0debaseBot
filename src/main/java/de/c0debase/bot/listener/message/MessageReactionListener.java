@@ -17,10 +17,6 @@ import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
 import java.awt.*;
 
-/**
- * @author Biosphere
- * @date 23.01.18
- */
 public class MessageReactionListener extends ListenerAdapter {
 
     private final Codebase bot;

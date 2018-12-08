@@ -8,10 +8,6 @@ import net.dv8tion.jda.core.entities.MessageHistory;
 
 import java.util.List;
 
-/**
- * @author Biosphere
- * @date 23.01.18
- */
 public class ClearCommand extends Command {
 
     public ClearCommand() {
@@ -19,7 +15,7 @@ public class ClearCommand extends Command {
     }
 
     @Override
-    public void execute(final Codebase bot, final String[] args, final Message message) {
+    public void execute(final String[] args, final Message message) {
         if (args.length == 0) {
             final EmbedBuilder embedBuilder = new EmbedBuilder();
             embedBuilder.setFooter("@" + message.getMember().getUser().getName() + "#" + message.getMember().getUser().getDiscriminator(), message.getMember().getUser().getEffectiveAvatarUrl());

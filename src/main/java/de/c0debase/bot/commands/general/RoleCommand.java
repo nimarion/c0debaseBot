@@ -30,7 +30,7 @@ public class RoleCommand extends Command {
     }
 
     @Override
-    public void execute(final Codebase bot, final String[] args, final Message message) {
+    public void execute(final String[] args, final Message message) {
         if (args.length == 0) {
             EmbedBuilder embedBuilder = getEmbed(message.getGuild(), message.getAuthor());
             embedBuilder.setFooter("!role Java,Go,Javascript", message.getMember().getUser().getEffectiveAvatarUrl());

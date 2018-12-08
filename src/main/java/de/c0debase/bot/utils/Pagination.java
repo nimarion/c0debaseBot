@@ -5,10 +5,6 @@ import de.c0debase.bot.database.data.CodebaseUser;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * @author Biosphere
- * @date 23.01.18
- */
 public class Pagination {
 
     private final List<CodebaseUser> objects;

@@ -9,11 +9,6 @@ import net.dv8tion.jda.core.events.guild.voice.GuildVoiceLeaveEvent;
 import net.dv8tion.jda.core.events.guild.voice.GuildVoiceMoveEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
-/**
- * @author Biosphere
- * @date 23.01.18
- */
-
 public class GuildVoiceListener extends ListenerAdapter {
 
     private final Codebase bot;

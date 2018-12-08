@@ -5,10 +5,6 @@ import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.events.guild.member.GuildMemberNickChangeEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
-/**
- * @author Biosphere
- * @date 23.01.18
- */
 public class GuildMemberNickChangeListener extends ListenerAdapter {
 
     public GuildMemberNickChangeListener(final Codebase bot) {

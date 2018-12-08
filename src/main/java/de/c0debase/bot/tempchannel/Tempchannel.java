@@ -10,10 +10,6 @@ import net.dv8tion.jda.core.entities.VoiceChannel;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * @author Biosphere
- * @date 27.03.18
- */
 public class Tempchannel implements TempchannelEvents {
 
     private static final List<Permission> MEMBER_PERMISSIONS;

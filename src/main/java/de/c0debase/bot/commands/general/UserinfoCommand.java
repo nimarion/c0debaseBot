@@ -9,10 +9,6 @@ import net.dv8tion.jda.core.entities.Message;
 
 import java.time.format.DateTimeFormatter;
 
-/**
- * @author Biosphere
- * @date 17.03.18
- */
 public class UserinfoCommand extends Command {
 
     public UserinfoCommand() {
@@ -20,7 +16,7 @@ public class UserinfoCommand extends Command {
     }
 
     @Override
-    public void execute(final Codebase bot, final String[] args, final Message message) {
+    public void execute(final String[] args, final Message message) {
         final Member member = message.getMentionedMembers().size() == 0 ? message.getMember() : ((message.getMentionedMembers().get(0).getUser().isBot()) ? message.getMember() : message.getMentionedMembers().get(0));
 
         final EmbedBuilder embedBuilder = new EmbedBuilder();
