@@ -10,7 +10,7 @@
     <packaging>jar</packaging>
 
     <properties>
-        <main.class>de.c0debase.bot.CodebaseBot</main.class>
+        <main.class>de.c0debase.bot.core.Launchner</main.class>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
@@ -124,7 +124,7 @@
                 <configuration>
                     <archive>
                         <manifestEntries>
-                            <Main-Class>de.c0debase.bot.CodebaseBot</Main-Class>
+                            <Main-Class>de.c0debase.bot.core.Launcher</Main-Class>
                         </manifestEntries>
                     </archive>
                 </configuration>
