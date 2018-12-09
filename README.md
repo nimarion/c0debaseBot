@@ -14,7 +14,7 @@ mvn package
 ```
 
 ## Start 
- ```docker build -t . biospheere/codebase ```
+ ```docker build -t . biospheere/codebasebot ```
  
   The application requires certain environment variables to be set in a .env file (instead of command line arguments).
   
