@@ -5,9 +5,10 @@ import de.c0debase.bot.core.Codebase;
 import de.c0debase.bot.database.data.CodebaseUser;
 import de.c0debase.bot.utils.Constants;
 import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.entities.ChannelType;
 import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.core.entities.TextChannel;
+import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.core.events.message.priv.PrivateMessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 import net.jodah.expiringmap.ExpiringMap;
 
@@ -18,6 +19,8 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public class MessageReceiveListener extends ListenerAdapter {
+
+    private static final long PROJECT_ROLE_ID = 361603492642684929L;
 
     private final Codebase bot;
     private final Map<Member, String> lastMessage;
@@ -47,29 +50,22 @@ public class MessageReceiveListener extends ListenerAdapter {
     }
 
     @Override
-    public void onMessageReceived(final MessageReceivedEvent event) {
+    public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
         if (event.getAuthor().isBot()) {
             return;
         }
 
-        if (event.isFromType(ChannelType.PRIVATE)) {
-            final EmbedBuilder embedBuilder = new EmbedBuilder();
-            embedBuilder.setColor(Color.RED);
-            embedBuilder.appendDescription("Private Nachrichten sind deaktiviert");
-            event.getPrivateChannel().sendMessage(embedBuilder.build()).queue();
-            return;
-        }
-
-        if (event.getTextChannel().getTopic() != null && event.getTextChannel().getTopic().contains("\uD83D\uDCCC")) {
+        final TextChannel channel = event.getChannel();
+        if (channel.getTopic() != null && channel.getTopic().contains("\uD83D\uDCCC")) {
             final EmbedBuilder embedBuilder = new EmbedBuilder();
             embedBuilder.setColor(Color.GREEN);
             embedBuilder.setFooter("@" + event.getAuthor().getName() + "#" + event.getAuthor().getDiscriminator(), event.getAuthor().getEffectiveAvatarUrl());
             embedBuilder.setTitle("Poll");
             embedBuilder.setDescription(event.getMessage().getContentDisplay());
             event.getMessage().delete().queue();
-            event.getTextChannel().sendMessage(embedBuilder.build()).queue(success -> {
-                success.addReaction(EmojiManager.getForAlias("thumbsup").getUnicode()).queue();
-                success.addReaction(EmojiManager.getForAlias("thumbsdown").getUnicode()).queue();
+            channel.sendMessage(embedBuilder.build()).queue(sentMessage -> {
+                sentMessage.addReaction(EmojiManager.getForAlias("thumbsup").getUnicode()).queue();
+                sentMessage.addReaction(EmojiManager.getForAlias("thumbsdown").getUnicode()).queue();
             });
             return;
         }
@@ -77,21 +73,38 @@ public class MessageReceiveListener extends ListenerAdapter {
         if (lastMessage.containsKey(event.getMember()) && lastMessage.get(event.getMember()).equalsIgnoreCase(event.getMessage().getContentRaw()) && event.getMessage().getAttachments().isEmpty()) {
             event.getMessage().delete().queue();
             return;
-        } else {
-            lastMessage.put(event.getMember(), event.getMessage().getContentRaw());
         }
+
+        lastMessage.put(event.getMember(), event.getMessage().getContentRaw());
 
         final CodebaseUser codebaseUser = bot.getDataManager().getUserData(event.getGuild().getId(), event.getAuthor().getId());
         final float time = (System.currentTimeMillis() - codebaseUser.getLastMessage()) / 1000;
         if (time >= 50.0f) {
             if (codebaseUser.addXP(50)) {
                 final EmbedBuilder levelUpEmbed = new EmbedBuilder();
-                levelUpEmbed.appendDescription(event.getAuthor().getAsMention() + " ist nun Level " + codebaseUser.getLevel());
+                final int newLevel = codebaseUser.getLevel();
+                levelUpEmbed.appendDescription(event.getAuthor().getAsMention() + " ist nun Level " + newLevel);
                 levelUpEmbed.setImage(gifs.get(Constants.RANDOM.nextInt(gifs.size())));
-                event.getTextChannel().sendMessage(levelUpEmbed.build()).queue();
+                channel.sendMessage(levelUpEmbed.build()).queue();
+                if (newLevel == 3) {
+                    event.getGuild().getController().addSingleRoleToMember(event.getMember(),
+                            event.getJDA().getRoleById(PROJECT_ROLE_ID)).queue();
+                }
             }
             codebaseUser.setLastMessage(System.currentTimeMillis());
             bot.getDataManager().updateUserData(codebaseUser);
         }
+    }
+
+    @Override
+    public void onPrivateMessageReceived(PrivateMessageReceivedEvent event) {
+        if (event.getAuthor().isBot()) {
+            return;
+        }
+
+        final EmbedBuilder embedBuilder = new EmbedBuilder();
+        embedBuilder.setColor(Color.RED);
+        embedBuilder.appendDescription("Private Nachrichten sind deaktiviert");
+        event.getChannel().sendMessage(embedBuilder.build()).queue();
     }
 }

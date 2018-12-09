@@ -27,39 +27,6 @@ public class MessageReactionListener extends ListenerAdapter {
     }
 
     @Override
-    public void onGenericPrivateMessageReaction(final GenericPrivateMessageReactionEvent event) {
-        if (event.getUser().isBot()) {
-            return;
-        }
-        event.getChannel().getMessageById(event.getMessageId()).queue((Message success) -> {
-            final String emote = getReaction(event.getReactionEmote());
-            if (emote == null) {
-                return;
-            }
-            if (!success.getEmbeds().isEmpty() && success.getAuthor().isBot()) {
-                final EmbedBuilder embedBuilder = new EmbedBuilder();
-                embedBuilder.setColor(Color.GREEN);
-                if (emote.equalsIgnoreCase("wastebasket")) {
-                    success.delete().queue();
-                    return;
-                }
-                for (Category categorie : Category.values()) {
-                    if (categorie.getEmote().equalsIgnoreCase(emote)) {
-                        embedBuilder.setTitle(":question: " + categorie.getName() + " Commands Help");
-                        for (Command command : bot.getCommandManager().getAvailableCommands()) {
-                            if (command.getCategory() == categorie) {
-                                embedBuilder.appendDescription("**!" + command.getCommand() + "**\n" + command.getDescription() + "\n\n");
-                            }
-                        }
-                        success.editMessage(embedBuilder.build()).queue();
-                        break;
-                    }
-                }
-            }
-        });
-    }
-
-    @Override
     public void onGenericGuildMessageReaction(final GenericGuildMessageReactionEvent event) {
         if (event.getUser().isBot()) {
             return;
