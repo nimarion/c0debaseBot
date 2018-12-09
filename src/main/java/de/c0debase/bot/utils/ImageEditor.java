@@ -79,7 +79,7 @@ public class ImageEditor {
         try {
             ImageIO.write(image, "png", os);
         } catch (IOException e) {
-           e.printStackTrace();
+            e.printStackTrace();
         }
         return new ByteArrayInputStream(os.toByteArray());
     }

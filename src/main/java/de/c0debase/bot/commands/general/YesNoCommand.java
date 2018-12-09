@@ -10,13 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.StringJoiner;
 
-/**
- * @author SpigotException
- * created at the 29.03.2018 at 13:15
- */
 public class YesNoCommand extends Command {
-
-    private StringJoiner stringJoiner;
 
     private final List<String> yesGifs = Arrays.asList(
             "https://media.giphy.com/media/nFjDu1LjEADh6/giphy.gif",
@@ -54,14 +48,14 @@ public class YesNoCommand extends Command {
     }
 
     @Override
-    public void execute(String[] args, Message msg) {
+    public void execute(final String[] args, final Message message) {
         if (args.length > 0) {
-            stringJoiner = new StringJoiner(" ");
+            final StringJoiner stringJoiner = new StringJoiner(" ");
             for (int i = 0; i < args.length; i++) {
                 stringJoiner.add(args[i]);
             }
-            boolean yn = Constants.RANDOM.nextBoolean();
-            msg.getTextChannel().sendMessage(
+            final boolean yn = Constants.RANDOM.nextBoolean();
+            message.getTextChannel().sendMessage(
                     new EmbedBuilder()
                             .setTitle("Ja oder Nein?")
                             .setDescription(
@@ -71,7 +65,7 @@ public class YesNoCommand extends Command {
                             .setImage(yn ? yesGifs.get(Constants.RANDOM.nextInt(yesGifs.size())) : noGifs.get(Constants.RANDOM.nextInt(noGifs.size()))).build()
             ).queue();
         } else {
-            msg.getTextChannel().sendMessage(getEmbed(msg.getGuild(), msg.getAuthor()).setDescription("!yn [Deine Frage]").build()).queue();
+            message.getTextChannel().sendMessage(getEmbed(message.getGuild(), message.getAuthor()).setDescription("!yn [Deine Frage]").build()).queue();
         }
     }
 }

@@ -8,10 +8,6 @@ import net.dv8tion.jda.core.entities.Message;
 
 import java.time.format.DateTimeFormatter;
 
-/**
- * @author Biosphere
- * @date 17.03.18
- */
 public class UserinfoCommand extends Command {
 
     public UserinfoCommand() {
@@ -19,10 +15,10 @@ public class UserinfoCommand extends Command {
     }
 
     @Override
-    public void execute(String[] args, Message message) {
-        Member member = args.length == 0 ? message.getMember() : searchMember(args[0], message.getMember());
+    public void execute(final String[] args, final Message message) {
+        final Member member = message.getMentionedMembers().size() == 0 ? message.getMember() : ((message.getMentionedMembers().get(0).getUser().isBot()) ? message.getMember() : message.getMentionedMembers().get(0));
 
-        EmbedBuilder embedBuilder = new EmbedBuilder();
+        final EmbedBuilder embedBuilder = new EmbedBuilder();
         embedBuilder.setThumbnail(member.getUser().getAvatarUrl());
         embedBuilder.addField("Name", StringUtils.replaceCharacter(member.getUser().getName()), true);
         embedBuilder.addField("Nickname", member.getNickname() == null ? StringUtils.replaceCharacter(member.getUser().getName()) : StringUtils.replaceCharacter(member.getNickname()), true);
@@ -36,4 +32,5 @@ public class UserinfoCommand extends Command {
 
         message.getTextChannel().sendMessage(embedBuilder.build()).queue();
     }
+
 }

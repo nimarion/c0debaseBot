@@ -1,137 +1,110 @@
 package de.c0debase.bot.listener.message;
 
-import ai.api.AIServiceException;
-import ai.api.model.AIRequest;
-import ai.api.model.AIResponse;
 import com.vdurmont.emoji.EmojiManager;
-import de.c0debase.bot.CodebaseBot;
+import de.c0debase.bot.core.Codebase;
+import de.c0debase.bot.database.data.CodebaseUser;
 import de.c0debase.bot.utils.Constants;
 import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.entities.ChannelType;
 import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.core.entities.TextChannel;
+import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.core.events.message.priv.PrivateMessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 import net.jodah.expiringmap.ExpiringMap;
 
 import java.awt.*;
-import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-/**
- * @author Biosphere
- * @date 23.01.18
- */
-
 public class MessageReceiveListener extends ListenerAdapter {
 
+    private static final long PROJECT_ROLE_ID = 361603492642684929L;
+
+    private final Codebase bot;
     private final Map<Member, String> lastMessage;
     private final List<String> gifs = Arrays.asList(
-            "https://media.giphy.com/media/uhDDQ9UNoXISQ/giphy.gif",
-            "https://media.giphy.com/media/IRZE8JX2BQikM/giphy.gif",
-            "https://media.giphy.com/media/Z4Sek3StLGVO0/giphy.gif",
-            "https://media.giphy.com/media/JtwMddKpsF9Hq/giphy.gif",
-            "https://media.giphy.com/media/3ov9k9vVSTn6DevZsY/giphy.gif"
+            "https://media.giphy.com/media/5VKbvrjxpVJCM/giphy.gif",
+            "https://media.giphy.com/media/4cUCFvwICarHq/giphy.gif",
+            "https://media.giphy.com/media/1ym5LJ17vp77BL8X5O/giphy.gif",
+            "https://media.giphy.com/media/KI9oNS4JBemyI/giphy.gif",
+            "https://media.giphy.com/media/l1CC9FjH54QhYHExq/source.gif",
+            "https://media.giphy.com/media/2gYhkl6mLIYZxpMve1/giphy.gif",
+            "https://media.giphy.com/media/kmU72Ms75Zhlu/giphy.gif",
+            "https://media.giphy.com/media/xHMIDAy1qkzNS/giphy.gif",
+            "https://media.giphy.com/media/yJFeycRK2DB4c/giphy.gif",
+            "https://media.giphy.com/media/cbb8zL5wbNnfq/giphy.gif",
+            "https://media.giphy.com/media/aLdiZJmmx4OVW/giphy.gif",
+            "https://media.giphy.com/media/qPcX2mzk3NmjC/giphy.gif",
+            "https://media.giphy.com/media/kjCFOUT3ZIlAA/giphy.gif",
+            "https://media.giphy.com/media/ZisaVxhbs1iDK/giphy.gif"
     );
 
-    public MessageReceiveListener(){
+    public MessageReceiveListener(final Codebase bot) {
+        this.bot = bot;
         final ExpiringMap.Builder<Object, Object> mapBuilder = ExpiringMap.builder();
         mapBuilder.expiration(30, TimeUnit.SECONDS).build();
         lastMessage = mapBuilder.build();
+        bot.getJDA().addEventListener(this);
     }
 
     @Override
-    public void onMessageReceived(MessageReceivedEvent event) {
+    public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
         if (event.getAuthor().isBot()) {
             return;
         }
 
-        if (event.isFromType(ChannelType.PRIVATE)) {
-            EmbedBuilder embedBuilder = new EmbedBuilder();
-            embedBuilder.setColor(Color.RED);
-            embedBuilder.appendDescription("Private Nachrichten sind deaktiviert");
-            event.getPrivateChannel().sendMessage(embedBuilder.build()).queue();
-            return;
-        }
-
-        if (event.getMessage().getContentRaw().startsWith("!clear")) {
-            CodebaseBot.getInstance().getCommandManager().execute(event.getMessage());
-            return;
-        }
-
-        if (event.getTextChannel().getName().equalsIgnoreCase("projekte")) {
-            event.getMessage().addReaction(EmojiManager.getForAlias("thumbsup").getUnicode()).queue();
-            event.getMessage().addReaction(EmojiManager.getForAlias("thumbsdown").getUnicode()).queue();
-            return;
-        }
-
-        if (event.getTextChannel().getTopic() != null && event.getTextChannel().getTopic().contains("\uD83D\uDCCC")) {
-            EmbedBuilder embedBuilder = new EmbedBuilder();
+        final TextChannel channel = event.getChannel();
+        if (channel.getTopic() != null && channel.getTopic().contains("\uD83D\uDCCC")) {
+            final EmbedBuilder embedBuilder = new EmbedBuilder();
             embedBuilder.setColor(Color.GREEN);
             embedBuilder.setFooter("@" + event.getAuthor().getName() + "#" + event.getAuthor().getDiscriminator(), event.getAuthor().getEffectiveAvatarUrl());
             embedBuilder.setTitle("Poll");
             embedBuilder.setDescription(event.getMessage().getContentDisplay());
             event.getMessage().delete().queue();
-            event.getTextChannel().sendMessage(embedBuilder.build()).queue(success -> {
-                success.addReaction(EmojiManager.getForAlias("thumbsup").getUnicode()).queue();
-                success.addReaction(EmojiManager.getForAlias("thumbsdown").getUnicode()).queue();
+            channel.sendMessage(embedBuilder.build()).queue(sentMessage -> {
+                sentMessage.addReaction(EmojiManager.getForAlias("thumbsup").getUnicode()).queue();
+                sentMessage.addReaction(EmojiManager.getForAlias("thumbsdown").getUnicode()).queue();
             });
             return;
         }
 
-        if (event.getMessage().getContentRaw().startsWith(event.getGuild().getSelfMember().getAsMention()) && CodebaseBot.getInstance().getAiDataService() != null) {
-            try {
-                AIRequest request = new AIRequest(event.getMessage().getContentRaw().replace(event.getGuild().getSelfMember().getAsMention(), ""));
-                AIResponse response = CodebaseBot.getInstance().getAiDataService().request(request);
-
-                if(CodebaseBot.getInstance().getActionHandlerMap().containsKey(response.getResult().getAction().split("\\.")[0])){
-                    CodebaseBot.getInstance().getActionHandlerMap().get(response.getResult().getAction().split("\\.")[0]).handle(response, event.getMessage());
-                    return;
-                }
-                if (response.getStatus().getCode() == 200 && !response.getResult().getFulfillment().getSpeech().trim().isEmpty()) {
-                    event.getChannel().sendMessage(response.getResult().getFulfillment().getSpeech().replace("@everyone", "@ everyone").replace("@here", "@ here")).queue();
-                } else {
-                    event.getChannel().sendMessage("Leider kann ich nicht verstehen, was du von mir möchtest.").queue();
-                }
-            } catch (AIServiceException e) {
-                e.printStackTrace();
-            }
+        if (lastMessage.containsKey(event.getMember()) && lastMessage.get(event.getMember()).equalsIgnoreCase(event.getMessage().getContentRaw()) && event.getMessage().getAttachments().isEmpty()) {
+            event.getMessage().delete().queue();
+            return;
         }
 
-        if (event.getMessage().getTextChannel().getName().equalsIgnoreCase("bot") && event.getMessage().getContentRaw().startsWith("!")) {
-            CodebaseBot.getInstance().getCommandManager().execute(event.getMessage());
-        } else if(!event.getTextChannel().getName().equalsIgnoreCase("friend")){
-            if(lastMessage.containsKey(event.getMember()) && lastMessage.get(event.getMember()).equalsIgnoreCase(event.getMessage().getContentRaw()) && event.getMessage().getAttachments().isEmpty()){
-                event.getMessage().delete().queue();
-                return;
-            } else {
-                lastMessage.put(event.getMember(), event.getMessage().getContentRaw());
+        lastMessage.put(event.getMember(), event.getMessage().getContentRaw());
+
+        final CodebaseUser codebaseUser = bot.getDataManager().getUserData(event.getGuild().getId(), event.getAuthor().getId());
+        final float time = (System.currentTimeMillis() - codebaseUser.getLastMessage()) / 1000;
+        if (time >= 50.0f) {
+            if (codebaseUser.addXP(50)) {
+                final EmbedBuilder levelUpEmbed = new EmbedBuilder();
+                final int newLevel = codebaseUser.getLevel();
+                levelUpEmbed.appendDescription(event.getAuthor().getAsMention() + " ist nun Level " + newLevel);
+                levelUpEmbed.setImage(gifs.get(Constants.RANDOM.nextInt(gifs.size())));
+                channel.sendMessage(levelUpEmbed.build()).queue();
+                if (newLevel == 3) {
+                    event.getGuild().getController().addSingleRoleToMember(event.getMember(),
+                            event.getJDA().getRoleById(PROJECT_ROLE_ID)).queue();
+                }
             }
-            CodebaseBot.getInstance().getMongoDataManager().getActivity(LocalDateTime.now().getDayOfMonth(), LocalDateTime.now().getYear(), event.getGuild().getId(), activity -> {
-                if(!activity.getUsers().contains(event.getAuthor().getId())){
-                    activity.getUsers().add(event.getAuthor().getId());
-                }
-                activity.getChannel().put(event.getChannel().getId(), activity.getChannel().containsKey(event.getChannel().getId()) ? activity.getChannel().get(event.getChannel().getId()) + 1 : 1);
-                activity.setMessages(activity.getMessages() + 1);
-                CodebaseBot.getInstance().getMongoDataManager().updateActivity(activity);
-            });
-            CodebaseBot.getInstance().getMongoDataManager().getLevelUser(event.getGuild().getId(), event.getAuthor().getId(), levelUser -> {
-                float time = (System.currentTimeMillis() - levelUser.getLastMessage()) / 1000;
-                if (time >= 50.0f) {
-                    if (levelUser.addXP(50)) {
-                        EmbedBuilder levelUpEmbed = new EmbedBuilder();
-                        levelUpEmbed.appendDescription(event.getAuthor().getAsMention() + " ist nun Level " + levelUser.getLevel());
-                        levelUpEmbed.setImage(gifs.get(Constants.RANDOM.nextInt(gifs.size())));
-                        event.getTextChannel().sendMessage(levelUpEmbed.build()).queue();
-                    }
-                    levelUser.setLastMessage(System.currentTimeMillis());
-                    CodebaseBot.getInstance().getMongoDataManager().updateLevelUser(levelUser);
-                }
-            });
+            codebaseUser.setLastMessage(System.currentTimeMillis());
+            bot.getDataManager().updateUserData(codebaseUser);
         }
     }
 
+    @Override
+    public void onPrivateMessageReceived(PrivateMessageReceivedEvent event) {
+        if (event.getAuthor().isBot()) {
+            return;
+        }
+
+        final EmbedBuilder embedBuilder = new EmbedBuilder();
+        embedBuilder.setColor(Color.RED);
+        embedBuilder.appendDescription("Private Nachrichten sind deaktiviert");
+        event.getChannel().sendMessage(embedBuilder.build()).queue();
+    }
 }

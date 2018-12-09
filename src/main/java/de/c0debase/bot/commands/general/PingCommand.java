@@ -1,16 +1,11 @@
 package de.c0debase.bot.commands.general;
 
-import de.c0debase.bot.CodebaseBot;
 import de.c0debase.bot.commands.Command;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Message;
 
 import java.awt.*;
 
-/**
- * @author Biosphere
- * @date 23.01.18
- */
 public class PingCommand extends Command {
 
     public PingCommand() {
@@ -18,10 +13,10 @@ public class PingCommand extends Command {
     }
 
     @Override
-    public void execute(String[] args, Message msg) {
-        EmbedBuilder embedBuilder = new EmbedBuilder();
-        embedBuilder.appendDescription(":stopwatch: " + CodebaseBot.getInstance().getJda().getPing());
+    public void execute(final String[] args, final Message message) {
+        final EmbedBuilder embedBuilder = new EmbedBuilder();
+        embedBuilder.appendDescription(":stopwatch: " + message.getJDA().getPing());
         embedBuilder.setColor(Color.GREEN);
-        msg.getTextChannel().sendMessage(embedBuilder.build()).queue();
+        message.getTextChannel().sendMessage(embedBuilder.build()).queue();
     }
 }

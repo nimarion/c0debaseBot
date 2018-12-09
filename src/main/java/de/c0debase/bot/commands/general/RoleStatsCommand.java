@@ -12,10 +12,6 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-/**
- * @author Biosphere
- * @date 21.04.18
- */
 public class RoleStatsCommand extends Command {
 
     private static final List<String> FORBIDDEN;

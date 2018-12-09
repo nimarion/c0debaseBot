@@ -4,10 +4,6 @@ import de.c0debase.bot.commands.Command;
 import net.dv8tion.jda.core.entities.Game;
 import net.dv8tion.jda.core.entities.Message;
 
-/**
- * @author Biosphere
- * @date 23.01.18
- */
 public class SetgameCommand extends Command {
 
     public SetgameCommand() {
@@ -15,7 +11,7 @@ public class SetgameCommand extends Command {
     }
 
     @Override
-    public void execute(String[] args, Message msg) {
-        msg.getJDA().getPresence().setGame(Game.of(Game.GameType.DEFAULT, String.join(" ", args)));
+    public void execute(final String[] args, final Message message) {
+        message.getJDA().getPresence().setGame(Game.of(Game.GameType.DEFAULT, String.join(" ", args)));
     }
 }

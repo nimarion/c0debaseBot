@@ -1,57 +1,75 @@
 package de.c0debase.bot.commands;
 
-import net.dv8tion.jda.core.Permission;
-import net.dv8tion.jda.core.entities.Message;
+import de.c0debase.bot.core.Codebase;
+import net.dv8tion.jda.core.entities.ChannelType;
+import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.core.hooks.ListenerAdapter;
 import org.reflections.Reflections;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
-/**
- * @author Biosphere
- * @date 23.01.18
- */
+public class CommandManager extends ListenerAdapter {
+    private static final Logger logger = LoggerFactory.getLogger(CommandManager.class);
 
-public class CommandManager {
+    private static final long TEAM_ROLE_ID = 361603492642684929L;
 
-    private ArrayList<Command> availableCommands = new ArrayList<>();
+    private final Set<Command> availableCommands;
 
-    public CommandManager() {
-        Set<Class<? extends Command>> classes = new Reflections("de.c0debase.bot.commands").getSubTypesOf(Command.class);
-        classes.forEach(cmdClass -> {
+    public CommandManager(final Codebase bot) {
+        this.availableCommands = new HashSet<>();
+        final Set<Class<? extends Command>> classes = new Reflections("de.c0debase.bot.commands")
+                .getSubTypesOf(Command.class);
+        for (Class<? extends Command> cmdClass : classes) {
             try {
-                registerCommands(cmdClass.newInstance());
-            } catch (Exception ex) {
-                ex.printStackTrace();
+                final Command command = cmdClass.getDeclaredConstructor().newInstance();
+                command.setInstance(bot);
+                if (availableCommands.add(command)) {
+                    logger.info("Registered " + command.getCommand() + " Command");
+                }
+            } catch (Exception exception) {
+                logger.error("Error while registering Command!", exception);
             }
-        });
+        }
+        bot.getJDA().addEventListener(this);
     }
 
+    @Override
+    public void onMessageReceived(final MessageReceivedEvent event) {
+        if (event.getAuthor().isBot()) {
+            return;
+        }
+        if (!event.isFromType(ChannelType.TEXT)) {
+            return;
+        }
+        final String content = event.getMessage().getContentRaw();
+        if (event.getChannel().getName().equals("bot") || content.startsWith("!clear")) {
+            final String[] arguments = content.split(" ");
+            final String input = arguments[0].replaceFirst("!", "");
+            for (Command command : this.availableCommands) {
+                if (command.getCategory().equals(Command.Category.STAFF) && !event.getMember().getRoles()
+                        .contains(event.getJDA().getRoleById(TEAM_ROLE_ID))) {
+                    continue;
+                }
 
-    public void execute(Message msg) {
-        String[] arguments = msg.getContentRaw().split(" ");
-        for (Command command : this.availableCommands) {
-            if (command.getCategory().equals(Command.Category.STAFF) && !msg.getMember().hasPermission(Permission.BAN_MEMBERS)) {
-                continue;
-            }
-            if (("!" + command.getCommand()).equalsIgnoreCase(arguments[0])) {
-                command.execute(Arrays.copyOfRange(arguments, 1, arguments.length), msg);
-            } else {
-                for (String alias : command.getAliases()) {
-                    if (("!" + alias).equalsIgnoreCase(arguments[0])) {
-                        command.execute(Arrays.copyOfRange(arguments, 1, arguments.length), msg);
+                if ((command.getCommand()).equalsIgnoreCase(input)) {
+                    command.execute(Arrays.copyOfRange(arguments, 1, arguments.length), event.getMessage());
+                } else {
+                    for (String alias : command.getAliases()) {
+                        if (alias.equalsIgnoreCase(input)) {
+                            command.execute(Arrays.copyOfRange(arguments, 1, arguments.length), event.getMessage());
+                        }
                     }
                 }
             }
         }
     }
 
-    private void registerCommands(Command command) {
-        if (!availableCommands.contains(command)) {
-            availableCommands.add(command);
-        }
-    }
-
-    public List<Command> getAvailableCommands() {
-        return Collections.unmodifiableList(availableCommands);
+    public Set<Command> getAvailableCommands() {
+        return Collections.unmodifiableSet(availableCommands);
     }
 }
