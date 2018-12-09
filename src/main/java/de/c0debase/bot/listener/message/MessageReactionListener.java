@@ -1,21 +1,15 @@
 package de.c0debase.bot.listener.message;
 
 import com.vdurmont.emoji.EmojiManager;
-import de.c0debase.bot.commands.Command;
-import de.c0debase.bot.commands.Command.Category;
 import de.c0debase.bot.core.Codebase;
 import de.c0debase.bot.database.data.CodebaseUser;
 import de.c0debase.bot.utils.Pagination;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageEmbed;
 import net.dv8tion.jda.core.entities.MessageReaction;
 import net.dv8tion.jda.core.events.message.guild.react.GenericGuildMessageReactionEvent;
-import net.dv8tion.jda.core.events.message.priv.react.GenericPrivateMessageReactionEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
-
-import java.awt.*;
 
 public class MessageReactionListener extends ListenerAdapter {
 

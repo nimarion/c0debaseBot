@@ -3,7 +3,6 @@ package de.c0debase.bot.commands.general;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import de.c0debase.bot.commands.Command;
-import de.c0debase.bot.core.Codebase;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Message;
 import org.apache.commons.io.IOUtils;
