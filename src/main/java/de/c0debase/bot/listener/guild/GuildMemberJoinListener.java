@@ -59,10 +59,11 @@ public class GuildMemberJoinListener extends ListenerAdapter {
             }
         });
         final GuildController guildController = guild.getController();
-        guildController.addRolesToMember(member, roles).reason("Autorole").queue();
-        final Role projectRole = event.getJDA().getRoleById(PROJECT_ROLE_ID);
-        if(codebaseUser.getLevel() > 2 && !member.getRoles().contains(projectRole)) {
-            guildController.addSingleRoleToMember(member, projectRole).queue();
-        }
+        guildController.addRolesToMember(member, roles).reason("Autorole").queue(success -> {
+            final Role projectRole = event.getJDA().getRoleById(PROJECT_ROLE_ID);
+            if(codebaseUser.getLevel() > 2 && !member.getRoles().contains(projectRole)) {
+                guildController.addSingleRoleToMember(member, projectRole).queue();
+            }
+        });
     }
 }
