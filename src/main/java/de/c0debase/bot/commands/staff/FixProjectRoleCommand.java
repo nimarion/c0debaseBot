@@ -10,7 +10,7 @@ import net.dv8tion.jda.core.managers.GuildController;
 //TODO: remove command! temporary command for one-time-use only
 public class FixProjectRoleCommand extends Command {
 
-    private static final long PROJECT_ROLE_ID = 361603492642684929L;
+    private static final long PROJECT_ROLE_ID = 408957966998568960L;
 
     public FixProjectRoleCommand() {
         super("fixprojectrole", "Temporary Command - fix project roles", Category.STAFF);
