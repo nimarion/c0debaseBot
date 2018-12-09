@@ -21,7 +21,6 @@ public class CommandManager extends ListenerAdapter {
     private final Set<Command> availableCommands;
 
     public CommandManager(final Codebase bot) {
-        final Codebase bot1 = bot;
         this.availableCommands = new HashSet<>();
         final Set<Class<? extends Command>> classes = new Reflections("de.c0debase.bot.commands")
                 .getSubTypesOf(Command.class);

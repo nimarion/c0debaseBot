@@ -1,21 +1,15 @@
 package de.c0debase.bot.listener.message;
 
 import com.vdurmont.emoji.EmojiManager;
-import de.c0debase.bot.commands.Command;
-import de.c0debase.bot.commands.Command.Category;
 import de.c0debase.bot.core.Codebase;
 import de.c0debase.bot.database.data.CodebaseUser;
 import de.c0debase.bot.utils.Pagination;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageEmbed;
 import net.dv8tion.jda.core.entities.MessageReaction;
 import net.dv8tion.jda.core.events.message.guild.react.GenericGuildMessageReactionEvent;
-import net.dv8tion.jda.core.events.message.priv.react.GenericPrivateMessageReactionEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
-
-import java.awt.*;
 
 public class MessageReactionListener extends ListenerAdapter {
 
@@ -24,39 +18,6 @@ public class MessageReactionListener extends ListenerAdapter {
     public MessageReactionListener(final Codebase bot) {
         this.bot = bot;
         bot.getJDA().addEventListener(this);
-    }
-
-    @Override
-    public void onGenericPrivateMessageReaction(final GenericPrivateMessageReactionEvent event) {
-        if (event.getUser().isBot()) {
-            return;
-        }
-        event.getChannel().getMessageById(event.getMessageId()).queue((Message success) -> {
-            final String emote = getReaction(event.getReactionEmote());
-            if (emote == null) {
-                return;
-            }
-            if (!success.getEmbeds().isEmpty() && success.getAuthor().isBot()) {
-                final EmbedBuilder embedBuilder = new EmbedBuilder();
-                embedBuilder.setColor(Color.GREEN);
-                if (emote.equalsIgnoreCase("wastebasket")) {
-                    success.delete().queue();
-                    return;
-                }
-                for (Category categorie : Category.values()) {
-                    if (categorie.getEmote().equalsIgnoreCase(emote)) {
-                        embedBuilder.setTitle(":question: " + categorie.getName() + " Commands Help");
-                        for (Command command : bot.getCommandManager().getAvailableCommands()) {
-                            if (command.getCategory() == categorie) {
-                                embedBuilder.appendDescription("**!" + command.getCommand() + "**\n" + command.getDescription() + "\n\n");
-                            }
-                        }
-                        success.editMessage(embedBuilder.build()).queue();
-                        break;
-                    }
-                }
-            }
-        });
     }
 
     @Override

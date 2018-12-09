@@ -2,7 +2,6 @@ package de.c0debase.bot.commands.general;
 
 import com.vdurmont.emoji.EmojiManager;
 import de.c0debase.bot.commands.Command;
-import de.c0debase.bot.core.Codebase;
 import de.c0debase.bot.database.data.CodebaseUser;
 import de.c0debase.bot.utils.Pagination;
 import de.c0debase.bot.utils.StringUtils;
