@@ -1,8 +1,6 @@
 package de.c0debase.bot.commands.general;
 
 import de.c0debase.bot.commands.Command;
-import de.c0debase.bot.core.Codebase;
-import de.c0debase.bot.database.data.CodebaseUser;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
