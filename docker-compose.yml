@@ -13,4 +13,4 @@ services:
     restart: always
     container_name: mongodb
     volumes:
-    - '/data/codebase/mongodb:/data/db'
+    - 'mongodb:/data/db'
