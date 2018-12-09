@@ -48,7 +48,6 @@ public class CodebaseImpl implements Codebase {
         logger.info("Command-Manager set up!");
 
         new GuildVoiceListener(this);
-        new GuildReadyListener(this);
 
         new MessageReactionListener(this);
         new MessageReceiveListener(this);
@@ -93,6 +92,7 @@ public class CodebaseImpl implements Codebase {
             final JDABuilder jdaBuilder = new JDABuilder(AccountType.BOT);
             jdaBuilder.setToken(System.getenv("DISCORD_TOKEN"));
             jdaBuilder.setGame(Game.playing("auf c0debase"));
+            jdaBuilder.addEventListener(new GuildReadyListener(this));
             return jdaBuilder.build().awaitReady();
         } catch (Exception exception) {
             logger.error("Encountered exception while initializing ShardManager!");

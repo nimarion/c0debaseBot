@@ -13,7 +13,6 @@ public class GuildReadyListener extends ListenerAdapter {
 
     public GuildReadyListener(final Codebase bot) {
         this.bot = bot;
-        bot.getJDA().addEventListener(this);
     }
 
     @Override
