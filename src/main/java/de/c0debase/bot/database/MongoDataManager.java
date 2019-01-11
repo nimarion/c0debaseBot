@@ -3,9 +3,12 @@ package de.c0debase.bot.database;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Sorts;
+import de.c0debase.bot.core.Codebase;
 import de.c0debase.bot.database.data.CodebaseUser;
 import de.c0debase.bot.utils.Constants;
 import de.c0debase.bot.utils.Pagination;
+import net.dv8tion.jda.core.entities.Member;
+import net.dv8tion.jda.core.entities.User;
 import net.jodah.expiringmap.ExpiringMap;
 import org.bson.Document;
 import org.bson.json.JsonWriterSettings;
@@ -25,8 +28,10 @@ public class MongoDataManager implements DataManager {
     private final Map<String, CodebaseUser> userCache;
     private final Map<String, Pagination> leaderboardCache;
     private final JsonWriterSettings jsonWriterSettings;
+    private final Codebase bot;
 
-    public MongoDataManager(final String host, final int port) {
+    public MongoDataManager(final String host, final int port, final Codebase bot) {
+        this.bot = bot;
         jsonWriterSettings = JsonWriterSettings.builder()
                 .int64Converter((value, writer) -> writer.writeNumber(value.toString()))
                 .build();
@@ -80,7 +85,9 @@ public class MongoDataManager implements DataManager {
                 .sort(Sorts.descending("level", "xp"));
 
         for (Document aDocument : document) {
-            codebaseUsers.add(Constants.GSON.fromJson(aDocument.toJson(jsonWriterSettings), CodebaseUser.class));
+            if (bot.getJDA().getUserById(aDocument.getString("userID")) != null) {
+                codebaseUsers.add(Constants.GSON.fromJson(aDocument.toJson(jsonWriterSettings), CodebaseUser.class));
+            }
         }
         codebaseUsers.sort((o1, o2) -> {
             if (o1.getLevel() != o2.getLevel()) {
