@@ -32,6 +32,8 @@ public class LeaderboardCommand extends Command {
             final Member member = message.getGuild().getMemberById(Long.valueOf(codebaseUser.getUserID()));
             if (member != null) {
                 embedBuilder.appendDescription("`" + count + ")` " + StringUtils.replaceCharacter(member.getEffectiveName()) + "#" + member.getUser().getDiscriminator() + " (Lvl." + codebaseUser.getLevel() + ")\n");
+            } else {
+                embedBuilder.appendDescription("`" + count + ")` undefined#0000 (Lvl." + codebaseUser.getLevel() + ")\n");
             }
             count++;
         }

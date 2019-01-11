@@ -71,7 +71,7 @@ public class CodebaseImpl implements Codebase {
 
     protected DataManager initializeDataManager() throws Exception {
         try {
-            return new MongoDataManager(System.getenv("MONGO_HOST") == null ? "localhost" : System.getenv("MONGO_HOST"), System.getenv("MONGO_PORT") == null ? 27017 : Integer.valueOf(System.getenv("MONGO_PORT")));
+            return new MongoDataManager(System.getenv("MONGO_HOST") == null ? "localhost" : System.getenv("MONGO_HOST"), System.getenv("MONGO_PORT") == null ? 27017 : Integer.valueOf(System.getenv("MONGO_PORT")), this);
         } catch (final Exception exception) {
             logger.error("Encountered exception while initializing Database-Connection!");
             throw exception;
