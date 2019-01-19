@@ -2,13 +2,18 @@ package de.c0debase.bot.utils;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class StringUtils {
 
     private static final List<Character> ESCAPE_CHARACTERS;
+    private static final String URL_REGEX;
+
 
     static {
         ESCAPE_CHARACTERS = Arrays.asList('*', '_', '`', '~');
+        URL_REGEX =  "((http:\\/\\/|https:\\/\\/)?(www.)?(([a-zA-Z0-9-]){2,}\\.){1,4}([a-zA-Z]){2,6}(\\/([a-zA-Z-_\\/\\.0-9#:?=&;,]*)?)?)";
     }
 
     /**
@@ -26,8 +31,10 @@ public class StringUtils {
         return stringBuilder.toString();
     }
 
-    public static String replaceLast(final String text, final String regex, final String replacement) {
-        return text.replaceFirst("(?s)" + regex + "(?!.*?" + regex + ")", replacement);
+    public static boolean containtsURL(final String content){
+        final Pattern p = Pattern.compile(URL_REGEX);
+        Matcher m = p.matcher(content);
+        return m.find();
     }
 
 }
