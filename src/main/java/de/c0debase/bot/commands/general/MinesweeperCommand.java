@@ -14,12 +14,12 @@ public class MinesweeperCommand extends Command {
     @Override
     public void execute(final String[] args, final Message message) {
         final Board board = new Board();
-        final EmbedBuilder builder = new EmbedBuilder();
+        final StringBuilder builder = new StringBuilder();
 
-        builder.setTitle("Minesweeper");
-        builder.setDescription(board.toSpoiler());
-        builder.setFooter("Code von NurMarvin#1337", null);
+        builder.append("**Minesweeper**\n");
+        builder.append(board.toSpoiler()).append("\n");
+        builder.append("_Code von NurMarvin#1337_");
 
-        message.getChannel().sendMessage(builder.build()).queue();
+        message.getChannel().sendMessage(builder.toString()).queue();
     }
 }
