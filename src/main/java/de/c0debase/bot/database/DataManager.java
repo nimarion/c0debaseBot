@@ -7,7 +7,7 @@ public interface DataManager extends AutoCloseable {
 
     CodebaseUser getUserData(final String guildID, final String userID);
 
-    void updateUserData(final CodebaseUser bixUser);
+    void updateUserData(final CodebaseUser codebaseUser);
 
     Pagination getLeaderboard(final String guildID);
 
