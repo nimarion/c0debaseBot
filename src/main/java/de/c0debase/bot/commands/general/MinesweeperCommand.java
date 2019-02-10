@@ -2,7 +2,6 @@ package de.c0debase.bot.commands.general;
 
 import de.c0debase.bot.commands.Command;
 import de.c0debase.bot.utils.minesweeper.Board;
-import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Message;
 
 public class MinesweeperCommand extends Command {
