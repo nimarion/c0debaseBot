@@ -11,7 +11,6 @@
 <td>
   A Discord bot for the c0debase Discord server which provides different commands
 </td>
-<img align="right" src="https://i.imgur.com/Hg1Eekk.png">
 
 </tr>
 </table>
