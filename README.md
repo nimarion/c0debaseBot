@@ -3,7 +3,17 @@
 [![GitHub contributors](https://img.shields.io/github/contributors/biospheere/c0debaseBot.svg)](https://github.com/Biospheere/c0debaseBot/graphs/contributors/)
 [![c0debase Discord](https://discordapp.com/api/guilds/361448651748540426/embed.png)](https://discord.gg/BDwBeZ3)
 
+
 # c0debaseBot 
+
+<table>
+<tr>
+<td>
+  A Discord bot for the c0debase Discord server which provides different commands
+</td>
+
+</tr>
+</table>
 
 ## Cloning and first build
 
@@ -29,5 +39,18 @@ mvn package
   ```docker-compose up```
   
   There you go ;)
+  
+  
+## Built with 
+
+- [JDA](https://github.com/DV8FromTheWorld/JDA) - Java wrapper for the popular chat & VOIP service  [@discordapp](https://github.com/discordapp)
+- [Maven](https://maven.apache.org/) 
+- [Sentry](https://sentry.io/)
+- [MongoDB](https://www.mongodb.com/)
+
+
+## [License](https://github.com/Biospheere/c0debaseBot/blob/master/LICENSE)
+
+MIT © [Niklas](https://github.com/Biospheere/)
  
 
