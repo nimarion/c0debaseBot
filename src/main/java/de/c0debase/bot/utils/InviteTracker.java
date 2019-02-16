@@ -26,9 +26,7 @@ public class InviteTracker {
 
                 EmbedBuilder embedBuilder = new EmbedBuilder();
                 embedBuilder.setDescription(invite.getInviter().getAsMention() + " vielen Dank das du jemand neues auf c0debase gebracht hast [" + invite.getCode() + "]");
-
-                bot.getJDA().getGuilds().get(0).getTextChannels().get(0).sendMessage(invite.getInviter().getAsMention() + " " + invite.getCode()).queue();
-
+                
                 bot.getJDA().getTextChannelById(System.getenv("BOTCHANNEL")).sendMessage(embedBuilder.build()).queue();
 
                 if (levelUser.addXP(100)) {
