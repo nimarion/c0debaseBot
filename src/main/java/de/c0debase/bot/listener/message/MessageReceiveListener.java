@@ -30,7 +30,7 @@ public class MessageReceiveListener extends ListenerAdapter {
     private static final long LOG_CHANNEL_ID = 389448715599085569L;
 
     private final Codebase bot;
-    private final Map<Member, String> lastMessage;
+    private final static Map<Member, String> lastMessage;
     private final List<String> gifs = Arrays.asList(
             "https://media.giphy.com/media/5VKbvrjxpVJCM/giphy.gif",
             "https://media.giphy.com/media/4cUCFvwICarHq/giphy.gif",
@@ -50,11 +50,14 @@ public class MessageReceiveListener extends ListenerAdapter {
 
     private static final long DISCUSSION_CHANNEL_ID = 361606003386613761L;
 
-    public MessageReceiveListener(final Codebase bot) {
-        this.bot = bot;
+    static {
         final ExpiringMap.Builder<Object, Object> mapBuilder = ExpiringMap.builder();
         mapBuilder.expiration(30, TimeUnit.SECONDS).build();
         lastMessage = mapBuilder.build();
+    }
+
+    public MessageReceiveListener(final Codebase bot) {
+        this.bot = bot;
         bot.getJDA().addEventListener(this);
     }
 
@@ -138,4 +141,7 @@ public class MessageReceiveListener extends ListenerAdapter {
         });
     }
 
+    public static Map<Member, String> getLastMessage() {
+        return lastMessage;
+    }
 }
