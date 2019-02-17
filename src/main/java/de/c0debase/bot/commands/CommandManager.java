@@ -1,7 +1,6 @@
 package de.c0debase.bot.commands;
 
 import de.c0debase.bot.core.Codebase;
-import de.c0debase.bot.listener.message.MessageReceiveListener;
 import net.dv8tion.jda.core.entities.ChannelType;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
@@ -48,11 +47,6 @@ public class CommandManager extends ListenerAdapter {
             return;
         }
         final String content = event.getMessage().getContentRaw();
-
-        if (MessageReceiveListener.getLastMessage().containsKey(event.getMember()) && MessageReceiveListener.getLastMessage().get(event.getMember()).equalsIgnoreCase(event.getMessage().getContentRaw())) {
-            event.getMessage().delete().queue();
-            return;
-        }
         
         if (content.startsWith("!") && (event.getChannel().getName().equals("bot") || content.startsWith("!clear"))) {
             final String[] arguments = content.split(" ");
