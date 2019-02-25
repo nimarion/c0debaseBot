@@ -139,7 +139,4 @@ public class MessageReceiveListener extends ListenerAdapter {
         });
     }
 
-    public static Map<Member, String> getLastMessage() {
-        return lastMessage;
-    }
 }
