@@ -47,7 +47,8 @@ public class CommandManager extends ListenerAdapter {
             return;
         }
         final String content = event.getMessage().getContentRaw();
-        if (event.getChannel().getName().equals("bot") || content.startsWith("!clear")) {
+        
+        if (content.startsWith("!") && (event.getChannel().getName().equals("bot") || content.startsWith("!clear"))) {
             final String[] arguments = content.split(" ");
             final String input = arguments[0].replaceFirst("!", "");
             for (Command command : this.availableCommands) {

@@ -58,6 +58,7 @@ public class MessageReceiveListener extends ListenerAdapter {
         bot.getJDA().addEventListener(this);
     }
 
+
     @Override
     public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
         if (event.getAuthor().isBot()) {

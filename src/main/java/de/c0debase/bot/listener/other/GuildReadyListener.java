@@ -2,6 +2,7 @@ package de.c0debase.bot.listener.other;
 
 import de.c0debase.bot.core.Codebase;
 import de.c0debase.bot.tempchannel.Tempchannel;
+import de.c0debase.bot.utils.InviteTracker;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.VoiceChannel;
 import net.dv8tion.jda.core.events.guild.GuildReadyEvent;
@@ -28,6 +29,8 @@ public class GuildReadyListener extends ListenerAdapter {
                 bot.getTempchannels().put(voiceChannel.getId(), tempchannel);
             }
         }
+
+        new InviteTracker(bot).start();
     }
 
 }
