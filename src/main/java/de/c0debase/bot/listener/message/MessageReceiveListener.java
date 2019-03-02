@@ -26,7 +26,7 @@ import java.util.concurrent.TimeUnit;
 
 public class MessageReceiveListener extends ListenerAdapter {
 
-    private static final long PROJECT_ROLE_ID = 361603492642684929L;
+    private static final long PROJECT_ROLE_ID = 408957966998568960L;
     private static final long LOG_CHANNEL_ID = 389448715599085569L;
 
     private final Codebase bot;
@@ -106,7 +106,7 @@ public class MessageReceiveListener extends ListenerAdapter {
                 }
 
                 channel.sendMessage(levelUpEmbed.build()).queue();
-                if (newLevel == 3) {
+                if (newLevel > 2 && !event.getMember().getRoles().contains(event.getJDA().getRoleById(PROJECT_ROLE_ID))) {
                     event.getGuild().getController().addSingleRoleToMember(event.getMember(), event.getJDA().getRoleById(PROJECT_ROLE_ID)).queue();
                 }
             }

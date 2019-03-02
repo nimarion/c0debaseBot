@@ -17,7 +17,7 @@ import java.util.List;
 
 public class GuildMemberJoinListener extends ListenerAdapter {
 
-    private static final long PROJECT_ROLE_ID = 361603492642684929L;
+    private static final long PROJECT_ROLE_ID = 408957966998568960L;
 
     private final Codebase bot;
 
