@@ -26,7 +26,7 @@ import java.util.concurrent.TimeUnit;
 
 public class MessageReceiveListener extends ListenerAdapter {
 
-    private static final long PROJECT_ROLE_ID = 361603492642684929L;
+    private static final long PROJECT_ROLE_ID = 408957966998568960L;
     private static final long LOG_CHANNEL_ID = 389448715599085569L;
 
     private final Codebase bot;
