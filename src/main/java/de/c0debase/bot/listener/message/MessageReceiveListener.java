@@ -106,7 +106,7 @@ public class MessageReceiveListener extends ListenerAdapter {
                 }
 
                 channel.sendMessage(levelUpEmbed.build()).queue();
-                if (newLevel == 3) {
+                if (newLevel > 2 && !event.getMember().getRoles().contains(event.getJDA().getRoleById(PROJECT_ROLE_ID))) {
                     event.getGuild().getController().addSingleRoleToMember(event.getMember(), event.getJDA().getRoleById(PROJECT_ROLE_ID)).queue();
                 }
             }
