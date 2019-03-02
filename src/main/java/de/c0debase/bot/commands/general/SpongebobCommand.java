@@ -17,15 +17,16 @@ public class SpongebobCommand extends Command {
                     getEmbed(message.getGuild(), message.getAuthor()).setDescription("!spongebob [msg]").build())
                     .queue();
         } else {
-            String spongebob = "";
-            for(String splitted : String.join(" ", args).split("")){
+            StringBuilder builder = new StringBuilder();
+
+            for(char c : String.join(" ", args).toCharArray()){
                 if(Constants.RANDOM.nextBoolean()){
-                    spongebob+= splitted.toUpperCase();
+                    builder.append(Character.toUpperCase(c));
                 } else {
-                    spongebob+= splitted.toLowerCase();
+                    builder.append(Character.toLowerCase(c));
                 }
             }
-            message.getChannel().sendMessage(spongebob).queue();
+            message.getChannel().sendMessage(builder.toString()).queue();
         }
     }
 }
