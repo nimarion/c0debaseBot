@@ -7,7 +7,7 @@ import net.dv8tion.jda.core.entities.Message;
 public class SpongebobCommand extends Command {
 
     public SpongebobCommand() {
-        super("spongebob", "Macht einen normalen Satz zu einem lustigen Spongebob Satz", Category.GENERAL);
+        super("spongebob", "Macht einen normalen Satz zu einem lustigen Spongebob Satz", Category.GENERAL, "mock");
     }
 
     @Override
