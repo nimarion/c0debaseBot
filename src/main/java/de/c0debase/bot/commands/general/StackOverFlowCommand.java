@@ -19,5 +19,6 @@ public class StackOverFlowCommand extends Command {
         EmbedBuilder embedBuilder = new EmbedBuilder();
         embedBuilder.setColor(Color.ORANGE);
         embedBuilder.setDescription(url);
+        message.getTextChannel().sendMessage(embedBuilder.build()).queue();
     }
 }
