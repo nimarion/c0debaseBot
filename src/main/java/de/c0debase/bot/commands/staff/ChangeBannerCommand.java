@@ -3,7 +3,10 @@ package de.c0debase.bot.commands.staff;
 import de.c0debase.bot.commands.Command;
 import de.c0debase.bot.utils.ServerBanner;
 import de.c0debase.bot.utils.ServerBannerScheduler;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
+
+import java.awt.*;
 
 public class ChangeBannerCommand extends Command {
 
@@ -20,6 +23,13 @@ public class ChangeBannerCommand extends Command {
     @Override
     public void execute(String[] args, Message message) {
         this.serverBanner.run();
+        message.getTextChannel().sendMessage(
+                new EmbedBuilder()
+                        .setTitle("Erledigt!")
+                        .setDescription("Force-Update des Banners wurde ausgeführt!")
+                        .setColor(Color.GREEN)
+                        .build()
+        ).queue();
     }
 
 }

@@ -17,9 +17,12 @@ import net.dv8tion.jda.api.AccountType;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,7 +32,7 @@ public class CodebaseImpl implements Codebase {
 
     private final JDA jda;
     private final DataManager dataManager;
-    private final CommandManager commandManager;
+    private CommandManager commandManager;
     private final Map<String, Tempchannel> tempchannels;
 
     public CodebaseImpl() throws Exception {
@@ -43,9 +46,6 @@ public class CodebaseImpl implements Codebase {
 
         jda = initializeJDA();
         logger.info("JDA set up!");
-
-        commandManager = initializeCommandManager();
-        logger.info("Command-Manager set up!");
 
         new GuildVoiceListener(this);
 
@@ -92,7 +92,17 @@ public class CodebaseImpl implements Codebase {
             final JDABuilder jdaBuilder = new JDABuilder(AccountType.BOT);
             jdaBuilder.setToken(System.getenv("DISCORD_TOKEN"));
             jdaBuilder.setActivity(Activity.playing("auf c0debase"));
-            jdaBuilder.addEventListeners(new GuildReadyListener(this));
+            jdaBuilder.addEventListeners(new ListenerAdapter() {
+                @Override
+                public void onGuildReady(@Nonnull GuildReadyEvent event) {
+                    try {
+                        commandManager = initializeCommandManager();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    logger.info("Command-Manager set up!");
+                }
+            }, new GuildReadyListener(this));
             return jdaBuilder.build().awaitReady();
         } catch (Exception exception) {
             logger.error("Encountered exception while initializing ShardManager!");
