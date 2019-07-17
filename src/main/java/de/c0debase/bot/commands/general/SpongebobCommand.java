@@ -2,7 +2,7 @@ package de.c0debase.bot.commands.general;
 
 import de.c0debase.bot.commands.Command;
 import de.c0debase.bot.utils.Constants;
-import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.api.entities.Message;
 
 public class SpongebobCommand extends Command {
 

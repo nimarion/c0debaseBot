@@ -2,17 +2,17 @@ package de.c0debase.bot.listener.guild;
 
 import de.c0debase.bot.core.Codebase;
 import de.c0debase.bot.database.data.CodebaseUser;
-import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.entities.Role;
-import net.dv8tion.jda.core.events.guild.member.GuildMemberJoinEvent;
-import net.dv8tion.jda.core.hooks.ListenerAdapter;
-import net.dv8tion.jda.core.managers.GuildController;
-import net.dv8tion.jda.core.utils.PermissionUtil;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.internal.utils.PermissionUtil;
 
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class GuildMemberJoinListener extends ListenerAdapter {
@@ -45,7 +45,7 @@ public class GuildMemberJoinListener extends ListenerAdapter {
             final EmbedBuilder logBuilder = new EmbedBuilder();
             logBuilder.setFooter("@" + member.getUser().getName() + "#" + member.getUser().getDiscriminator(), member.getUser().getEffectiveAvatarUrl());
             logBuilder.setThumbnail(member.getUser().getEffectiveAvatarUrl());
-            logBuilder.appendDescription("Erstelldatum: " + event.getUser().getCreationTime().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")) + "\n");
+            logBuilder.appendDescription("Erstelldatum: " + event.getUser().getTimeCreated().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")) + "\n");
             logBuilder.appendDescription("Standart Avatar: " + (member.getUser().getAvatarUrl() == null) + "\n");
             channel.sendMessage(logBuilder.build()).queue();
         });
@@ -58,11 +58,11 @@ public class GuildMemberJoinListener extends ListenerAdapter {
                 roles.add(role);
             }
         });
-        final GuildController guildController = guild.getController();
-        guildController.addRolesToMember(member, roles).reason("Autorole").queue(success -> {
+        guild.modifyMemberRoles(member, roles, Collections.emptyList()).queue(success -> {
             final Role projectRole = event.getJDA().getRoleById(PROJECT_ROLE_ID);
-            if(codebaseUser.getLevel() > 2 && !member.getRoles().contains(projectRole)) {
-                guildController.addSingleRoleToMember(member, projectRole).queue();
+            if (projectRole == null) return;
+            if (codebaseUser.getLevel() > 2 && !member.getRoles().contains(projectRole)) {
+                guild.addRoleToMember(member, projectRole).queue();
             }
         });
     }

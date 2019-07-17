@@ -1,8 +1,8 @@
 package de.c0debase.bot.commands.staff;
 
 import de.c0debase.bot.commands.Command;
-import net.dv8tion.jda.core.entities.Game;
-import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.entities.Message;
 
 public class SetgameCommand extends Command {
 
@@ -12,6 +12,6 @@ public class SetgameCommand extends Command {
 
     @Override
     public void execute(final String[] args, final Message message) {
-        message.getJDA().getPresence().setGame(Game.of(Game.GameType.DEFAULT, String.join(" ", args)));
+        message.getJDA().getPresence().setActivity(Activity.playing(String.join(" ", args)));
     }
 }
