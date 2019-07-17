@@ -2,10 +2,9 @@ package de.c0debase.bot.commands.staff;
 
 import de.c0debase.bot.commands.Command;
 import de.c0debase.bot.database.data.CodebaseUser;
-import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.Role;
-import net.dv8tion.jda.core.managers.GuildController;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.Role;
 
 public class FixProjectRoleCommand extends Command {
 
@@ -18,14 +17,14 @@ public class FixProjectRoleCommand extends Command {
     @Override
     public void execute(final String[] args, final Message message) {
         final Guild guild = message.getGuild();
-        final GuildController guildController = guild.getController();
         final String guildID = guild.getId();
         final Role projectRole = message.getJDA().getRoleById(PROJECT_ROLE_ID);
-
+        if (projectRole == null)
+            return;
         guild.getMemberCache().forEach(member -> {
             final CodebaseUser codebaseUser = bot.getDataManager().getUserData(guildID, member.getUser().getId());
-            if(codebaseUser.getLevel() > 2 && !member.getRoles().contains(projectRole)) {
-                guildController.addSingleRoleToMember(member, projectRole).queue();
+            if (codebaseUser.getLevel() > 2 && !member.getRoles().contains(projectRole)) {
+                guild.addRoleToMember(member, projectRole).queue();
             }
         });
     }

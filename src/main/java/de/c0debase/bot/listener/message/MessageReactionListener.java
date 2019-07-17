@@ -4,12 +4,12 @@ import com.vdurmont.emoji.EmojiManager;
 import de.c0debase.bot.core.Codebase;
 import de.c0debase.bot.database.data.CodebaseUser;
 import de.c0debase.bot.utils.Pagination;
-import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.entities.MessageEmbed;
-import net.dv8tion.jda.core.entities.MessageReaction;
-import net.dv8tion.jda.core.events.message.guild.react.GenericGuildMessageReactionEvent;
-import net.dv8tion.jda.core.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.entities.MessageReaction;
+import net.dv8tion.jda.api.events.message.guild.react.GenericGuildMessageReactionEvent;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 public class MessageReactionListener extends ListenerAdapter {
 
@@ -25,7 +25,7 @@ public class MessageReactionListener extends ListenerAdapter {
         if (event.getUser().isBot()) {
             return;
         }
-        event.getChannel().getMessageById(event.getMessageId()).queue(success -> {
+        event.getChannel().retrieveMessageById(event.getMessageId()).queue(success -> {
             final String emote = getReaction(event.getReactionEmote());
             if (emote == null) {
                 return;
