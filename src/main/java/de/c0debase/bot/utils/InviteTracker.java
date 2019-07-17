@@ -2,8 +2,8 @@ package de.c0debase.bot.utils;
 
 import de.c0debase.bot.core.Codebase;
 import de.c0debase.bot.database.data.CodebaseUser;
-import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.entities.Invite;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Invite;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
@@ -20,7 +20,8 @@ public class InviteTracker {
     }
 
     public void start() {
-        Executors.newScheduledThreadPool(1).scheduleAtFixedRate(() -> bot.getJDA().getGuilds().get(0).getInvites().queue(inviteList -> inviteList.forEach(invite -> {
+
+        Executors.newScheduledThreadPool(1).scheduleAtFixedRate(() -> bot.getJDA().getGuilds().get(0).retrieveInvites().queue(inviteList -> inviteList.forEach(invite -> {
             if (inviteHashMap.containsKey(invite.getCode()) && invite.getUses() > inviteHashMap.get(invite.getCode()).getUses()) {
                 final CodebaseUser levelUser = bot.getDataManager().getUserData(invite.getGuild().getId(), invite.getInviter().getId());
 

@@ -5,13 +5,13 @@ import de.c0debase.bot.core.Codebase;
 import de.c0debase.bot.database.data.CodebaseUser;
 import de.c0debase.bot.utils.Constants;
 import de.c0debase.bot.utils.StringUtils;
-import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.TextChannel;
-import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
-import net.dv8tion.jda.core.events.message.priv.PrivateMessageReceivedEvent;
-import net.dv8tion.jda.core.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.jodah.expiringmap.ExpiringMap;
 
 import java.awt.*;
@@ -69,13 +69,13 @@ public class MessageReceiveListener extends ListenerAdapter {
         final TextChannel channel = event.getChannel();
 
         if(StringUtils.containtsURL(event.getMessage().getContentRaw()) && member.getRoles().isEmpty()){
-            final long creation = ChronoUnit.DAYS.between(event.getAuthor().getCreationTime(), LocalDateTime.now().atOffset(ZoneOffset.UTC));
+            final long creation = ChronoUnit.DAYS.between(event.getAuthor().getTimeCreated(), LocalDateTime.now().atOffset(ZoneOffset.UTC));
             final boolean default_avatar =  event.getAuthor().getAvatarUrl() == null;
             if((creation < 7) && default_avatar){
                 final EmbedBuilder logBuilder = new EmbedBuilder();
                 logBuilder.setFooter("@" + member.getUser().getName() + "#" + member.getUser().getDiscriminator(), member.getUser().getEffectiveAvatarUrl());
                 logBuilder.setThumbnail(member.getUser().getEffectiveAvatarUrl());
-                logBuilder.appendDescription("Erstelldatum: " + member.getUser().getCreationTime().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")) + "\n");
+                logBuilder.appendDescription("Erstelldatum: " + member.getUser().getTimeCreated().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")) + "\n");
                 logBuilder.appendDescription("Nachricht: " + event.getMessage().getContentRaw() + "\n");
                 event.getGuild().getTextChannelById(LOG_CHANNEL_ID).sendMessage(logBuilder.build()).queue();
                 event.getMessage().delete().queue();
@@ -107,7 +107,7 @@ public class MessageReceiveListener extends ListenerAdapter {
 
                 channel.sendMessage(levelUpEmbed.build()).queue();
                 if (newLevel > 2 && !event.getMember().getRoles().contains(event.getJDA().getRoleById(PROJECT_ROLE_ID))) {
-                    event.getGuild().getController().addSingleRoleToMember(event.getMember(), event.getJDA().getRoleById(PROJECT_ROLE_ID)).queue();
+                    event.getGuild().addRoleToMember(event.getMember(), event.getJDA().getRoleById(PROJECT_ROLE_ID)).queue();
                 }
             }
             codebaseUser.setLastMessage(System.currentTimeMillis());

@@ -2,8 +2,8 @@ package de.c0debase.bot.commands.general;
 
 import com.google.gson.JsonParser;
 import de.c0debase.bot.commands.Command;
-import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.TextChannel;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.TextChannel;
 import org.apache.commons.io.IOUtils;
 
 import java.io.InputStream;

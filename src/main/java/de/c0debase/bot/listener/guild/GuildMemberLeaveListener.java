@@ -1,9 +1,9 @@
 package de.c0debase.bot.listener.guild;
 
 import de.c0debase.bot.core.Codebase;
-import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.events.guild.member.GuildMemberLeaveEvent;
-import net.dv8tion.jda.core.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.events.guild.member.GuildMemberLeaveEvent;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 public class GuildMemberLeaveListener extends ListenerAdapter {
 

@@ -2,9 +2,9 @@ package de.c0debase.bot.listener.guild;
 
 import de.c0debase.bot.core.Codebase;
 import de.c0debase.bot.database.data.CodebaseUser;
-import net.dv8tion.jda.core.events.guild.member.GuildMemberRoleAddEvent;
-import net.dv8tion.jda.core.events.guild.member.GuildMemberRoleRemoveEvent;
-import net.dv8tion.jda.core.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.events.guild.member.GuildMemberRoleAddEvent;
+import net.dv8tion.jda.api.events.guild.member.GuildMemberRoleRemoveEvent;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 public class GuildMemberRoleListener extends ListenerAdapter {
 
