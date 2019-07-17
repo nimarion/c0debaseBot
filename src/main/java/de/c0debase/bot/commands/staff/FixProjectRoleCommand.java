@@ -20,8 +20,7 @@ public class FixProjectRoleCommand extends Command {
         final String guildID = guild.getId();
         final Role projectRole = message.getJDA().getRoleById(PROJECT_ROLE_ID);
         if (projectRole == null)
-            throw new NullPointerException("Project role does not exists!");
-
+            return;
         guild.getMemberCache().forEach(member -> {
             final CodebaseUser codebaseUser = bot.getDataManager().getUserData(guildID, member.getUser().getId());
             if (codebaseUser.getLevel() > 2 && !member.getRoles().contains(projectRole)) {

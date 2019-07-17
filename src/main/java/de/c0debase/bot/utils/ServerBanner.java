@@ -36,9 +36,8 @@ public class ServerBanner implements Runnable {
         if (!guild.getFeatures().contains("BANNER")) {
             throw new UnsupportedOperationException("Your guild can not have a banner!");
         }
-        if (icon == null) {
-            throw new NullPointerException("Passed icon cannot be null!");
-        }
+        if (icon == null)
+            return;
         guild.getManager().setBanner(icon).queue();
     }
 
