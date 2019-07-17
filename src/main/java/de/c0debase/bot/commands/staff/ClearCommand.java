@@ -1,9 +1,9 @@
 package de.c0debase.bot.commands.staff;
 
 import de.c0debase.bot.commands.Command;
-import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.MessageHistory;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.MessageHistory;
 
 import java.util.List;
 
@@ -29,8 +29,8 @@ public class ClearCommand extends Command {
                 ex.printStackTrace();
             }
             final MessageHistory history = new MessageHistory(message.getTextChannel());
-            final List<Message> msgs = history.retrievePast(i + 1).complete();
-            message.getTextChannel().deleteMessages(msgs).queue();
+            final List<Message> messages = history.retrievePast(i + 1).complete();
+            message.getTextChannel().deleteMessages(messages).queue();
 
             final EmbedBuilder embedBuilder = new EmbedBuilder();
             embedBuilder.setFooter("@" + message.getMember().getUser().getName() + "#" + message.getMember().getUser().getDiscriminator(), message.getMember().getUser().getEffectiveAvatarUrl());

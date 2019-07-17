@@ -3,10 +3,10 @@ package de.c0debase.bot.commands;
 import de.c0debase.bot.core.Codebase;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.User;
 
 @Getter
 public abstract class Command {

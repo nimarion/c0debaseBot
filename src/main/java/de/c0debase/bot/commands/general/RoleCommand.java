@@ -1,15 +1,14 @@
 package de.c0debase.bot.commands.general;
 
 import de.c0debase.bot.commands.Command;
-import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.Role;
-import net.dv8tion.jda.core.utils.PermissionUtil;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.internal.utils.PermissionUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author Biosphere
@@ -68,6 +67,6 @@ public class RoleCommand extends Command {
         embedBuilder.appendDescription("Du bist " + addRoles.size() + (addRoles.size() > 1 ? " Rollen " : " Rolle ") + "beigetreten\n");
         embedBuilder.appendDescription("Du hast " + removeRoles.size() + (removeRoles.size() == 1 ? " Rolle " : " Rollen ") + "verlassen");
         message.getTextChannel().sendMessage(embedBuilder.build()).queue();
-        message.getGuild().getController().addRolesToMember(message.getMember(), addRoles).queue(success -> message.getGuild().getController().removeRolesFromMember(message.getMember(), removeRoles).queueAfter(1, TimeUnit.SECONDS));
+        message.getGuild().modifyMemberRoles(message.getMember(), addRoles, removeRoles).queue();
     }
 }

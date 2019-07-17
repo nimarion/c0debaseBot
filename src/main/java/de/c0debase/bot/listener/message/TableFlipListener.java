@@ -1,8 +1,8 @@
 package de.c0debase.bot.listener.message;
 
 import de.c0debase.bot.core.Codebase;
-import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.core.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 public class TableFlipListener extends ListenerAdapter {
     private static final String TABLE_FLIP = "(╯°□°）╯︵ ┻━┻";
