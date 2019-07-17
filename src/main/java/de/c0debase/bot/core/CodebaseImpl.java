@@ -13,10 +13,10 @@ import de.c0debase.bot.listener.message.TableFlipListener;
 import de.c0debase.bot.listener.other.GuildReadyListener;
 import de.c0debase.bot.listener.voice.GuildVoiceListener;
 import de.c0debase.bot.tempchannel.Tempchannel;
-import net.dv8tion.jda.core.AccountType;
-import net.dv8tion.jda.core.JDA;
-import net.dv8tion.jda.core.JDABuilder;
-import net.dv8tion.jda.core.entities.Game;
+import net.dv8tion.jda.api.AccountType;
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.entities.Activity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -91,8 +91,8 @@ public class CodebaseImpl implements Codebase {
         try {
             final JDABuilder jdaBuilder = new JDABuilder(AccountType.BOT);
             jdaBuilder.setToken(System.getenv("DISCORD_TOKEN"));
-            jdaBuilder.setGame(Game.playing("auf c0debase"));
-            jdaBuilder.addEventListener(new GuildReadyListener(this));
+            jdaBuilder.setActivity(Activity.playing("auf c0debase"));
+            jdaBuilder.addEventListeners(new GuildReadyListener(this));
             return jdaBuilder.build().awaitReady();
         } catch (Exception exception) {
             logger.error("Encountered exception while initializing ShardManager!");

@@ -5,9 +5,9 @@ import de.c0debase.bot.commands.Command;
 import de.c0debase.bot.database.data.CodebaseUser;
 import de.c0debase.bot.utils.Pagination;
 import de.c0debase.bot.utils.StringUtils;
-import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Message;
 
 /**
  * @author Biosphere

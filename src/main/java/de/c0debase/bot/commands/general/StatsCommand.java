@@ -1,10 +1,10 @@
 package de.c0debase.bot.commands.general;
 
 import de.c0debase.bot.commands.Command;
-import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.JDA;
-import net.dv8tion.jda.core.JDAInfo;
-import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.JDAInfo;
+import net.dv8tion.jda.api.entities.Message;
 
 import java.lang.management.ManagementFactory;
 import java.util.concurrent.TimeUnit;
@@ -26,7 +26,7 @@ public class StatsCommand extends Command {
 
         final EmbedBuilder embedBuilder = getEmbed(message.getGuild(), message.getAuthor());
         embedBuilder.addField("JDA Version", JDAInfo.VERSION, true);
-        embedBuilder.addField("Ping", jda.getPing() + "ms", true);
+        embedBuilder.addField("Ping", jda.getGatewayPing() + "ms", true);
         embedBuilder.addField("Uptime", String.valueOf(
                 TimeUnit.MILLISECONDS.toDays(uptime) + "d " + TimeUnit.MILLISECONDS.toHours(uptime) % 24 + "h " +
                         TimeUnit.MILLISECONDS.toMinutes(uptime) % 60 + "m " +
