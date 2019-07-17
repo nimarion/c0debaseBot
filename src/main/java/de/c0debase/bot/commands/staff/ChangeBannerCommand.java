@@ -16,7 +16,7 @@ public class ChangeBannerCommand extends Command {
 
     public ChangeBannerCommand() {
         super("banner", "Force an update for the banner change", Category.STAFF);
-        this.serverBanner = new ServerBanner(getBot().getJDA().getGuilds().get(0));
+        this.serverBanner = new ServerBanner(getBot());
         new ServerBannerScheduler().start(this.serverBanner);
     }
 

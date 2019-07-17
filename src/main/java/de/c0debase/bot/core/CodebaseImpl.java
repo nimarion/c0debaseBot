@@ -17,6 +17,7 @@ import net.dv8tion.jda.api.AccountType;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.slf4j.Logger;
@@ -31,6 +32,7 @@ public class CodebaseImpl implements Codebase {
     private static final Logger logger = LoggerFactory.getLogger(Codebase.class);
 
     private final JDA jda;
+    private Guild guild;
     private final DataManager dataManager;
     private CommandManager commandManager;
     private final Map<String, Tempchannel> tempchannels;
@@ -46,6 +48,9 @@ public class CodebaseImpl implements Codebase {
 
         jda = initializeJDA();
         logger.info("JDA set up!");
+
+        commandManager = initializeCommandManager();
+        logger.info("Command-Manager set up!");
 
         new GuildVoiceListener(this);
 
@@ -95,12 +100,7 @@ public class CodebaseImpl implements Codebase {
             jdaBuilder.addEventListeners(new ListenerAdapter() {
                 @Override
                 public void onGuildReady(@Nonnull GuildReadyEvent event) {
-                    try {
-                        commandManager = initializeCommandManager();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    logger.info("Command-Manager set up!");
+                    guild = event.getGuild();
                 }
             }, new GuildReadyListener(this));
             return jdaBuilder.build().awaitReady();
@@ -128,5 +128,10 @@ public class CodebaseImpl implements Codebase {
     @Override
     public Map<String, Tempchannel> getTempchannels() {
         return tempchannels;
+    }
+
+    @Override
+    public Guild getGuild() {
+        return guild;
     }
 }
