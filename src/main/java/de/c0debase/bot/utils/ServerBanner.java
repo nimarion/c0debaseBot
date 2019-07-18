@@ -1,6 +1,6 @@
 package de.c0debase.bot.utils;
 
-import net.dv8tion.jda.api.entities.Guild;
+import de.c0debase.bot.core.Codebase;
 import net.dv8tion.jda.api.entities.Icon;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -11,15 +11,15 @@ import java.net.URL;
 
 public class ServerBanner implements Runnable {
 
-    private final Guild guild;
+    private final Codebase bot;
     private URL unsplashUrl;
 
-    public ServerBanner(final Guild guild) {
-        this(guild, 335434);
+    public ServerBanner(final Codebase bot) {
+        this(335434, bot);
     }
 
-    public ServerBanner(final Guild guild, final int collectionId) {
-        this.guild = guild;
+    public ServerBanner(final int collectionId, final Codebase bot) {
+        this.bot = bot;
         try {
             this.unsplashUrl = new URL("https://source.unsplash.com/collection/" + collectionId + "/960x540");
         } catch (MalformedURLException e) {
@@ -33,12 +33,13 @@ public class ServerBanner implements Runnable {
      * @param icon The new server banner.
      */
     public void setServerBanner(final Icon icon) {
-        if (!guild.getFeatures().contains("BANNER")) {
+        if(bot.getGuild() == null) return;
+        if (!bot.getGuild().getFeatures().contains("BANNER")) {
             throw new UnsupportedOperationException("Your guild can not have a banner!");
         }
         if (icon == null)
             return;
-        guild.getManager().setBanner(icon).queue();
+        bot.getGuild().getManager().setBanner(icon).queue();
     }
 
     /**
@@ -47,10 +48,11 @@ public class ServerBanner implements Runnable {
      * @return The banner url, if present. Otherwise null.
      */
     public String getBannerUrl() {
-        if (!guild.getFeatures().contains("BANNER")) {
+        if(bot.getGuild() == null) return null;
+        if (!bot.getGuild().getFeatures().contains("BANNER")) {
             throw new UnsupportedOperationException("Your guild can not have a banner!");
         }
-        return guild.getBannerUrl();
+        return bot.getGuild().getBannerUrl();
     }
 
     /**
