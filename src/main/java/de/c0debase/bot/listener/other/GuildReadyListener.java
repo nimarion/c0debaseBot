@@ -33,7 +33,6 @@ public class GuildReadyListener extends ListenerAdapter {
         }
 
         new InviteTracker(bot).start();
-        new ServerBannerScheduler().start(new ServerBanner(event.getGuild()));
     }
 
 }

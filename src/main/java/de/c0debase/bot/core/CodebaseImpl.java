@@ -17,9 +17,13 @@ import net.dv8tion.jda.api.AccountType;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,8 +32,9 @@ public class CodebaseImpl implements Codebase {
     private static final Logger logger = LoggerFactory.getLogger(Codebase.class);
 
     private final JDA jda;
+    private Guild guild;
     private final DataManager dataManager;
-    private final CommandManager commandManager;
+    private CommandManager commandManager;
     private final Map<String, Tempchannel> tempchannels;
 
     public CodebaseImpl() throws Exception {
@@ -92,7 +97,12 @@ public class CodebaseImpl implements Codebase {
             final JDABuilder jdaBuilder = new JDABuilder(AccountType.BOT);
             jdaBuilder.setToken(System.getenv("DISCORD_TOKEN"));
             jdaBuilder.setActivity(Activity.playing("auf c0debase"));
-            jdaBuilder.addEventListeners(new GuildReadyListener(this));
+            jdaBuilder.addEventListeners(new ListenerAdapter() {
+                @Override
+                public void onGuildReady(@Nonnull GuildReadyEvent event) {
+                    guild = event.getGuild();
+                }
+            }, new GuildReadyListener(this));
             return jdaBuilder.build().awaitReady();
         } catch (Exception exception) {
             logger.error("Encountered exception while initializing ShardManager!");
@@ -118,5 +128,10 @@ public class CodebaseImpl implements Codebase {
     @Override
     public Map<String, Tempchannel> getTempchannels() {
         return tempchannels;
+    }
+
+    @Override
+    public Guild getGuild() {
+        return guild;
     }
 }
