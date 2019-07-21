@@ -1,8 +1,9 @@
 package de.c0debase.bot.commands.general;
 
-import de.c0debase.bot.commands.Command;
+import com.jagrosh.jdautilities.command.Command;
+import com.jagrosh.jdautilities.command.CommandEvent;
+import de.c0debase.bot.utils.EmbedUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.internal.utils.PermissionUtil;
 
@@ -24,37 +25,40 @@ public class RoleCommand extends Command {
     }
 
     public RoleCommand() {
-        super("role", "Weise dir eine Programmiersprache zu", Category.GENERAL, "rolle", "roles");
+        this.name = "role";
+        this.help = "Weise dir eine Programmiersprache zu";
+        this.guildOnly = true;
+        this.aliases = new String[]{"roles"};
     }
 
     @Override
-    public void execute(final String[] args, final Message message) {
-        if (args.length == 0) {
-            EmbedBuilder embedBuilder = getEmbed(message.getGuild(), message.getAuthor());
-            embedBuilder.setFooter("!role Java,Go,Javascript", message.getMember().getUser().getEffectiveAvatarUrl());
+    protected void execute(CommandEvent commandEvent) {
+        if (commandEvent.getArgs().isEmpty()) {
+            EmbedBuilder embedBuilder = EmbedUtils.getEmbed(commandEvent.getAuthor(), true);
+            embedBuilder.setFooter("!role Java,Go,Javascript", commandEvent.getAuthor().getEffectiveAvatarUrl());
             embedBuilder.setTitle("Es gibt diese Rollen:");
 
             embedBuilder.appendDescription("`!role Java,Go,C#`\n\n");
 
-            for (Role role : message.getGuild().getRoles()) {
-                if (!role.isManaged() && !FORBIDDEN.contains(role.getName()) && PermissionUtil.canInteract(message.getGuild().getSelfMember(), role)) {
+            for (Role role : commandEvent.getGuild().getRoles()) {
+                if (!role.isManaged() && !FORBIDDEN.contains(role.getName()) && PermissionUtil.canInteract(commandEvent.getMember(), role)) {
                     embedBuilder.appendDescription("***" + role.getName() + "***" + "\n");
                 }
             }
-            message.getTextChannel().sendMessage(embedBuilder.build()).queue();
+            commandEvent.reply(embedBuilder.build());
         } else {
-            changeRole(String.join(" ", args).replaceAll(",", " "), message);
+            changeRole(String.join(" ", commandEvent.getArgs()).replaceAll(",", " "), commandEvent);
         }
     }
 
-    private void changeRole(final String args, final Message message) {
+    private void changeRole(final String args, final CommandEvent commandEvent) {
         final List<Role> addRoles = new ArrayList<>();
         final List<Role> removeRoles = new ArrayList<>();
         for (String role : args.split(" ")) {
-            if (!role.isEmpty() && !message.getGuild().getRolesByName(role, true).isEmpty() && !FORBIDDEN.contains(role)) {
-                Role rrole = message.getGuild().getRolesByName(role, true).get(0);
-                if (PermissionUtil.canInteract(message.getGuild().getSelfMember(), rrole) && !rrole.isManaged()) {
-                    if (message.getGuild().getMembersWithRoles(rrole).contains(message.getMember()) && !removeRoles.contains(rrole)) {
+            if (!role.isEmpty() && !commandEvent.getGuild().getRolesByName(role, true).isEmpty() && !FORBIDDEN.contains(role)) {
+                Role rrole = commandEvent.getGuild().getRolesByName(role, true).get(0);
+                if (PermissionUtil.canInteract(commandEvent.getGuild().getSelfMember(), rrole) && !rrole.isManaged()) {
+                    if (commandEvent.getGuild().getMembersWithRoles(rrole).contains(commandEvent.getMember()) && !removeRoles.contains(rrole)) {
                         removeRoles.add(rrole);
                     } else if (!addRoles.contains(rrole)) {
                         addRoles.add(rrole);
@@ -62,11 +66,10 @@ public class RoleCommand extends Command {
                 }
             }
         }
-        final EmbedBuilder embedBuilder = getEmbed(message.getGuild(), message.getAuthor());
+        final EmbedBuilder embedBuilder = EmbedUtils.getEmbed(commandEvent.getAuthor(), true);
         embedBuilder.setTitle("Rolle(n) geupdatet");
         embedBuilder.appendDescription("Du bist " + addRoles.size() + (addRoles.size() > 1 ? " Rollen " : " Rolle ") + "beigetreten\n");
         embedBuilder.appendDescription("Du hast " + removeRoles.size() + (removeRoles.size() == 1 ? " Rolle " : " Rollen ") + "verlassen");
-        message.getTextChannel().sendMessage(embedBuilder.build()).queue();
-        message.getGuild().modifyMemberRoles(message.getMember(), addRoles, removeRoles).queue();
+        commandEvent.getGuild().modifyMemberRoles(commandEvent.getMember(), addRoles, removeRoles).queue(roleUpdate -> commandEvent.reply(embedBuilder.build()));
     }
 }

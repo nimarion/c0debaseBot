@@ -1,14 +1,14 @@
 package de.c0debase.bot.commands.general;
 
-import de.c0debase.bot.commands.Command;
+import com.jagrosh.jdautilities.command.Command;
+import com.jagrosh.jdautilities.command.CommandEvent;
 import de.c0debase.bot.utils.Constants;
+import de.c0debase.bot.utils.EmbedUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.Message;
 
 import java.awt.*;
 import java.util.Arrays;
 import java.util.List;
-import java.util.StringJoiner;
 
 public class YesNoCommand extends Command {
 
@@ -44,28 +44,27 @@ public class YesNoCommand extends Command {
     );
 
     public YesNoCommand() {
-        super("yn", "Answers to a question with \"yes\" or \"no\"", Category.GENERAL, "yesno", "jn", "janein");
+        this.name = "yn";
+        this.help = "Answers to a question with \"yes\" or \"no\"";
+        this.aliases = new String[]{"yesno", "jn", "janein"};
+        this.arguments = "[question]";
     }
 
     @Override
-    public void execute(final String[] args, final Message message) {
-        if (args.length > 0) {
-            final StringJoiner stringJoiner = new StringJoiner(" ");
-            for (int i = 0; i < args.length; i++) {
-                stringJoiner.add(args[i]);
-            }
+    protected void execute(CommandEvent commandEvent) {
+        if (!commandEvent.getArgs().isEmpty()) {
             final boolean yn = Constants.RANDOM.nextBoolean();
-            message.getTextChannel().sendMessage(
+            commandEvent.reply(
                     new EmbedBuilder()
                             .setTitle("Ja oder Nein?")
                             .setDescription(
-                                    "Deine Frage: " + stringJoiner.toString() + "\n\n" +
+                                    "Deine Frage: " + commandEvent.getArgs() + "\n\n" +
                                             "Meine Antwort: " + (yn ? "Ja" : "Nein") + "\n")
                             .setColor(yn ? Color.GREEN : Color.RED)
                             .setImage(yn ? yesGifs.get(Constants.RANDOM.nextInt(yesGifs.size())) : noGifs.get(Constants.RANDOM.nextInt(noGifs.size()))).build()
-            ).queue();
+            );
         } else {
-            message.getTextChannel().sendMessage(getEmbed(message.getGuild(), message.getAuthor()).setDescription("!yn [Deine Frage]").build()).queue();
+            commandEvent.reply(EmbedUtils.getEmbed(commandEvent.getAuthor(), false).setDescription("!yn [Deine Frage]").build());
         }
     }
 }

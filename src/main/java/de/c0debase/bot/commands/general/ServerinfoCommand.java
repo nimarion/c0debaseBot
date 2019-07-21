@@ -1,6 +1,8 @@
 package de.c0debase.bot.commands.general;
 
-import de.c0debase.bot.commands.Command;
+import com.jagrosh.jdautilities.command.Command;
+import com.jagrosh.jdautilities.command.CommandEvent;
+import de.c0debase.bot.utils.EmbedUtils;
 import de.c0debase.bot.utils.StringUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
@@ -13,15 +15,17 @@ import java.time.temporal.ChronoUnit;
 public class ServerinfoCommand extends Command {
 
     public ServerinfoCommand() {
-        super("serverinfo", "Listet einige Informationen über den Server", Category.GENERAL);
+        this.name = "serverinfo";
+        this.help = "Listet einige Informationen über den Server";
+        this.guildOnly = true;
     }
 
     @Override
-    public void execute(final String[] args, final Message message) {
-        final EmbedBuilder embedBuilder = new EmbedBuilder();
+    protected void execute(CommandEvent commandEvent) {
+        final EmbedBuilder embedBuilder = EmbedUtils.getEmbed(commandEvent.getAuthor(), true);
+        final Message message = commandEvent.getMessage();
         embedBuilder.setTitle(message.getGuild().getName(), "https://c0debase.de");
         embedBuilder.setThumbnail(message.getGuild().getIconUrl());
-        embedBuilder.setFooter(StringUtils.replaceCharacter(message.getAuthor().getName()), message.getAuthor().getEffectiveAvatarUrl());
         embedBuilder.addField("Erstellt am", message.getGuild().getTimeCreated().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")), true);
         embedBuilder.addField("Region", message.getGuild().getRegionRaw(), true);
         embedBuilder.addField("Mitglieder", String.valueOf(message.getGuild().getMembers().size()), true);
@@ -31,6 +35,6 @@ public class ServerinfoCommand extends Command {
         embedBuilder.addField("Owner", StringUtils.replaceCharacter(message.getGuild().getOwner().getUser().getName()) + "#" + message.getGuild().getOwner().getUser().getDiscriminator(), true);
         embedBuilder.addField("Erstellt vor", ChronoUnit.DAYS.between(message.getGuild().getTimeCreated(), LocalDateTime.now().atOffset(ZoneOffset.UTC)) + " Tagen", true);
 
-        message.getTextChannel().sendMessage(embedBuilder.build()).queue();
+        commandEvent.reply(embedBuilder.build());
     }
 }

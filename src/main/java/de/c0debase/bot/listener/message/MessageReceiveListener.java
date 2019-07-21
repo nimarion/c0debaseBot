@@ -88,7 +88,7 @@ public class MessageReceiveListener extends ListenerAdapter {
             return;
         }
 
-        if (lastMessage.containsKey(member) && lastMessage.get(member).equalsIgnoreCase(event.getMessage().getContentRaw()) && event.getMessage().getAttachments().isEmpty()) {
+        if (!event.getMessage().getContentRaw().startsWith("!") && lastMessage.containsKey(member) && lastMessage.get(member).equalsIgnoreCase(event.getMessage().getContentRaw()) && event.getMessage().getAttachments().isEmpty()) {
             event.getMessage().delete().queue();
             return;
         }

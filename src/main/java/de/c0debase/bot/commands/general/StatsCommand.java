@@ -1,10 +1,11 @@
 package de.c0debase.bot.commands.general;
 
-import de.c0debase.bot.commands.Command;
+import com.jagrosh.jdautilities.command.Command;
+import com.jagrosh.jdautilities.command.CommandEvent;
+import de.c0debase.bot.utils.EmbedUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDAInfo;
-import net.dv8tion.jda.api.entities.Message;
 
 import java.lang.management.ManagementFactory;
 import java.util.concurrent.TimeUnit;
@@ -16,22 +17,23 @@ import java.util.concurrent.TimeUnit;
 public class StatsCommand extends Command {
 
     public StatsCommand() {
-        super("stats", "Zeigt dir einige Informationen über den Bot", Category.GENERAL, "info");
+        this.name = "stats";
+        this.help = "Zeigt dir einige Informationen über den Bot";
+        this.aliases = new String[]{"info"};
     }
 
     @Override
-    public void execute(final String[] args, final Message message) {
-        final JDA jda = message.getJDA();
+    protected void execute(CommandEvent commandEvent) {
+        final JDA jda = commandEvent.getJDA();
         final long uptime = ManagementFactory.getRuntimeMXBean().getUptime();
 
-        final EmbedBuilder embedBuilder = getEmbed(message.getGuild(), message.getAuthor());
+        final EmbedBuilder embedBuilder = EmbedUtils.getEmbed(commandEvent.getAuthor(), true);
         embedBuilder.addField("JDA Version", JDAInfo.VERSION, true);
         embedBuilder.addField("Ping", jda.getGatewayPing() + "ms", true);
-        embedBuilder.addField("Uptime", String.valueOf(
-                TimeUnit.MILLISECONDS.toDays(uptime) + "d " + TimeUnit.MILLISECONDS.toHours(uptime) % 24 + "h " +
-                        TimeUnit.MILLISECONDS.toMinutes(uptime) % 60 + "m " +
-                        TimeUnit.MILLISECONDS.toSeconds(uptime) % 60 + "s"), true);
-        embedBuilder.addField("Commands", String.valueOf(bot.getCommandManager().getAvailableCommands().size()), true);
+        embedBuilder.addField("Uptime", TimeUnit.MILLISECONDS.toDays(uptime) + "d " + TimeUnit.MILLISECONDS.toHours(uptime) % 24 + "h " +
+                TimeUnit.MILLISECONDS.toMinutes(uptime) % 60 + "m " +
+                TimeUnit.MILLISECONDS.toSeconds(uptime) % 60 + "s", true);
+        //embedBuilder.addField("Commands", String.valueOf(bot.getCommandManager().getAvailableCommands().size()), true);
         embedBuilder.addField("Mitglieder", String.valueOf(jda.getUserCache().size()), true);
         embedBuilder.addField("Java Version", System.getProperty("java.runtime.version").replace("+", "_"), true);
         embedBuilder.addField("Betriebssystem", ManagementFactory.getOperatingSystemMXBean().getName(), true);
@@ -42,7 +44,8 @@ public class StatsCommand extends Command {
                 (ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getMax() +
                         ManagementFactory.getMemoryMXBean().getNonHeapMemoryUsage().getMax()) / 1000000 + " MB", true);
         embedBuilder.addField("Threads", String.valueOf(Thread.activeCount()), true);
-        message.getChannel().sendMessage(embedBuilder.build()).queue();
+
+        commandEvent.reply(embedBuilder.build());
     }
 }
 

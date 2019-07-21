@@ -1,21 +1,31 @@
 package de.c0debase.bot.commands.general;
 
-import de.c0debase.bot.commands.Command;
+import com.jagrosh.jdautilities.command.Command;
+import com.jagrosh.jdautilities.command.CommandEvent;
+import de.c0debase.bot.core.Codebase;
+import de.c0debase.bot.utils.EmbedUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 
 public class CoinCommand extends Command {
 
-    public CoinCommand() {
-        super("coins", "Zeigt dir deine Coins", Category.GENERAL, "money");
+    private final Codebase bot;
+
+    public CoinCommand(final Codebase instance) {
+        this.bot = instance;
+        this.name = "coins";
+        this.help = "Zeigt dir deine Coins";
+        this.guildOnly = true;
+        this.aliases = new String[]{"money"};
     }
 
     @Override
-    public void execute(final String[] args, final Message message) {
+    protected void execute(CommandEvent commandEvent) {
+        final Message message = commandEvent.getMessage();
         final Member member = message.getMentionedMembers().size() == 0 ? message.getMember() : ((message.getMentionedMembers().get(0).getUser().isBot()) ? message.getMember() : message.getMentionedMembers().get(0));
-        final EmbedBuilder embedBuilder = getEmbed(message.getGuild(), member.getUser());
+        final EmbedBuilder embedBuilder = EmbedUtils.getEmbed(message.getAuthor(), true);
         embedBuilder.setDescription(member.getAsMention() + " hat " + String.format("%.2f", bot.getDataManager().getUserData(member.getGuild().getId(), member.getUser().getId()).getCoins()) + " Coins");
-        message.getTextChannel().sendMessage(embedBuilder.build()).queue();
+        commandEvent.reply(embedBuilder.build());
     }
 }

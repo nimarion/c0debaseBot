@@ -1,17 +1,18 @@
 package de.c0debase.bot.commands.general;
 
-import de.c0debase.bot.commands.Command;
+import com.jagrosh.jdautilities.command.Command;
+import com.jagrosh.jdautilities.command.CommandEvent;
 import de.c0debase.bot.utils.minesweeper.Board;
-import net.dv8tion.jda.api.entities.Message;
 
 public class MinesweeperCommand extends Command {
 
     public MinesweeperCommand() {
-        super("minesweeper", "Generiert ein Minesweeper-Feld", Category.GENERAL);
+        this.name = "minesweeper";
+        this.help = "Generiert ein Minesweeper-Feld";
     }
 
     @Override
-    public void execute(final String[] args, final Message message) {
+    protected void execute(CommandEvent commandEvent) {
         final Board board = new Board();
         final StringBuilder builder = new StringBuilder();
 
@@ -19,6 +20,6 @@ public class MinesweeperCommand extends Command {
         builder.append(board.toSpoiler()).append("\n");
         builder.append("_Code von NurMarvin#1337_");
 
-        message.getChannel().sendMessage(builder.toString()).queue();
+        commandEvent.reply(builder.toString());
     }
 }

@@ -1,11 +1,12 @@
 package de.c0debase.bot.commands.staff;
 
-import de.c0debase.bot.commands.Command;
+import com.jagrosh.jdautilities.command.Command;
+import com.jagrosh.jdautilities.command.CommandEvent;
 import de.c0debase.bot.core.Codebase;
+import de.c0debase.bot.utils.EmbedUtils;
 import de.c0debase.bot.utils.ServerBanner;
 import de.c0debase.bot.utils.ServerBannerScheduler;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.Message;
 
 import java.awt.*;
 
@@ -15,33 +16,30 @@ public class ChangeBannerCommand extends Command {
     // or to create a static singleton instance ._.
     private ServerBanner serverBanner;
 
-    public ChangeBannerCommand() {
-        super("banner", "Force an update for the banner change", Category.STAFF);
-    }
-
-    @Override
-    public void execute(String[] args, Message message) {
-        if (this.serverBanner == null) return;
-        this.serverBanner.run();
-        message.getTextChannel().sendMessage(
-                new EmbedBuilder()
-                        .setTitle("Erledigt!")
-                        .setDescription("Force-Update des Banners wurde ausgeführt!")
-                        .setColor(Color.GREEN)
-                        .build()
-        ).queue();
-    }
-
-    /**
-     * Cannot initialize the {@link ServerBanner} in constructor, because {@link Command#getBot()} is null at this moment.
-     * So we override the setInstance method to initialize the banner service here.
-     *
-     * @param instance {@link Codebase} instance.
-     */
-    @Override
-    public void setInstance(Codebase instance) {
-        super.setInstance(instance);
-        this.serverBanner = new ServerBanner(getBot());
+    public ChangeBannerCommand(final Codebase instance) {
+        this.name = "banner";
+        this.help = "Force an update for the banner change";
+        this.requiredRole = "Team";
+        this.guildOnly = true;
+        this.serverBanner = new ServerBanner(instance);
         new ServerBannerScheduler().start(this.serverBanner);
     }
+
+    @Override
+    protected void execute(CommandEvent commandEvent) {
+        if (!commandEvent.getGuild().getFeatures().contains("BANNER")) {
+            final EmbedBuilder embedBuilder = EmbedUtils.getEmbed(commandEvent.getAuthor(), false);
+            embedBuilder.setDescription("Auf diesem Server kann aktuell kein Banner gesetzt werden!");
+            commandEvent.reply(embedBuilder.build());
+            return;
+        }
+        if (this.serverBanner == null) return;
+        this.serverBanner.run();
+        final EmbedBuilder embedBuilder = EmbedUtils.getEmbed(commandEvent.getAuthor(), true);
+        embedBuilder.setDescription("Force-Update des Banners wurde ausgeführt!");
+        embedBuilder.setImage(commandEvent.getGuild().getBannerUrl());
+        embedBuilder.setColor(Color.GREEN);
+        commandEvent.reply(embedBuilder.build());
+    }
+
 }

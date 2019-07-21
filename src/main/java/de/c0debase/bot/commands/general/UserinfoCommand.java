@@ -1,6 +1,8 @@
 package de.c0debase.bot.commands.general;
 
-import de.c0debase.bot.commands.Command;
+import com.jagrosh.jdautilities.command.Command;
+import com.jagrosh.jdautilities.command.CommandEvent;
+import de.c0debase.bot.utils.EmbedUtils;
 import de.c0debase.bot.utils.StringUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
@@ -11,14 +13,17 @@ import java.time.format.DateTimeFormatter;
 public class UserinfoCommand extends Command {
 
     public UserinfoCommand() {
-        super("userinfo", "Zeigt ein paar Infos über einen Nutzer", Category.GENERAL);
+        this.name = "userinfo";
+        this.help = "Zeigt ein paar Infos über einen Nutzer";
+        this.guildOnly = true;
     }
 
     @Override
-    public void execute(final String[] args, final Message message) {
+    protected void execute(CommandEvent commandEvent) {
+        final Message message = commandEvent.getMessage();
         final Member member = message.getMentionedMembers().size() == 0 ? message.getMember() : ((message.getMentionedMembers().get(0).getUser().isBot()) ? message.getMember() : message.getMentionedMembers().get(0));
 
-        final EmbedBuilder embedBuilder = new EmbedBuilder();
+        final EmbedBuilder embedBuilder = EmbedUtils.getEmbed(commandEvent.getAuthor(), true);
         embedBuilder.setThumbnail(member.getUser().getAvatarUrl());
         embedBuilder.addField("Name", StringUtils.replaceCharacter(member.getUser().getName()), true);
         embedBuilder.addField("Nickname", member.getNickname() == null ? StringUtils.replaceCharacter(member.getUser().getName()) : StringUtils.replaceCharacter(member.getNickname()), true);
@@ -29,8 +34,7 @@ public class UserinfoCommand extends Command {
         embedBuilder.addField("Erstelldatum: ", member.getUser().getTimeCreated().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")), true);
         embedBuilder.addField("Standart Avatar: ", String.valueOf(member.getUser().getAvatarUrl() == null), true);
 
-
-        message.getTextChannel().sendMessage(embedBuilder.build()).queue();
+        commandEvent.reply(embedBuilder.build());
     }
 
 }

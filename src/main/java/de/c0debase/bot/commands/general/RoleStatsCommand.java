@@ -1,10 +1,11 @@
 package de.c0debase.bot.commands.general;
 
-import de.c0debase.bot.commands.Command;
+import com.jagrosh.jdautilities.command.Command;
+import com.jagrosh.jdautilities.command.CommandEvent;
+import de.c0debase.bot.utils.EmbedUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.internal.utils.PermissionUtil;
 
@@ -22,13 +23,15 @@ public class RoleStatsCommand extends Command {
     }
 
     public RoleStatsCommand() {
-        super("rolestats", "Zeigt wie viele Mitglieder eine Rolle haben", Category.GENERAL);
+        this.name = "rolestats";
+        this.help = "Zeigt wie viele Mitglieder eine Rolle haben";
+        this.guildOnly = true;
     }
 
     @Override
-    public void execute(final String[] args, final Message message) {
-        final Guild guild = message.getGuild();
-        final EmbedBuilder embedBuilder = getEmbed(guild, message.getAuthor());
+    protected void execute(CommandEvent commandEvent) {
+        final Guild guild = commandEvent.getGuild();
+        final EmbedBuilder embedBuilder = EmbedUtils.getEmbed(commandEvent.getAuthor(), true);
         embedBuilder.setTitle("Rollen Statistiken");
         final Member selfMember = guild.getSelfMember();
         final Map<Role, Long> roles = guild.getMembers()
@@ -44,6 +47,6 @@ public class RoleStatsCommand extends Command {
                 .filter(role -> PermissionUtil.canInteract(selfMember, role))
                 .map(role -> String.format(DESCRIPTION_PATTERN, role.getName(), roles.get(role)))
                 .forEach(embedBuilder::appendDescription);
-        message.getTextChannel().sendMessage(embedBuilder.build()).queue();
+        commandEvent.reply(embedBuilder.build());
     }
 }

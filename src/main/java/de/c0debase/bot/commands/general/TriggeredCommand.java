@@ -1,6 +1,7 @@
 package de.c0debase.bot.commands.general;
 
-import de.c0debase.bot.commands.Command;
+import com.jagrosh.jdautilities.command.Command;
+import com.jagrosh.jdautilities.command.CommandEvent;
 import de.c0debase.bot.utils.ImageEditor;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
@@ -15,11 +16,13 @@ import java.net.URLConnection;
 public class TriggeredCommand extends Command {
 
     public TriggeredCommand() {
-        super("triggered", "Erstellt ein Bild ^^", Category.GENERAL);
+        this.name = "triggered";
+        this.help = "Erstellt ein Bild ^^";
     }
 
     @Override
-    public void execute(final String[] args, final Message message) {
+    protected void execute(CommandEvent commandEvent) {
+        final Message message = commandEvent.getMessage();
         final Member member = message.getMentionedMembers().size() == 0 ? message.getMember() : message.getMentionedMembers().get(0);
         final TextChannel channel = message.getTextChannel();
         if (member.getUser().getAvatarUrl() == null) {

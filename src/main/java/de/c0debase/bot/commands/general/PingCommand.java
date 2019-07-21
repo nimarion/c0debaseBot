@@ -1,22 +1,24 @@
 package de.c0debase.bot.commands.general;
 
-import de.c0debase.bot.commands.Command;
+import com.jagrosh.jdautilities.command.Command;
+import com.jagrosh.jdautilities.command.CommandEvent;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.Message;
 
 import java.awt.*;
 
 public class PingCommand extends Command {
 
     public PingCommand() {
-        super("ping", "Zeigt dir den Ping des Bots zu Discord", Category.GENERAL);
+        this.name = "ping";
+        this.help = "Zeigt dir den Ping des Bots zu Discord";
     }
 
     @Override
-    public void execute(final String[] args, final Message message) {
+    protected void execute(CommandEvent commandEvent) {
         final EmbedBuilder embedBuilder = new EmbedBuilder();
-        embedBuilder.appendDescription(":stopwatch: " + message.getJDA().getGatewayPing());
+        embedBuilder.appendDescription(":stopwatch: " + commandEvent.getJDA().getGatewayPing());
         embedBuilder.setColor(Color.GREEN);
-        message.getTextChannel().sendMessage(embedBuilder.build()).queue();
+        commandEvent.reply(embedBuilder.build());
     }
+
 }
