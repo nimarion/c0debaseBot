@@ -12,5 +12,5 @@ services:
     image: "mongo"
     restart: always
     container_name: mongodb
-    volumes:
-    - 'mongodb:/data/db'
+    #volumes:
+    #- 'mongodb:/data/db'
