@@ -22,11 +22,21 @@ public class ChangeBannerCommand extends Command {
     @Override
     public void execute(String[] args, Message message) {
         if (this.serverBanner == null) return;
+        if (!bot.getGuild().getFeatures().contains("BANNER")) {
+            message.getTextChannel().sendMessage(
+                    new EmbedBuilder()
+                            .setDescription("Auf diesem Server kann aktuell kein Banner gesetzt werden!")
+                            .setColor(Color.RED)
+                            .build()
+            ).queue();
+            return;
+        }
         this.serverBanner.run();
         message.getTextChannel().sendMessage(
                 new EmbedBuilder()
                         .setTitle("Erledigt!")
                         .setDescription("Force-Update des Banners wurde ausgeführt!")
+                        .setImage(message.getGuild().getBannerUrl())
                         .setColor(Color.GREEN)
                         .build()
         ).queue();
