@@ -19,8 +19,10 @@ public class InviteTracker {
         inviteHashMap = new ConcurrentHashMap<>();
     }
 
+    /**
+     * See which invite has been used by a new member of a guild
+     */
     public void start() {
-
         Executors.newScheduledThreadPool(1).scheduleAtFixedRate(() -> bot.getJDA().getGuilds().get(0).retrieveInvites().queue(inviteList -> inviteList.forEach(invite -> {
             if (inviteHashMap.containsKey(invite.getCode()) && invite.getUses() > inviteHashMap.get(invite.getCode()).getUses()) {
                 final CodebaseUser levelUser = bot.getDataManager().getUserData(invite.getGuild().getId(), invite.getInviter().getId());

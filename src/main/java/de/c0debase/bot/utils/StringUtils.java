@@ -31,6 +31,11 @@ public class StringUtils {
         return stringBuilder.toString();
     }
 
+    /**
+     *
+     * @param content The message to check
+     * @return If the given message contains a link
+     */
     public static boolean containtsURL(final String content){
         final Pattern p = Pattern.compile(URL_REGEX);
         Matcher m = p.matcher(content);

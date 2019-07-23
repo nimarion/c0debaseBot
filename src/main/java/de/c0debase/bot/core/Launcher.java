@@ -10,7 +10,7 @@ public class Launcher {
             Sentry.init();
         }
         try {
-            new CodebaseImpl();
+            new Codebase();
         } catch (Exception exception) {
             LoggerFactory.getLogger(Launcher.class).error("Encountered exception while initializing the bot!", exception);
             System.exit(1);
