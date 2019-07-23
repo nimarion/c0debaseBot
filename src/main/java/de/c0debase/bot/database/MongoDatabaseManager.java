@@ -4,10 +4,8 @@ import com.mongodb.MongoClient;
 import com.mongodb.ServerAddress;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import lombok.Getter;
 import org.bson.Document;
 
-@Getter
 public class MongoDatabaseManager implements AutoCloseable {
 
     private static final String DATABASE_NAME = "codebase";
@@ -26,5 +24,9 @@ public class MongoDatabaseManager implements AutoCloseable {
     @Override
     public void close() {
         client.close();
+    }
+
+    public MongoCollection<Document> getUsers() {
+        return users;
     }
 }
