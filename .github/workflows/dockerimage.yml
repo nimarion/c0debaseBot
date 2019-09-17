@@ -1,0 +1,28 @@
+name: Build and deploy on push
+
+on: [push]
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Build with Maven
+    - uses: LucaFeger/action-maven-cli@765e218a50f02a12a7596dc9e7321fc385888a27
+      with:
+        args: clean install
+    - name: Login to GitHub Package Registry
+      with:
+        DOCKER_USERNAME: ${{ secrets.DockerUsername }}
+        DOCKER_PASSWORD: ${{ secrets.DockerPassword }}
+      env: 
+        DOCKER_REGISTRY_URL : docker.pkg.github.com
+    - name: Push to GitHub Package Registry
+    - uses: actions/docker/login@fe7ed3ce992160973df86480b83a2f8ed581cd50
+      run: |
+        docker build -t docker.pkg.github.com/${GITHUB_REPOSITORY}/c0debaseBot . 
+        docker push docker.pkg.github.com/${GITHUB_REPOSITORY}/c0debaseBot
+      if: github.ref == 'master'  &&  github.event == 'push'
+      
+      
