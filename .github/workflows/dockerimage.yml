@@ -15,8 +15,8 @@ jobs:
     - name: Login to GitHub Package Registry
       uses: actions/docker/login@master
       with:
-        DOCKER_USERNAME: ${{ secrets.DockerUsername }}
-        DOCKER_PASSWORD: ${{ secrets.DockerPassword }}
+        DOCKER_USERNAME: Biospheere
+        DOCKER_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
       env: 
         DOCKER_REGISTRY_URL : docker.pkg.github.com
     - name: Push to GitHub Package Registry
