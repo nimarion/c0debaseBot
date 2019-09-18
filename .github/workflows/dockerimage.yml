@@ -21,7 +21,7 @@ jobs:
         DOCKER_REGISTRY_URL : docker.pkg.github.com
     - name: Push to GitHub Package Registry
       uses: actions/docker/login@fe7ed3ce992160973df86480b83a2f8ed581cd50
-      run: |
+    - run: |
         docker build -t docker.pkg.github.com/${GITHUB_REPOSITORY}/c0debaseBot . 
         docker push docker.pkg.github.com/${GITHUB_REPOSITORY}/c0debaseBot
       if: github.ref == 'master'  &&  github.event == 'push'
