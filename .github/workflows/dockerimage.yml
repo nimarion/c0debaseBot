@@ -14,11 +14,10 @@ jobs:
         args: clean install
     - name: Login to GitHub Package Registry
       uses: actions/docker/login@master
-      with:
-        DOCKER_USERNAME: Biospheere
-        DOCKER_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
       env: 
         DOCKER_REGISTRY_URL : docker.pkg.github.com
+        DOCKER_USERNAME: Biospheere
+        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
     - name: Push to GitHub Package Registry
       uses: actions/docker/login@fe7ed3ce992160973df86480b83a2f8ed581cd50
     - run: |
