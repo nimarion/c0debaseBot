@@ -21,10 +21,10 @@ jobs:
     - name: Build Docker Image
       uses: actions/docker/cli@master
       with:
-        args: build -t docker.pkg.github.com/biospheere/c0debasebot/c0debasebot . 
+        args: build -t docker.pkg.github.com/biospheere/c0debasebot/codebasebot . 
     - name: Push to GitHub Package Registry
       uses: actions/docker/cli@master
       with:
-        args: push docker.pkg.github.com/${GITHUB_REPOSITORY}/c0debaseBot    
+        args: push docker.pkg.github.com/biospheere/c0debasebot/codebaseBot    
       
       
