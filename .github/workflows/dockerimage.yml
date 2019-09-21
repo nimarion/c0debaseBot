@@ -18,10 +18,13 @@ jobs:
         DOCKER_REGISTRY_URL : docker.pkg.github.com
         DOCKER_USERNAME: Biospheere
         DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+    - name: Build Docker Image
+      uses: actions/docker/cli@master
+      with:
+        args: build -t docker.pkg.github.com/${GITHUB_REPOSITORY}/c0debaseBot . 
     - name: Push to GitHub Package Registry
       uses: actions/docker/cli@master
-    - run: |
-        docker build -t docker.pkg.github.com/${GITHUB_REPOSITORY}/c0debaseBot . 
-        docker push docker.pkg.github.com/${GITHUB_REPOSITORY}/c0debaseBot
+      with:
+        args: push docker.pkg.github.com/${GITHUB_REPOSITORY}/c0debaseBot    
       
       
