@@ -19,7 +19,7 @@ jobs:
         DOCKER_USERNAME: Biospheere
         DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
     - name: Push to GitHub Package Registry
-      uses: actions/docker/login@fe7ed3ce992160973df86480b83a2f8ed581cd50
+      uses: actions/docker/cli@master
     - run: |
         docker build -t docker.pkg.github.com/${GITHUB_REPOSITORY}/c0debaseBot . 
         docker push docker.pkg.github.com/${GITHUB_REPOSITORY}/c0debaseBot
