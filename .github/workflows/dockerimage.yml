@@ -23,6 +23,5 @@ jobs:
     - run: |
         docker build -t docker.pkg.github.com/${GITHUB_REPOSITORY}/c0debaseBot . 
         docker push docker.pkg.github.com/${GITHUB_REPOSITORY}/c0debaseBot
-      if: github.ref == 'master'  &&  github.event == 'push'
       
       
