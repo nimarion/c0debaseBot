@@ -32,13 +32,18 @@ public class RoleCommand extends Command {
         if (args.length == 0) {
             EmbedBuilder embedBuilder = getEmbed(message.getGuild(), message.getAuthor());
             embedBuilder.setFooter("!role Java,Go,Javascript", message.getMember().getUser().getEffectiveAvatarUrl());
-            embedBuilder.setTitle("Es gibt diese Rollen:");
 
-            embedBuilder.appendDescription("`!role Java,Go,C#`\n\n");
+            embedBuilder.appendDescription("__**Es gibt diese Rollen:**__\n\n");
 
             for (Role role : message.getGuild().getRoles()) {
-                if (!role.isManaged() && !FORBIDDEN.contains(role.getName()) && PermissionUtil.canInteract(message.getGuild().getSelfMember(), role)) {
+                if (!role.isManaged() && !FORBIDDEN.contains(role.getName()) && PermissionUtil.canInteract(message.getGuild().getSelfMember(), role) && !role.getName().startsWith("Color")) {
                     embedBuilder.appendDescription("***" + role.getName() + "***" + "\n");
+                }
+            }
+            embedBuilder.appendDescription("\n__**Es gibt diese Farben:**__\n\n");
+            for (Role role : message.getGuild().getRoles()) {
+                if (role.getName().startsWith("Color")) {
+                    embedBuilder.appendDescription("***" + role.getName().replace("Color-", "")+ "***" + "\n");
                 }
             }
             message.getTextChannel().sendMessage(embedBuilder.build()).queue();
@@ -59,6 +64,13 @@ public class RoleCommand extends Command {
                     } else if (!addRoles.contains(rrole)) {
                         addRoles.add(rrole);
                     }
+                }
+            } else if(!message.getGuild().getRolesByName("Color-" + role, true).isEmpty()){
+                Role rrole = message.getGuild().getRolesByName("Color-" + role, true).get(0);
+                if (message.getGuild().getMembersWithRoles(rrole).contains(message.getMember()) && !removeRoles.contains(rrole)) {
+                    removeRoles.add(rrole);
+                } else if (!addRoles.contains(rrole)) {
+                    addRoles.add(rrole);
                 }
             }
         }
