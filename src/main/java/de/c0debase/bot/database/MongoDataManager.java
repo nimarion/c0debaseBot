@@ -41,6 +41,12 @@ public class MongoDataManager implements DataManager {
     }
 
 
+    /**
+     *
+     * @param guildID The id of a guild
+     * @param userID The id of a user
+     * @return A {@link CodebaseUser}
+     */
     public CodebaseUser getUserData(final String guildID, final String userID) {
         if (userCache.containsKey(guildID + "-" + userID)) {
             return userCache.get(guildID + "-" + userID);
@@ -68,11 +74,20 @@ public class MongoDataManager implements DataManager {
         return codebaseUser;
     }
 
+    /**
+     *
+     * @param codebaseUser The {@link CodebaseUser} to be updated
+     */
     public void updateUserData(final CodebaseUser codebaseUser) {
         databaseManager.getUsers().replaceOne(Filters.and(Filters.eq("guildID", codebaseUser.getGuildID()), Filters.eq("userID", codebaseUser.getUserID())), Document.parse(Constants.GSON.toJson(codebaseUser)));
         userCache.put(codebaseUser.getGuildID() + "-" + codebaseUser.getUserID(), codebaseUser);
     }
 
+    /**
+     * Get a sorted {@link Pagination} of a guild
+     * @param guildID The id of a guild
+     * @return A sorted {@link Pagination} of the requested guild
+     */
     public Pagination getLeaderboard(final String guildID) {
         if (leaderboardCache.containsKey(guildID)) {
             return leaderboardCache.get(guildID);

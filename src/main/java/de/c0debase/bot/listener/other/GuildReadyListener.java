@@ -3,8 +3,6 @@ package de.c0debase.bot.listener.other;
 import de.c0debase.bot.core.Codebase;
 import de.c0debase.bot.tempchannel.Tempchannel;
 import de.c0debase.bot.utils.InviteTracker;
-import de.c0debase.bot.utils.ServerBanner;
-import de.c0debase.bot.utils.ServerBannerScheduler;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.VoiceChannel;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
@@ -17,6 +15,7 @@ public class GuildReadyListener extends ListenerAdapter {
     public GuildReadyListener(final Codebase bot) {
         this.bot = bot;
     }
+
 
     @Override
     public void onGuildReady(GuildReadyEvent event) {

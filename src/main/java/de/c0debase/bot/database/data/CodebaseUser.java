@@ -1,11 +1,9 @@
 package de.c0debase.bot.database.data;
 
 import de.c0debase.bot.utils.Constants;
-import lombok.Data;
 
 import java.util.List;
 
-@Data
 public class CodebaseUser {
 
     private String userID, guildID;
@@ -28,5 +26,61 @@ public class CodebaseUser {
             return true;
         }
         return false;
+    }
+
+    public String getUserID() {
+        return userID;
+    }
+
+    public void setUserID(String userID) {
+        this.userID = userID;
+    }
+
+    public String getGuildID() {
+        return guildID;
+    }
+
+    public void setGuildID(String guildID) {
+        this.guildID = guildID;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
+    }
+
+    public int getXp() {
+        return xp;
+    }
+
+    public void setXp(int xp) {
+        this.xp = xp;
+    }
+
+    public Double getCoins() {
+        return coins;
+    }
+
+    public void setCoins(Double coins) {
+        this.coins = coins;
+    }
+
+    public long getLastMessage() {
+        return lastMessage;
+    }
+
+    public void setLastMessage(long lastMessage) {
+        this.lastMessage = lastMessage;
+    }
+
+    public List<String> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<String> roles) {
+        this.roles = roles;
     }
 }
