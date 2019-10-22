@@ -21,7 +21,7 @@ public class SetColorCommand extends Command {
     @Override
     public void execute(String[] args, Message message) {
         if (args.length > 1) {
-            message.getTextChannel().sendMessage("Ich habe keine Ahnung, was Du meinst. Bitte benutze !setColor <Farbe>").queue();
+            message.getTextChannel().sendMessage("Du kannst nur eine Farbe auswählen, gib bitte daher auch nur ein Parameter an. Benutze !setColor <Farbe>").queue();
             return;
         }
 
@@ -32,7 +32,7 @@ public class SetColorCommand extends Command {
 
         final List<Role> foundRoles = message.getGuild().getRolesByName("Color-" + args[0], true);
 
-        if (foundRoles.size() != 1) {
+        if (foundRoles.size() == 0) {
             listAvailableColors(message);
             return;
         }
@@ -48,7 +48,7 @@ public class SetColorCommand extends Command {
 
     private void listAvailableColors(Message message) {
         final EmbedBuilder embedBuilder = getEmbed(message.getGuild(), message.getAuthor());
-        embedBuilder.setFooter("!setColor Green", message.getMember().getUser().getEffectiveAvatarUrl());
+        embedBuilder.setFooter("!setColor <Farbe>", message.getMember().getUser().getEffectiveAvatarUrl());
 
         embedBuilder.appendDescription("__**Es gibt diese Farben:**__\n\n");
 
