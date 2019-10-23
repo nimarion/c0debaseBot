@@ -35,13 +35,24 @@ public class RoleStatsCommand extends Command {
                 .stream().map(Member::getRoles)
                 .flatMap(Collection::stream)
                 .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+        embedBuilder.appendDescription("\n__**Rollen:**__\n\n");
         roles.entrySet()
                 .stream()
                 .sorted(Comparator.comparing(Map.Entry::getValue, Comparator.reverseOrder()))
                 .map(Map.Entry::getKey)
                 .filter(role -> !role.isManaged())
                 .filter(role -> !FORBIDDEN.contains(role.getName()))
-                .filter(role -> PermissionUtil.canInteract(selfMember, role))
+                .filter(role -> PermissionUtil.canInteract(selfMember, role)).filter(role -> !role.getName().startsWith("Color-"))
+                .map(role -> String.format(DESCRIPTION_PATTERN, role.getName(), roles.get(role)))
+                .forEach(embedBuilder::appendDescription);
+        embedBuilder.appendDescription("\n__**Farb-Rollen:**__\n\n");
+        roles.entrySet()
+                .stream()
+                .sorted(Comparator.comparing(Map.Entry::getValue, Comparator.reverseOrder()))
+                .map(Map.Entry::getKey)
+                .filter(role -> !role.isManaged())
+                .filter(role -> !FORBIDDEN.contains(role.getName()))
+                .filter(role -> PermissionUtil.canInteract(selfMember, role)).filter(role -> role.getName().startsWith("Color-"))
                 .map(role -> String.format(DESCRIPTION_PATTERN, role.getName(), roles.get(role)))
                 .forEach(embedBuilder::appendDescription);
         message.getTextChannel().sendMessage(embedBuilder.build()).queue();
