@@ -6,10 +6,8 @@ import java.util.List;
 
 public class CodebaseUser {
 
-    private String userID;
-    private String guildID;
-    private int level;
-    private int xp;
+    private String userID, guildID;
+    private int level, xp;
     private Double coins;
     private long lastMessage;
     private List<String> roles;
