@@ -1,6 +1,9 @@
 package de.c0debase.bot.database;
 
+import com.mongodb.MongoClient;
+import com.mongodb.ServerAddress;
 import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Sorts;
 import de.c0debase.bot.core.Codebase;
@@ -20,27 +23,38 @@ import java.util.concurrent.TimeUnit;
  * @author Biosphere
  * @date 27.04.18
  */
-public class MongoDataManager implements DataManager {
+public class MongoDatabase implements Database {
 
-    private final MongoDatabaseManager databaseManager;
+    //Cache Map
     private final Map<String, CodebaseUser> userCache;
     private final Map<String, Pagination> leaderboardCache;
+   
+    //MongoDB
+    private final MongoClient mongoClient;
+    private final MongoCollection<Document> userCollection;
+
     private final JsonWriterSettings jsonWriterSettings;
     private final Codebase bot;
 
-    public MongoDataManager(final String host, final int port, final Codebase bot) {
+    public MongoDatabase(final String host, final int port, final Codebase bot) {
         this.bot = bot;
+
         jsonWriterSettings = JsonWriterSettings.builder()
                 .int64Converter((value, writer) -> writer.writeNumber(value.toString()))
                 .build();
-        databaseManager = new MongoDatabaseManager(host, port);
+
+        //Connect to MongoDB server
+        mongoClient = new MongoClient(new ServerAddress(host, port));
+        userCollection = mongoClient.getDatabase("codebase").getCollection("user");
+        
+        //Initialize ExpiringMap
         final ExpiringMap.Builder<Object, Object> mapBuilder = ExpiringMap.builder();
         mapBuilder.maxSize(123).expiration(1, TimeUnit.MINUTES).build();
         leaderboardCache = mapBuilder.build();
         userCache = mapBuilder.build();
     }
 
-
+    
     /**
      *
      * @param guildID The id of a guild
@@ -51,7 +65,7 @@ public class MongoDataManager implements DataManager {
         if (userCache.containsKey(guildID + "-" + userID)) {
             return userCache.get(guildID + "-" + userID);
         }
-        final Document document = databaseManager.getUsers().find(Filters.and(Filters.eq("guildID", guildID), Filters.eq("userID", userID))).first();
+        final Document document = getUserCollection().find(Filters.and(Filters.eq("guildID", guildID), Filters.eq("userID", userID))).first();
         final CodebaseUser codebaseUser;
         if (document == null) {
             codebaseUser = new CodebaseUser();
@@ -63,7 +77,7 @@ public class MongoDataManager implements DataManager {
             codebaseUser.setLastMessage(System.currentTimeMillis());
             codebaseUser.setUserID(userID);
             codebaseUser.setRoles(new ArrayList<>());
-            databaseManager.getUsers().insertOne(Document.parse(Constants.GSON.toJson(codebaseUser)));
+            getUserCollection().insertOne(Document.parse(Constants.GSON.toJson(codebaseUser)));
         } else {
             codebaseUser = Constants.GSON.fromJson(document.toJson(jsonWriterSettings), CodebaseUser.class);
             if (codebaseUser.getCoins() == null) {
@@ -79,7 +93,7 @@ public class MongoDataManager implements DataManager {
      * @param codebaseUser The {@link CodebaseUser} to be updated
      */
     public void updateUserData(final CodebaseUser codebaseUser) {
-        databaseManager.getUsers().replaceOne(Filters.and(Filters.eq("guildID", codebaseUser.getGuildID()), Filters.eq("userID", codebaseUser.getUserID())), Document.parse(Constants.GSON.toJson(codebaseUser)));
+        getUserCollection().replaceOne(Filters.and(Filters.eq("guildID", codebaseUser.getGuildID()), Filters.eq("userID", codebaseUser.getUserID())), Document.parse(Constants.GSON.toJson(codebaseUser)));
         userCache.put(codebaseUser.getGuildID() + "-" + codebaseUser.getUserID(), codebaseUser);
     }
 
@@ -93,7 +107,7 @@ public class MongoDataManager implements DataManager {
             return leaderboardCache.get(guildID);
         }
         final List<CodebaseUser> codebaseUsers = new ArrayList<>();
-        final FindIterable<Document> document = databaseManager.getUsers()
+        final FindIterable<Document> document = getUserCollection()
                 .find(Filters.eq("guildID", guildID))
                 .sort(Sorts.descending("level", "xp"));
 
@@ -115,8 +129,13 @@ public class MongoDataManager implements DataManager {
         return pagination;
     }
 
-    @Override
-    public void close() {
-        databaseManager.close();
+    private MongoCollection<Document> getUserCollection(){
+        return userCollection;
     }
+
+    @Override
+    public void close() throws Exception {
+        mongoClient.close();
+    }
+
 }

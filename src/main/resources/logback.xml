@@ -2,9 +2,8 @@
 
     <logger name="net.dv8tion.jda" level="ERROR"/>
     <logger name="org.reflections.Reflections" level="ERROR"/>
-    <logger name="com.sedmelluq.discord.lavaplayer" level="ERROR"/>
-    <logger name="ai.api.AIDataService" level="ERROR"/>
     <logger name="org.mongodb.driver" level="ERROR"/>
+    <logger name="io.sentry" level="ERROR"/>
 
     <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>

@@ -1,0 +1,35 @@
+{
+    "tags": [
+        {
+            "name": "Markdown",
+            "title": "Formatieren von Text mit Markdown",
+            "url": "https://support.discordapp.com/hc/en-us/articles/210298617-Markdown-Text-101-Chat-Formatting-Bold-Italic-Underline-",
+            "description": "Ein Leitfaden zur Formatierung von Nachrichten mit Markdown in Discord"
+        },
+        {
+            "name": "Code",
+            "title": "Wie man Code Blocks benutzt",
+            "description": "So nutzt du Code Blocks richtig",
+            "fields": [
+                {
+                    "name": "Um Code direkt in Discord zu posten:",
+                    "value": "```\r\n// code\r\nconsole.log('Hello World')\r\n```",
+                    "escape": true
+                },
+                {
+                    "name": "Um Syntax-Highlighting zu nutzen musst du nur den Namen deiner Sprache angeben:",
+                    "value": "```js\r\nconsole.log('Hello Syntax-Highlighting')\r\n```",
+                    "escape": true
+                },
+                {
+                    "name": "Beispiel 1:",
+                    "value": "```\nconsole.log('Hello World')\n```"
+                },
+                {
+                    "name": "Beispiel 2:",
+                    "value": "```js\nconsole.log('Hello Syntax-Highlighting')\n```"
+                }
+            ]
+        }
+    ]
+}

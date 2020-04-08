@@ -53,7 +53,7 @@ public class RoleStatsCommand extends Command {
                 .filter(role -> !role.isManaged())
                 .filter(role -> !FORBIDDEN.contains(role.getName()))
                 .filter(role -> PermissionUtil.canInteract(selfMember, role)).filter(role -> role.getName().startsWith("Color-"))
-                .map(role -> String.format(DESCRIPTION_PATTERN, role.getName(), roles.get(role)))
+                .map(role -> String.format(DESCRIPTION_PATTERN, role.getName().replace("Color-", ""), roles.get(role)))
                 .forEach(embedBuilder::appendDescription);
         message.getTextChannel().sendMessage(embedBuilder.build()).queue();
     }

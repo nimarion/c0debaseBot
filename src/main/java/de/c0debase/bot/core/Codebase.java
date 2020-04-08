@@ -1,8 +1,8 @@
 package de.c0debase.bot.core;
 
 import de.c0debase.bot.commands.CommandManager;
-import de.c0debase.bot.database.DataManager;
-import de.c0debase.bot.database.MongoDataManager;
+import de.c0debase.bot.database.Database;
+import de.c0debase.bot.database.MongoDatabase;
 import de.c0debase.bot.listener.guild.GuildMemberJoinListener;
 import de.c0debase.bot.listener.guild.GuildMemberLeaveListener;
 import de.c0debase.bot.listener.guild.GuildMemberNickChangeListener;
@@ -12,8 +12,8 @@ import de.c0debase.bot.listener.message.MessageReceiveListener;
 import de.c0debase.bot.listener.message.TableFlipListener;
 import de.c0debase.bot.listener.other.GuildReadyListener;
 import de.c0debase.bot.listener.voice.GuildVoiceListener;
+import de.c0debase.bot.tags.TagManager;
 import de.c0debase.bot.tempchannel.Tempchannel;
-import net.dv8tion.jda.api.AccountType;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
@@ -33,9 +33,10 @@ public class Codebase {
 
     private final JDA jda;
     private Guild guild;
-    private final DataManager dataManager;
+    private final Database database;
     private final CommandManager commandManager;
     private final Map<String, Tempchannel> tempchannels;
+    private final TagManager tagManager;
 
     public Codebase() throws Exception {
         final long startTime = System.currentTimeMillis();
@@ -43,11 +44,14 @@ public class Codebase {
 
         tempchannels = new HashMap<>();
 
-        dataManager = initializeDataManager();
+        database = initializeDataManager();
         logger.info("Database-Connection set up!");
 
         jda = initializeJDA();
         logger.info("JDA set up!");
+
+        tagManager = new TagManager();
+        logger.info("Tags loaded!");
 
         commandManager = new CommandManager(this);
         logger.info("Command-Manager set up!");
@@ -65,7 +69,7 @@ public class Codebase {
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             try {
-                dataManager.close();
+                database.close();
             } catch (final Exception exception) {
                 exception.printStackTrace();
             }
@@ -76,12 +80,12 @@ public class Codebase {
 
     /***
      * Connect to the database
-     * @return The {@link DataManager} instance
+     * @return The {@link Database} instance
      * @throws Exception
      */
-    private DataManager initializeDataManager() throws Exception {
+    private Database initializeDataManager() throws Exception {
         try {
-            return new MongoDataManager(System.getenv("MONGO_HOST") == null ? "localhost" : System.getenv("MONGO_HOST"), System.getenv("MONGO_PORT") == null ? 27017 : Integer.valueOf(System.getenv("MONGO_PORT")), this);
+            return new MongoDatabase(System.getenv("MONGO_HOST") == null ? "localhost" : System.getenv("MONGO_HOST"), System.getenv("MONGO_PORT") == null ? 27017 : Integer.valueOf(System.getenv("MONGO_PORT")), this);
         } catch (final Exception exception) {
             logger.error("Encountered exception while initializing Database-Connection!");
             throw exception;
@@ -95,8 +99,7 @@ public class Codebase {
      */
     private JDA initializeJDA() throws Exception {
         try {
-            final JDABuilder jdaBuilder = new JDABuilder(AccountType.BOT);
-            jdaBuilder.setToken(System.getenv("DISCORD_TOKEN"));
+            final JDABuilder jdaBuilder = JDABuilder.createDefault(System.getenv("DISCORD_TOKEN"));
             jdaBuilder.setActivity(Activity.playing("auf c0debase"));
             jdaBuilder.addEventListeners(new ListenerAdapter() {
                 @Override
@@ -111,8 +114,8 @@ public class Codebase {
         }
     }
 
-    public DataManager getDataManager() {
-        return dataManager;
+    public Database getDataManager() {
+        return database;
     }
 
     public JDA getJDA() {
@@ -129,5 +132,9 @@ public class Codebase {
 
     public Guild getGuild() {
         return guild;
+    }
+
+    public TagManager getTagManager(){
+        return tagManager;
     }
 }
