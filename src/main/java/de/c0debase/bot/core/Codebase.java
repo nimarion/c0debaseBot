@@ -20,6 +20,9 @@ import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.requests.GatewayIntent;
+import net.dv8tion.jda.api.utils.MemberCachePolicy;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -100,6 +103,8 @@ public class Codebase {
     private JDA initializeJDA() throws Exception {
         try {
             final JDABuilder jdaBuilder = JDABuilder.createDefault(System.getenv("DISCORD_TOKEN"));
+            jdaBuilder.setEnabledIntents(GatewayIntent.getIntents(GatewayIntent.ALL_INTENTS));
+            jdaBuilder.setMemberCachePolicy(MemberCachePolicy.ALL);
             jdaBuilder.setActivity(Activity.playing("auf c0debase"));
             jdaBuilder.addEventListeners(new ListenerAdapter() {
                 @Override
