@@ -3,6 +3,7 @@ package de.c0debase.bot.core;
 import de.c0debase.bot.commands.CommandManager;
 import de.c0debase.bot.database.Database;
 import de.c0debase.bot.database.MongoDatabase;
+import de.c0debase.bot.listener.guild.GuildBoostListener;
 import de.c0debase.bot.listener.guild.GuildMemberJoinListener;
 import de.c0debase.bot.listener.guild.GuildMemberLeaveListener;
 import de.c0debase.bot.listener.guild.GuildMemberNickChangeListener;
@@ -111,7 +112,7 @@ public class Codebase {
                 public void onGuildReady(@Nonnull GuildReadyEvent event) {
                     guild = event.getGuild();
                 }
-            }, new GuildReadyListener(this));
+            }, new GuildReadyListener(this), new GuildBoostListener(this));
             return jdaBuilder.build().awaitReady();
         } catch (Exception exception) {
             logger.error("Encountered exception while initializing ShardManager!");
