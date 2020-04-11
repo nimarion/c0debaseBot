@@ -28,6 +28,20 @@ public class GuildBoostListener extends ListenerAdapter{
         final List<Member> boosterUpdate = event.getGuild().getBoosters();
         final Member member;
 
+        //User is boosting the Server twice
+        if(boosterUpdate.size() == booster.size()){
+            event.getGuild().getTextChannelsByName("log", true).forEach(channel -> {
+                final EmbedBuilder logBuilder = new EmbedBuilder();
+                if(event.getNewBoostCount() < event.getOldBoostCount()){
+                    logBuilder.setDescription("Jemand hat seinen zusätzlichen Boost auf dem Server entfernt");
+                } else {
+                    logBuilder.setDescription("Jemand hat seinen zusätzlichen Boost auf dem Server aktiviert");
+                }
+                channel.sendMessage(logBuilder.build()).queue();
+            });
+            return;
+        }
+
         if(event.getNewBoostCount() < event.getOldBoostCount()){
             final List<Member> compareList = new ArrayList<>(booster);
             compareList.removeAll(boosterUpdate);
