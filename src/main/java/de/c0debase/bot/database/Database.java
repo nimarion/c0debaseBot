@@ -1,7 +1,8 @@
 package de.c0debase.bot.database;
 
 import de.c0debase.bot.database.data.CodebaseUser;
-import de.c0debase.bot.utils.Pagination;
+
+import java.util.List;
 
 public interface Database extends AutoCloseable {
     
@@ -9,6 +10,6 @@ public interface Database extends AutoCloseable {
 
     void updateUserData(final CodebaseUser codebaseUser);
 
-    Pagination getLeaderboard(final String guildID);
+    List<CodebaseUser> getLeaderboard(final String guildID);
 
 }

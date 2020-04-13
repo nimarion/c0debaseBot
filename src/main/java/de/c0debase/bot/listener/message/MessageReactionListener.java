@@ -2,11 +2,6 @@ package de.c0debase.bot.listener.message;
 
 import com.vdurmont.emoji.EmojiManager;
 import de.c0debase.bot.core.Codebase;
-import de.c0debase.bot.database.data.CodebaseUser;
-import de.c0debase.bot.utils.Pagination;
-import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.MessageReaction;
 import net.dv8tion.jda.api.events.message.guild.react.GenericGuildMessageReactionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -33,44 +28,6 @@ public class MessageReactionListener extends ListenerAdapter {
             if (emote.equalsIgnoreCase("wastebasket") && success.getAuthor().isBot()) {
                 success.delete().queue();
                 return;
-            }
-            if (!success.getEmbeds().isEmpty() && success.getAuthor().isBot()) {
-                final MessageEmbed messageEmbed = success.getEmbeds().get(0);
-                if (messageEmbed.getFooter() != null && messageEmbed.getFooter().getText().contains("Seite")) {
-                    final Pagination leaderboard = bot.getDataManager().getLeaderboard(success.getGuild().getId());
-                    final String[] strings = messageEmbed.getFooter().getText().replace("Seite: (", "").replace(")", "").split("/");
-
-                    final int max = Integer.valueOf(strings[1]);
-                    int current = Integer.valueOf(strings[0]);
-
-                    final EmbedBuilder embedBuilder = new EmbedBuilder();
-                    embedBuilder.setColor(success.getGuild().getSelfMember().getColor());
-                    embedBuilder.setTitle("Leaderboard: " + event.getGuild().getName());
-
-                    if (max != current) {
-                        if (emote.equalsIgnoreCase("arrow_right")) {
-                            current++;
-                        } else if (emote.equalsIgnoreCase("arrow_left") && current > 1) {
-                            current--;
-                        }
-                    } else if (emote.equalsIgnoreCase("arrow_left") && current >= 1) {
-                        current--;
-                    }
-
-                    embedBuilder.setFooter("Seite: (" + current + "/" + max + ")", success.getGuild().getIconUrl());
-
-                    int count = 1;
-                    if (current > 0) {
-                        for (CodebaseUser codebaseUser : leaderboard.getPage(current)) {
-                            final Member member = success.getGuild().getMemberById(Long.valueOf(codebaseUser.getUserID()));
-                            if (member != null) {
-                                embedBuilder.appendDescription("`" + (current == 1 ? count : +((current - 1) * 10 + count)) + ")` " + member.getEffectiveName() + "#" + member.getUser().getDiscriminator() + " (Lvl." + codebaseUser.getLevel() + ")\n");
-                                count++;
-                            }
-                        }
-                        success.editMessage(embedBuilder.build()).queue();
-                    }
-                }
             }
         });
     }
