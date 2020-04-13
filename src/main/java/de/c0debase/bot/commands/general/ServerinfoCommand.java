@@ -18,13 +18,13 @@ public class ServerinfoCommand extends Command {
 
     @Override
     public void execute(final String[] args, final Message message) {
-        final EmbedBuilder embedBuilder = new EmbedBuilder();
+        final EmbedBuilder embedBuilder = getEmbed(message.getGuild(), message.getAuthor());
         embedBuilder.setTitle(message.getGuild().getName(), "https://c0debase.de");
         embedBuilder.setThumbnail(message.getGuild().getIconUrl());
-        embedBuilder.setFooter(StringUtils.replaceCharacter(message.getAuthor().getName()), message.getAuthor().getEffectiveAvatarUrl());
         embedBuilder.addField("Erstellt am", message.getGuild().getTimeCreated().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")), true);
         embedBuilder.addField("Region", message.getGuild().getRegionRaw(), true);
         embedBuilder.addField("Mitglieder", String.valueOf(message.getGuild().getMembers().size()), true);
+        embedBuilder.addField("Boosts", String.valueOf(message.getGuild().getBoostCount()), true);
         embedBuilder.addField("Text Channels", String.valueOf(message.getGuild().getTextChannels().size()), true);
         embedBuilder.addField("Voice Channels", String.valueOf(message.getGuild().getVoiceChannels().size()), true);
         embedBuilder.addField("Rollen", String.valueOf(message.getGuild().getRoles().size()), true);
