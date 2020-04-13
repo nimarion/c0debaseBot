@@ -10,10 +10,6 @@ public class Tag {
     private String description;
     private List<CustomField> fields;
 
-    public Tag() {
-
-    }
-
     public List<CustomField> getFields() {
         return fields;
     }

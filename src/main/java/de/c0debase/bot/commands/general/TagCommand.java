@@ -30,6 +30,8 @@ public class TagCommand extends Command {
                         embedBuilder.addField(field.getName(), field.isEscape() ? StringUtils.replaceCharacter(field.getValue()) : field.getValue(), field.isInline());
                     });
                 }
+            } else {
+                embedBuilder.setDescription("Tag existiert nicht!");
             }
         }
         message.getTextChannel().sendMessage(embedBuilder.build()).queue();
