@@ -42,10 +42,11 @@ public class LevelLeaderboard extends Pagination {
             current--;
         }
 
-        buildList(embedBuilder, current, descending);
-
-        embedBuilder.setFooter("Seite: (" + current + "/" + max + ") Sortierung: " + (descending ? "absteigend" : "aufsteigend"), getBot().getGuild().getIconUrl());
-        success.editMessage(embedBuilder.build()).queue();
+        if (current > 0) {
+            buildList(embedBuilder, current, descending);
+            embedBuilder.setFooter("Seite: (" + current + "/" + max + ") Sortierung: " + (descending ? "absteigend" : "aufsteigend"), getBot().getGuild().getIconUrl());
+            success.editMessage(embedBuilder.build()).queue();
+        }
     }
 
     @Override
