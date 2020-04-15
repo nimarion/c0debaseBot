@@ -22,9 +22,13 @@ public class LevelLeaderboard extends Pagination {
 
     @Override
     public void update(Message success, MessageEmbed messageEmbed, String emote) {
+
         final String[] strings = messageEmbed.getFooter().getText().replace("Seite: (", "").replace(")", "").replace(" Sortierung: ", "/").split("/");
 
         int current = Integer.valueOf(strings[0]);
+        if (emote.equalsIgnoreCase("arrow_left") && current == 1) {
+            return;
+        }
         final int max = Integer.valueOf(strings[1]);
         final boolean descending = strings[2].equalsIgnoreCase("absteigend");
 
@@ -32,13 +36,14 @@ public class LevelLeaderboard extends Pagination {
         embedBuilder.setColor(success.getGuild().getSelfMember().getColor());
         embedBuilder.setTitle(getTitle());
 
+
         if (max != current) {
             if (emote.equalsIgnoreCase("arrow_right")) {
                 current++;
             } else if (emote.equalsIgnoreCase("arrow_left") && current > 1) {
                 current--;
             }
-        } else if (emote.equalsIgnoreCase("arrow_left") && current >= 1) {
+        } else if (emote.equalsIgnoreCase("arrow_left") && current > 1) {
             current--;
         }
 
