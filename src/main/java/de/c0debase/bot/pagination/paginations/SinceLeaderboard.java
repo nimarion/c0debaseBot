@@ -85,7 +85,7 @@ public class SinceLeaderboard extends Pagination {
             int count = entry.getKey();
             if (member != null) {
                 long days = ChronoUnit.DAYS.between(member.getTimeJoined(), LocalDateTime.now().atOffset(ZoneOffset.UTC));
-                embedBuilder.appendDescription("`" + count + ")` " + StringUtils.replaceCharacter(member.getEffectiveName()) + "#" + member.getUser().getDiscriminator() + " (Beitritt:" + member.getTimeJoined().toInstant().atOffset(ZoneOffset.UTC).format(DateTimeFormatter.ofPattern("dd.MM.yyyy hh:mm")) + " / Seit" + days + " Tag" + (days == 1 ? "" : "en") + ")\n");
+                embedBuilder.appendDescription("`" + count + ")` " + StringUtils.replaceCharacter(member.getEffectiveName()) + "#" + member.getUser().getDiscriminator() + " (Beitritt am " + member.getTimeJoined().toInstant().atOffset(ZoneOffset.UTC).format(DateTimeFormatter.ofPattern("dd.MM.yyyy hh:mm")) + " / Seit " + days + " Tag" + (days == 1 ? "" : "en") + ")\n");
             } else {
                 embedBuilder.appendDescription("`" + count + ")` undefined#0000\n");
             }
