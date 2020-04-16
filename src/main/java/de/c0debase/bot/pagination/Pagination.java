@@ -16,29 +16,19 @@ public abstract class Pagination {
 
     private String title;
     private int pageSize;
-    private TextChannel textChannel;
 
-    public Pagination(String title, TextChannel textChannel, int pageSize) {
+    public Pagination(String title, int pageSize) {
         this.title = title;
-        this.textChannel = textChannel;
         this.pageSize = pageSize;
     }
 
     public Pagination(String title) {
-        this(title, Codebase.getBot().getGuild().getTextChannelById(System.getenv("BOTCHANNEL")), 10);
+        this(title, 10);
     }
 
     public abstract void update(Message success, MessageEmbed messageEmbed, String emote);
 
     public abstract void createFirst(boolean descending, TextChannel textChannel);
-
-    public void createFirst(boolean descending) {
-        createFirst(descending, getTextChannel());
-    }
-
-    public void createFirst() {
-        createFirst(true, getTextChannel());
-    }
 
     public abstract void buildList(EmbedBuilder embedBuilder, int page, boolean descending);
 
@@ -62,15 +52,7 @@ public abstract class Pagination {
         this.pageSize = pageSize;
     }
 
-    public TextChannel getTextChannel() {
-        return textChannel;
-    }
-
-    public void setTextChannel(TextChannel textChannel) {
-        this.textChannel = textChannel;
-    }
-
-    public <T> Map<Integer, T> getPage(int page, List<T> list) {
+    public <T> Map<Integer, T> getPage(int page, List<T> list, boolean descending) {
         if (pageSize <= 0 || page <= 0) {
             throw new IllegalArgumentException("Invalid page size: " + pageSize);
         }
@@ -83,9 +65,17 @@ public abstract class Pagination {
         HashMap<Integer, T> map = new HashMap<>();
         AtomicInteger count = new AtomicInteger(1);
         list.subList(fromIndex, Math.min(fromIndex + pageSize, list.size())).forEach(entry -> {
-            map.put(fromIndex + count.get(), entry);
+            int number = fromIndex + count.get();
+            if (!descending) {
+                number = list.size() - (fromIndex + count.get());
+            }
             count.getAndIncrement();
+            map.put(number, entry);
         });
         return map;
+    }
+
+    public <T> Map<Integer, T> getPage(int page, List<T> list) {
+        return getPage(page, list, true);
     }
 }

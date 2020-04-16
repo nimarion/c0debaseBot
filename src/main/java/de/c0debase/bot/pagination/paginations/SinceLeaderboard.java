@@ -1,7 +1,6 @@
 package de.c0debase.bot.pagination.paginations;
 
 import com.vdurmont.emoji.EmojiManager;
-import de.c0debase.bot.database.data.CodebaseUser;
 import de.c0debase.bot.pagination.Pagination;
 import de.c0debase.bot.utils.StringUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -10,14 +9,18 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
 
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-public class LevelLeaderboard extends Pagination {
+public class SinceLeaderboard extends Pagination {
 
-    public LevelLeaderboard() {
-        super("Level Leaderboard:");
+    public SinceLeaderboard() {
+        super("Since Leaderboard:");
     }
 
     @Override
@@ -72,18 +75,24 @@ public class LevelLeaderboard extends Pagination {
 
     @Override
     public void buildList(EmbedBuilder embedBuilder, int page, boolean descending) {
-        final List<CodebaseUser> users = getBot().getDataManager().getLeaderboard(getBot().getGuild().getId());
+        final List<Member> users = getSortedMember(descending);
         if (!descending) Collections.reverse(users);
-        for (Map.Entry<Integer, CodebaseUser> entry : getPage(page, users, descending).entrySet()) {
-            CodebaseUser codebaseUser = entry.getValue();
+        for (Map.Entry<Integer, Member> entry : getPage(page, users, descending).entrySet()) {
+            Member member = entry.getValue();
             int count = entry.getKey();
-            final Member member = getBot().getGuild().getMemberById(Long.valueOf(codebaseUser.getUserID()));
             if (member != null) {
-                embedBuilder.appendDescription("`" + count + ")` " + StringUtils.replaceCharacter(member.getEffectiveName()) + "#" + member.getUser().getDiscriminator() + " (Lvl." + codebaseUser.getLevel() + "/Xp." + codebaseUser.getXp() + ")\n");
+                embedBuilder.appendDescription("`" + count + ")` " + StringUtils.replaceCharacter(member.getEffectiveName()) + "#" + member.getUser().getDiscriminator() + " (Beitritt:" + member.getTimeJoined().toInstant().atOffset(ZoneOffset.UTC).format(DateTimeFormatter.ofPattern("dd.MM.yyyy hh:mm")) + "/" + ChronoUnit.DAYS.between(member.getTimeJoined(), LocalDateTime.now().atOffset(ZoneOffset.UTC)) + ")\n");
             } else {
-                embedBuilder.appendDescription("`" + count + ")` undefined#0000 (Lvl." + codebaseUser.getLevel() + "/Xp." + codebaseUser.getXp() + ")\n");
+                embedBuilder.appendDescription("`" + count + ")` undefined#0000\n");
             }
             count++;
         }
+    }
+
+    private List<Member> getSortedMember(boolean descending) {
+        List<Member> members = getBot().getGuild().getMembers();
+        members.sort((m1, m2) -> Long.compare(m2.getTimeJoined().toInstant().toEpochMilli(), m1.getTimeJoined().toInstant().toEpochMilli()));
+        if (!descending) Collections.reverse(members);
+        return members;
     }
 }
