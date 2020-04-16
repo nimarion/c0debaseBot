@@ -76,7 +76,7 @@ public class SinceLeaderboard extends Pagination {
 
     @Override
     public void buildList(EmbedBuilder embedBuilder, int page, boolean descending) {
-        final List<Member> users = getSortedMember();
+        final List<Member> users = getSortedMembers();
         if (!descending) Collections.reverse(users);
         for (Map.Entry<Integer, Member> entry : getPage(page, users, descending).entrySet()) {
             Member member = entry.getValue();
@@ -90,7 +90,7 @@ public class SinceLeaderboard extends Pagination {
         }
     }
 
-    private List<Member> getSortedMember() {
+    private List<Member> getSortedMembers() {
         List<Member> members = new ArrayList<>(getBot().getGuild().getMembers());
         members.sort((m1, m2) -> Long.compare(m2.getTimeJoined().toInstant().toEpochMilli(), m1.getTimeJoined().toInstant().toEpochMilli()));
         return members;

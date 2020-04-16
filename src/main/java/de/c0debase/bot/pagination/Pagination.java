@@ -64,10 +64,11 @@ public abstract class Pagination {
 
         HashMap<Integer, T> map = new HashMap<>();
         AtomicInteger count = new AtomicInteger(1);
+        int listSize = list.size();
         list.subList(fromIndex, Math.min(fromIndex + pageSize, list.size())).forEach(entry -> {
             int number = fromIndex + count.get();
             if (!descending) {
-                number = list.size() - (fromIndex + count.get());
+                number = listSize - (fromIndex + count.get());
             }
             count.getAndIncrement();
             map.put(number, entry);
