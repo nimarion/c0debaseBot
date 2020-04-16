@@ -82,7 +82,7 @@ public class SinceLeaderboard extends Pagination {
             Member member = entry.getValue();
             int count = entry.getKey();
             if (member != null) {
-                embedBuilder.appendDescription("`" + count + ")` " + StringUtils.replaceCharacter(member.getEffectiveName()) + "#" + member.getUser().getDiscriminator() + " (Beitritt:" + member.getTimeJoined().toInstant().atOffset(ZoneOffset.UTC).format(DateTimeFormatter.ofPattern("dd.MM.yyyy hh:mm")) + "/" + ChronoUnit.DAYS.between(member.getTimeJoined(), LocalDateTime.now().atOffset(ZoneOffset.UTC)) + ")\n");
+                embedBuilder.appendDescription("`" + count + ")` " + StringUtils.replaceCharacter(member.getEffectiveName()) + "#" + member.getUser().getDiscriminator() + " (Beitritt:" + member.getTimeJoined().toInstant().atOffset(ZoneOffset.UTC).format(DateTimeFormatter.ofPattern("dd.MM.yyyy hh:mm")) + " / Seit:" + ChronoUnit.DAYS.between(member.getTimeJoined(), LocalDateTime.now().atOffset(ZoneOffset.UTC)) + " Tagen)\n");
             } else {
                 embedBuilder.appendDescription("`" + count + ")` undefined#0000\n");
             }
