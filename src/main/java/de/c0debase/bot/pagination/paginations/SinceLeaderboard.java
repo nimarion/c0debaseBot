@@ -79,7 +79,7 @@ public class SinceLeaderboard extends Pagination {
     public void buildList(EmbedBuilder embedBuilder, int page, boolean descending) {
         final List<Member> users = getSortedMembers();
         if (!descending) Collections.reverse(users);
-
+        descending = !descending;
         for (Map.Entry<Integer, Member> entry : getPage(page, users, descending).entrySet()) {
             Member member = entry.getValue();
             int count = entry.getKey();
