@@ -13,8 +13,8 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -60,6 +60,7 @@ public class SinceLeaderboard extends Pagination {
 
     @Override
     public void createFirst(boolean descending, TextChannel textChannel) {
+        descending = !descending;
         final EmbedBuilder embedBuilder = new EmbedBuilder();
         embedBuilder.setColor(getBot().getGuild().getSelfMember().getColor());
         embedBuilder.setTitle(getTitle());
@@ -78,11 +79,13 @@ public class SinceLeaderboard extends Pagination {
     public void buildList(EmbedBuilder embedBuilder, int page, boolean descending) {
         final List<Member> users = getSortedMembers();
         if (!descending) Collections.reverse(users);
+
         for (Map.Entry<Integer, Member> entry : getPage(page, users, descending).entrySet()) {
             Member member = entry.getValue();
             int count = entry.getKey();
             if (member != null) {
-                embedBuilder.appendDescription("`" + count + ")` " + StringUtils.replaceCharacter(member.getEffectiveName()) + "#" + member.getUser().getDiscriminator() + " (Beitritt:" + member.getTimeJoined().toInstant().atOffset(ZoneOffset.UTC).format(DateTimeFormatter.ofPattern("dd.MM.yyyy hh:mm")) + " / Seit:" + ChronoUnit.DAYS.between(member.getTimeJoined(), LocalDateTime.now().atOffset(ZoneOffset.UTC)) + " Tagen)\n");
+                long days = ChronoUnit.DAYS.between(member.getTimeJoined(), LocalDateTime.now().atOffset(ZoneOffset.UTC));
+                embedBuilder.appendDescription("`" + count + ")` " + StringUtils.replaceCharacter(member.getEffectiveName()) + "#" + member.getUser().getDiscriminator() + " (Beitritt:" + member.getTimeJoined().toInstant().atOffset(ZoneOffset.UTC).format(DateTimeFormatter.ofPattern("dd.MM.yyyy hh:mm")) + " / Seit" + days + " Tag" + (days == 1 ? "" : "en") + ")\n");
             } else {
                 embedBuilder.appendDescription("`" + count + ")` undefined#0000\n");
             }
@@ -91,7 +94,7 @@ public class SinceLeaderboard extends Pagination {
     }
 
     private List<Member> getSortedMembers() {
-        List<Member> members = new ArrayList<>(getBot().getGuild().getMembers());
+        List<Member> members = new LinkedList<>(getBot().getGuild().getMembers());
         members.sort((m1, m2) -> Long.compare(m2.getTimeJoined().toInstant().toEpochMilli(), m1.getTimeJoined().toInstant().toEpochMilli()));
         return members;
     }

@@ -6,10 +6,7 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class Pagination {
@@ -62,7 +59,7 @@ public abstract class Pagination {
             return Collections.emptyMap();
         }
 
-        HashMap<Integer, T> map = new HashMap<>();
+        HashMap<Integer, T> map = new LinkedHashMap<>();
         AtomicInteger count = new AtomicInteger(1);
         int listSize = list.size();
         list.subList(fromIndex, Math.min(fromIndex + pageSize, list.size())).forEach(entry -> {
