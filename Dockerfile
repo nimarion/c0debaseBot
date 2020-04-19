@@ -1,7 +1,9 @@
-FROM openjdk:11-jdk-slim
+FROM maven:3.6.3-jdk-14 AS build  
+COPY src /usr/src/app/src  
+COPY pom.xml /usr/src/app  
+RUN mvn -f /usr/src/app/pom.xml clean package
 
-LABEL maintainer = "biosphere.dev@gmx.de"
+FROM openjdk:14-jdk-slim
+COPY --from=build /usr/src/app/target/c0debase-*-SNAPSHOT-shaded.jar c0debaseBot.jar
 
-COPY target/c0debase-1.0-SNAPSHOT-shaded.jar c0debaseBot.jar
-
-ENTRYPOINT ["java", "-jar", "-Xmx128m", "c0debaseBot.jar"]
+ENTRYPOINT ["java", "-jar", "c0debaseBot.jar"]
