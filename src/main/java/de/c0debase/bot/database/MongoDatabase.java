@@ -9,7 +9,6 @@ import com.mongodb.client.model.Sorts;
 import de.c0debase.bot.core.Codebase;
 import de.c0debase.bot.database.data.CodebaseUser;
 import de.c0debase.bot.utils.Constants;
-import de.c0debase.bot.utils.Pagination;
 import net.jodah.expiringmap.ExpiringMap;
 import org.bson.Document;
 import org.bson.json.JsonWriterSettings;
@@ -27,7 +26,7 @@ public class MongoDatabase implements Database {
 
     //Cache Map
     private final Map<String, CodebaseUser> userCache;
-    private final Map<String, Pagination> leaderboardCache;
+    private final Map<String, List<CodebaseUser>> leaderboardCache;
    
     //MongoDB
     private final MongoClient mongoClient;
@@ -98,11 +97,12 @@ public class MongoDatabase implements Database {
     }
 
     /**
-     * Get a sorted {@link Pagination} of a guild
+     * Get a sorted List of Codebaseusers of a guild
+     *
      * @param guildID The id of a guild
-     * @return A sorted {@link Pagination} of the requested guild
+     * @return A sorted List of the requested guild
      */
-    public Pagination getLeaderboard(final String guildID) {
+    public List<CodebaseUser> getLeaderboard(final String guildID) {
         if (leaderboardCache.containsKey(guildID)) {
             return leaderboardCache.get(guildID);
         }
@@ -124,9 +124,8 @@ public class MongoDatabase implements Database {
             }
         });
 
-        final Pagination pagination = new Pagination(codebaseUsers, 10);
-        leaderboardCache.put(guildID, pagination);
-        return pagination;
+        leaderboardCache.put(guildID, codebaseUsers);
+        return codebaseUsers;
     }
 
     private MongoCollection<Document> getUserCollection(){

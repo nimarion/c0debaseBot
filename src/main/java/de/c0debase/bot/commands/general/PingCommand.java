@@ -15,7 +15,8 @@ public class PingCommand extends Command {
     @Override
     public void execute(final String[] args, final Message message) {
         final EmbedBuilder embedBuilder = new EmbedBuilder();
-        embedBuilder.appendDescription(":stopwatch: " + message.getJDA().getGatewayPing());
+        embedBuilder.appendDescription(":stopwatch: " + message.getJDA().getGatewayPing() + " (Websocket)\n\n");
+        embedBuilder.appendDescription(":stopwatch: " + message.getJDA().getRestPing().complete() + " (Rest)");
         embedBuilder.setColor(Color.GREEN);
         message.getTextChannel().sendMessage(embedBuilder.build()).queue();
     }
