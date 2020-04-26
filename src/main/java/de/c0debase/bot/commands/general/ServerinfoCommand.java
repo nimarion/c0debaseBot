@@ -23,7 +23,7 @@ public class ServerinfoCommand extends Command {
         embedBuilder.setThumbnail(message.getGuild().getIconUrl());
         embedBuilder.addField("Erstellt am", message.getGuild().getTimeCreated().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")), true);
         embedBuilder.addField("Region", message.getGuild().getRegionRaw(), true);
-        embedBuilder.addField("Mitglieder", String.valueOf(message.getGuild().getMembers().size()), true);
+        embedBuilder.addField("Mitglieder", String.valueOf(message.getGuild().getMemberCount()), true);
         embedBuilder.addField("Boosts", String.valueOf(message.getGuild().getBoostCount()), true);
         embedBuilder.addField("Text Channels", String.valueOf(message.getGuild().getTextChannels().size()), true);
         embedBuilder.addField("Voice Channels", String.valueOf(message.getGuild().getVoiceChannels().size()), true);
