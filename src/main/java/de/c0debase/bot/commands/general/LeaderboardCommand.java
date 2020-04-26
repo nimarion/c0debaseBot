@@ -18,9 +18,9 @@ public class LeaderboardCommand extends Command {
     @Override
     public void execute(final String[] args, final Message message) {
         boolean descending = true;
-        if (args.length > 0)
-            if (args[0].equalsIgnoreCase("asc") || args[0].equalsIgnoreCase("ascending") || args[0].equalsIgnoreCase("aufsteigend"))
-                descending = false;
+        if (args.length > 0 && (args[0].equalsIgnoreCase("asc") || args[0].equalsIgnoreCase("ascending") || args[0].equalsIgnoreCase("aufsteigend"))) {
+            descending = false;
+        }
         bot.getPaginationManager().getPaginationByClass(LevelLeaderboard.class).createFirst(descending, message.getTextChannel());
     }
 }
