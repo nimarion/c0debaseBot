@@ -9,6 +9,7 @@ import com.mongodb.client.model.Sorts;
 import de.c0debase.bot.core.Codebase;
 import de.c0debase.bot.database.data.CodebaseUser;
 import de.c0debase.bot.utils.Constants;
+import net.jodah.expiringmap.ExpirationPolicy;
 import net.jodah.expiringmap.ExpiringMap;
 import org.bson.Document;
 import org.bson.json.JsonWriterSettings;
@@ -47,10 +48,8 @@ public class MongoDatabase implements Database {
         userCollection = mongoClient.getDatabase("codebase").getCollection("user");
         
         //Initialize ExpiringMap
-        final ExpiringMap.Builder<Object, Object> mapBuilder = ExpiringMap.builder();
-        mapBuilder.maxSize(123).expiration(1, TimeUnit.MINUTES).build();
-        leaderboardCache = mapBuilder.build();
-        userCache = mapBuilder.build();
+        leaderboardCache = ExpiringMap.builder().expiration(2, TimeUnit.MINUTES).expirationPolicy(ExpirationPolicy.ACCESSED).build();
+        userCache = ExpiringMap.builder().expiration(2, TimeUnit.MINUTES).expirationPolicy(ExpirationPolicy.ACCESSED).build();
     }
 
     
