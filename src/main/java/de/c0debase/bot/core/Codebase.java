@@ -120,7 +120,7 @@ public class Codebase {
                 public void onGuildReady(@Nonnull GuildReadyEvent event) {
                     guild = event.getGuild();
                 }
-            }, new GuildReadyListener(this), new GuildBoostListener(this));
+            }, new GuildReadyListener(this), new GuildBoostListener());
             return jdaBuilder.build().awaitReady();
         } catch (Exception exception) {
             logger.error("Encountered exception while initializing ShardManager!");
