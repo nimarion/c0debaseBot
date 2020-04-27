@@ -94,7 +94,14 @@ public class SinceLeaderboard extends Pagination {
     }
 
     private List<Member> getSortedMembers() {
-        List<Member> members = new LinkedList<>(getBot().getGuild().getMembers());
+        final List<Member> members = new LinkedList<>();
+        getBot().getGuild().getMembers().forEach(member -> {
+            if(member.getTimeJoined().equals(member.getGuild().getTimeCreated()) && !member.isOwner()){
+                members.add(member.getGuild().retrieveMemberById(member.getId(), true).complete());
+            } else {
+                members.add(member);
+            }
+        });
         members.sort((m1, m2) -> Long.compare(m2.getTimeJoined().toInstant().toEpochMilli(), m1.getTimeJoined().toInstant().toEpochMilli()));
         return members;
     }

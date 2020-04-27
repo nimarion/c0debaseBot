@@ -8,10 +8,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 public class MessageReactionListener extends ListenerAdapter {
 
-    private final Codebase bot;
-
     public MessageReactionListener(final Codebase bot) {
-        this.bot = bot;
         bot.getJDA().addEventListener(this);
     }
 

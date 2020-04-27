@@ -14,7 +14,7 @@ public class GuildBoostListener extends ListenerAdapter{
 
     private final List<Member> booster;
 
-    public GuildBoostListener(final Codebase bot) {
+    public GuildBoostListener() {
         this.booster = new ArrayList<>();
     }
 
