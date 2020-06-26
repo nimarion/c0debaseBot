@@ -1,6 +1,6 @@
 package de.c0debase.bot.listener.voice;
 
-import de.c0debase.bot.core.Codebase;
+import de.c0debase.bot.Codebase;
 import de.c0debase.bot.tempchannel.Tempchannel;
 import net.dv8tion.jda.api.events.channel.voice.VoiceChannelCreateEvent;
 import net.dv8tion.jda.api.events.channel.voice.VoiceChannelDeleteEvent;

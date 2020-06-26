@@ -1,7 +1,7 @@
 package de.c0debase.bot.commands.staff;
 
 import de.c0debase.bot.commands.Command;
-import de.c0debase.bot.core.Codebase;
+import de.c0debase.bot.Codebase;
 import de.c0debase.bot.utils.ServerBanner;
 import de.c0debase.bot.utils.ServerBannerScheduler;
 import net.dv8tion.jda.api.EmbedBuilder;

@@ -15,7 +15,7 @@ public class CoinCommand extends Command {
     public void execute(final String[] args, final Message message) {
         final Member member = message.getMentionedMembers().size() == 0 ? message.getMember() : ((message.getMentionedMembers().get(0).getUser().isBot()) ? message.getMember() : message.getMentionedMembers().get(0));
         final EmbedBuilder embedBuilder = getEmbed(message.getGuild(), member.getUser());
-        embedBuilder.setDescription(member.getAsMention() + " hat " + String.format("%.2f", bot.getDataManager().getUserData(member.getGuild().getId(), member.getUser().getId()).getCoins()) + " Coins");
+        embedBuilder.setDescription(member.getAsMention() + " hat " + String.format("%.2f", bot.getDatabase().getUserDao().getOrCreateUser(member.getGuild().getId(), member.getUser().getId()).getCoins()) + " Coins");
         message.getTextChannel().sendMessage(embedBuilder.build()).queue();
     }
 }
