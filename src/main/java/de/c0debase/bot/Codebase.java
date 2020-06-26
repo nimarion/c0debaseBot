@@ -1,8 +1,8 @@
-package de.c0debase.bot.core;
+package de.c0debase.bot;
 
 import de.c0debase.bot.commands.CommandManager;
 import de.c0debase.bot.database.Database;
-import de.c0debase.bot.database.MongoDatabase;
+import de.c0debase.bot.database.mongodb.MongoDatabase;
 import de.c0debase.bot.listener.guild.GuildBoostListener;
 import de.c0debase.bot.listener.guild.GuildMemberJoinListener;
 import de.c0debase.bot.listener.guild.GuildMemberLeaveListener;
@@ -14,8 +14,8 @@ import de.c0debase.bot.listener.message.TableFlipListener;
 import de.c0debase.bot.listener.other.GuildReadyListener;
 import de.c0debase.bot.listener.voice.GuildVoiceListener;
 import de.c0debase.bot.pagination.PaginationManager;
-import de.c0debase.bot.tags.TagManager;
 import de.c0debase.bot.tempchannel.Tempchannel;
+import io.sentry.Sentry;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
@@ -35,7 +35,6 @@ public class Codebase {
 
     private static final Logger logger = LoggerFactory.getLogger(Codebase.class);
 
-
     private static Codebase bot;
     private final JDA jda;
     private Guild guild;
@@ -43,7 +42,6 @@ public class Codebase {
     private final CommandManager commandManager;
     private final PaginationManager paginationManager;
     private final Map<String, Tempchannel> tempchannels;
-    private final TagManager tagManager;
 
     public Codebase() throws Exception {
         final long startTime = System.currentTimeMillis();
@@ -58,9 +56,6 @@ public class Codebase {
 
         jda = initializeJDA();
         logger.info("JDA set up!");
-
-        tagManager = new TagManager();
-        logger.info("Tags loaded!");
 
         paginationManager = new PaginationManager(this);
         logger.info("Pagination-Manager set up!");
@@ -97,7 +92,7 @@ public class Codebase {
      */
     private Database initializeDataManager() throws Exception {
         try {
-            return new MongoDatabase(System.getenv("MONGO_HOST") == null ? "localhost" : System.getenv("MONGO_HOST"), System.getenv("MONGO_PORT") == null ? 27017 : Integer.valueOf(System.getenv("MONGO_PORT")), this);
+            return new MongoDatabase(System.getenv("MONGO_HOST") == null ? "localhost" : System.getenv("MONGO_HOST"), System.getenv("MONGO_PORT") == null ? 27017 : Integer.valueOf(System.getenv("MONGO_PORT")));
         } catch (final Exception exception) {
             logger.error("Encountered exception while initializing Database-Connection!");
             throw exception;
@@ -123,7 +118,7 @@ public class Codebase {
             }, new GuildReadyListener(this), new GuildBoostListener());
             return jdaBuilder.build().awaitReady();
         } catch (Exception exception) {
-            logger.error("Encountered exception while initializing ShardManager!");
+            logger.error("Encountered exception while initializing JDA!");
             throw exception;
         }
     }
@@ -133,7 +128,7 @@ public class Codebase {
         return bot;
     }
 
-    public Database getDataManager() {
+    public Database getDatabase() {
         return database;
     }
 
@@ -157,7 +152,14 @@ public class Codebase {
         return guild;
     }
 
-    public TagManager getTagManager() {
-        return tagManager;
+    public static void main(String... args) throws Exception {
+        if (System.getenv("SENTRY_DSN") != null || System.getProperty("sentry.properties") != null) {
+            Sentry.init();
+        }
+        try {
+            new Codebase();
+        } catch (Exception exception) {
+            logger.error("Encountered exception while initializing the bot!", exception);
+        }
     }
 }
