@@ -17,7 +17,7 @@ public class MongoTest {
     private Database database;
 
     @Before
-    public void setup(){
+    public void setUp(){
         database = new MongoDatabase("localhost", 27017);
     }
 
