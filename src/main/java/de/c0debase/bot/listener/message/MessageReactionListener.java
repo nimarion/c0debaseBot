@@ -1,7 +1,7 @@
 package de.c0debase.bot.listener.message;
 
 import com.vdurmont.emoji.EmojiManager;
-import de.c0debase.bot.Codebase;
+import de.c0debase.bot.core.Codebase;
 import net.dv8tion.jda.api.entities.MessageReaction;
 import net.dv8tion.jda.api.events.message.guild.react.GenericGuildMessageReactionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;

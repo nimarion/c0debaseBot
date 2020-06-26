@@ -1,7 +1,7 @@
 package de.c0debase.bot.listener.guild;
 
-import de.c0debase.bot.Codebase;
-import de.c0debase.bot.database.model.User;
+import de.c0debase.bot.core.Codebase;
+import de.c0debase.bot.database.data.CodebaseUser;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
@@ -50,9 +50,9 @@ public class GuildMemberJoinListener extends ListenerAdapter {
             channel.sendMessage(logBuilder.build()).queue();
         });
 
-        final User user = bot.getDatabase().getUserDao().getOrCreateUser(guild.getId(), event.getUser().getId());
+        final CodebaseUser codebaseUser = bot.getDataManager().getUserData(guild.getId(), event.getUser().getId());
         final List<Role> roles = new ArrayList<>();
-        user.getRoles().forEach(roleName -> {
+        codebaseUser.getRoles().forEach(roleName -> {
             final Role role = guild.getRoleById(roleName);
             if (role != null && PermissionUtil.canInteract(guild.getSelfMember(), role)) {
                 roles.add(role);
@@ -61,7 +61,7 @@ public class GuildMemberJoinListener extends ListenerAdapter {
         guild.modifyMemberRoles(member, roles, Collections.emptyList()).queue(success -> {
             final Role projectRole = event.getJDA().getRoleById(PROJECT_ROLE_ID);
             if (projectRole == null) return;
-            if (user.getLevel() > 2 && !member.getRoles().contains(projectRole)) {
+            if (codebaseUser.getLevel() > 2 && !member.getRoles().contains(projectRole)) {
                 guild.addRoleToMember(member, projectRole).queue();
             }
         });

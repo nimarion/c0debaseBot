@@ -1,12 +1,15 @@
 package de.c0debase.bot.database;
 
-import de.c0debase.bot.database.dao.LeaderboardDao;
-import de.c0debase.bot.database.dao.UserDao;
+import de.c0debase.bot.database.data.CodebaseUser;
 
-public interface Database extends AutoCloseable{
+import java.util.List;
+
+public interface Database extends AutoCloseable {
     
-    UserDao getUserDao();
+    CodebaseUser getUserData(final String guildID, final String userID);
 
-    LeaderboardDao getLeaderboardDao();
+    void updateUserData(final CodebaseUser codebaseUser);
+
+    List<CodebaseUser> getLeaderboard(final String guildID);
 
 }

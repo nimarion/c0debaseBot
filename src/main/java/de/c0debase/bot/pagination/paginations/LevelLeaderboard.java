@@ -1,8 +1,7 @@
 package de.c0debase.bot.pagination.paginations;
 
 import com.vdurmont.emoji.EmojiManager;
-
-import de.c0debase.bot.database.model.User;
+import de.c0debase.bot.database.data.CodebaseUser;
 import de.c0debase.bot.pagination.Pagination;
 import de.c0debase.bot.utils.StringUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -73,16 +72,16 @@ public class LevelLeaderboard extends Pagination {
 
     @Override
     public void buildList(EmbedBuilder embedBuilder, int page, boolean descending) {
-        final List<User> users = getBot().getDatabase().getLeaderboardDao().getLeaderboard(getBot().getGuild().getId());
+        final List<CodebaseUser> users = getBot().getDataManager().getLeaderboard(getBot().getGuild().getId());
         if (!descending) Collections.reverse(users);
-        for (Map.Entry<Integer, User> entry : getPage(page, users, descending).entrySet()) {
-            User user = entry.getValue();
+        for (Map.Entry<Integer, CodebaseUser> entry : getPage(page, users, descending).entrySet()) {
+            CodebaseUser codebaseUser = entry.getValue();
             int count = entry.getKey();
-            final Member member = getBot().getGuild().getMemberById(Long.valueOf(user.getUserID()));
+            final Member member = getBot().getGuild().getMemberById(Long.valueOf(codebaseUser.getUserID()));
             if (member != null) {
-                embedBuilder.appendDescription("`" + count + ")` " + StringUtils.replaceCharacter(member.getEffectiveName()) + "#" + member.getUser().getDiscriminator() + " (Lvl." + user.getLevel() + "/Xp." + user.getXp() + ")\n");
+                embedBuilder.appendDescription("`" + count + ")` " + StringUtils.replaceCharacter(member.getEffectiveName()) + "#" + member.getUser().getDiscriminator() + " (Lvl." + codebaseUser.getLevel() + "/Xp." + codebaseUser.getXp() + ")\n");
             } else {
-                embedBuilder.appendDescription("`" + count + ")` undefined#0000 (Lvl." + user.getLevel() + "/Xp." + user.getXp() + ")\n");
+                embedBuilder.appendDescription("`" + count + ")` undefined#0000 (Lvl." + codebaseUser.getLevel() + "/Xp." + codebaseUser.getXp() + ")\n");
             }
             count++;
         }

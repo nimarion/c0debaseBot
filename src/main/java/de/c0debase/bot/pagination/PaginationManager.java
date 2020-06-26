@@ -1,6 +1,7 @@
 package de.c0debase.bot.pagination;
 
 import com.vdurmont.emoji.EmojiManager;
+import de.c0debase.bot.core.Codebase;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.MessageReaction;
 import net.dv8tion.jda.api.events.message.guild.react.GenericGuildMessageReactionEvent;
@@ -8,8 +9,6 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import de.c0debase.bot.Codebase;
 
 import java.util.HashSet;
 import java.util.Set;

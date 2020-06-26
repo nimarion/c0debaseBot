@@ -6,11 +6,6 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
-    services:
-      mongodb:
-        image: mongo:latest
-        ports:
-          - 27017:27017
     steps:
     - uses: actions/checkout@v2
     - name: Set up JDK 14

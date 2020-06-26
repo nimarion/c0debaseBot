@@ -1,6 +1,6 @@
 package de.c0debase.bot.utils;
 
-import de.c0debase.bot.Codebase;
+import de.c0debase.bot.core.Codebase;
 import net.dv8tion.jda.api.entities.Icon;
 
 import javax.net.ssl.HttpsURLConnection;
