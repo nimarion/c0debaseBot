@@ -1,7 +1,7 @@
 package de.c0debase.bot.utils;
 
-import de.c0debase.bot.Codebase;
-import de.c0debase.bot.database.model.User;
+import de.c0debase.bot.core.Codebase;
+import de.c0debase.bot.database.data.CodebaseUser;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Invite;
 
@@ -25,19 +25,19 @@ public class InviteTracker {
     public void start() {
         Executors.newScheduledThreadPool(1).scheduleAtFixedRate(() -> bot.getJDA().getGuilds().get(0).retrieveInvites().queue(inviteList -> inviteList.forEach(invite -> {
             if (inviteHashMap.containsKey(invite.getCode()) && invite.getUses() > inviteHashMap.get(invite.getCode()).getUses()) {
-                final User user = bot.getDatabase().getUserDao().getOrCreateUser(invite.getGuild().getId(), invite.getInviter().getId());
+                final CodebaseUser levelUser = bot.getDataManager().getUserData(invite.getGuild().getId(), invite.getInviter().getId());
 
                 EmbedBuilder embedBuilder = new EmbedBuilder();
                 embedBuilder.setDescription(invite.getInviter().getAsMention() + " vielen Dank das du jemand neues auf c0debase gebracht hast [" + invite.getCode() + "]");
                 
                 bot.getJDA().getTextChannelById(System.getenv("BOTCHANNEL")).sendMessage(embedBuilder.build()).queue();
 
-                if (user.addXP(100)) {
+                if (levelUser.addXP(100)) {
                     EmbedBuilder levelUpEmbed = new EmbedBuilder();
-                    levelUpEmbed.setDescription(invite.getInviter().getAsMention() + " ist nun Level " + user.getLevel());
+                    levelUpEmbed.setDescription(invite.getInviter().getAsMention() + " ist nun Level " + levelUser.getLevel());
                     bot.getJDA().getTextChannelById(System.getenv("BOTCHANNEL")).sendMessage(levelUpEmbed.build()).queue();
                 }
-                bot.getDatabase().getUserDao().updateUser(user);
+                bot.getDataManager().updateUserData(levelUser);
             }
             inviteHashMap.put(invite.getCode(), invite);
         })), 5, 5, TimeUnit.SECONDS);

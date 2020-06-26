@@ -1,11 +1,10 @@
-package de.c0debase.bot.database.model;
+package de.c0debase.bot.database.data;
 
 import de.c0debase.bot.utils.Constants;
 
-import java.util.Collections;
 import java.util.List;
 
-public class User {
+public class CodebaseUser {
 
     private String userID;
     private String guildID;
@@ -15,19 +14,8 @@ public class User {
     private long lastMessage;
     private List<String> roles;
 
-    public static User newUser(final String userId, final String guildId){
-        final User user = new User();
-        user.setUserID(userId);
-        user.setGuildID(guildId);
-        user.setRoles(Collections.emptyList());
-        user.setLevel(0);
-        user.setXp(0);
-        user.setCoins(0D);
-        return user;
-    }
-
     public boolean addXP(int xp) {
-        int morexp = Constants.RANDOM.nextInt(xp - 1 ) + 1;
+        int morexp = Constants.RANDOM.nextInt(xp);
         this.xp += morexp;
         coins += morexp * 0.03;
         double reach = 1000 * level * 1.2;
