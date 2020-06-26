@@ -1,8 +1,8 @@
 package de.c0debase.bot.listener.message;
 
 import com.vdurmont.emoji.EmojiManager;
-import de.c0debase.bot.core.Codebase;
-import de.c0debase.bot.database.data.CodebaseUser;
+import de.c0debase.bot.Codebase;
+import de.c0debase.bot.database.model.User;
 import de.c0debase.bot.utils.Constants;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
@@ -97,12 +97,12 @@ public class MessageReceiveListener extends ListenerAdapter {
     }
 
     private void updateXP(final Message message){
-        final CodebaseUser codebaseUser = bot.getDataManager().getUserData(message.getGuild().getId(), message.getAuthor().getId());
-        final float time = (System.currentTimeMillis() - codebaseUser.getLastMessage()) / 1000;
+        final User user = bot.getDatabase().getUserDao().getOrCreateUser(message.getGuild().getId(), message.getAuthor().getId());
+        final float time = (System.currentTimeMillis() - user.getLastMessage()) / 1000;
         if (time >= 50.0f) {
-            if (codebaseUser.addXP(50)) {
+            if (user.addXP(50)) {
                 final EmbedBuilder levelUpEmbed = new EmbedBuilder();
-                final int newLevel = codebaseUser.getLevel();
+                final int newLevel = user.getLevel();
                 levelUpEmbed.appendDescription(message.getAuthor().getAsMention() + " ist nun Level " + newLevel);
                 if(message.getIdLong() != DISCUSSION_CHANNEL_ID){
                     levelUpEmbed.setImage(gifs.get(Constants.RANDOM.nextInt(gifs.size())));
@@ -113,8 +113,8 @@ public class MessageReceiveListener extends ListenerAdapter {
                     message.getGuild().addRoleToMember(message.getMember(), message.getJDA().getRoleById(PROJECT_ROLE_ID)).queue();
                 }
             }
-            codebaseUser.setLastMessage(System.currentTimeMillis());
-            bot.getDataManager().updateUserData(codebaseUser);
+            user.setLastMessage(System.currentTimeMillis());
+            bot.getDatabase().getUserDao().updateUser(user);
         }
     }
 
