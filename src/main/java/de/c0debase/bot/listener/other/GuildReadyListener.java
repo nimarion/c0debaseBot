@@ -31,6 +31,8 @@ public class GuildReadyListener extends ListenerAdapter {
             }
         }
 
+        event.getGuild().loadMembers().onError(error -> error.printStackTrace());
+
         new InviteTracker(bot).start();
     }
 
