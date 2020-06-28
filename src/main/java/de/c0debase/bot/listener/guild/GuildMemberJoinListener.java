@@ -1,7 +1,7 @@
 package de.c0debase.bot.listener.guild;
 
-import de.c0debase.bot.core.Codebase;
-import de.c0debase.bot.database.data.CodebaseUser;
+import de.c0debase.bot.Codebase;
+import de.c0debase.bot.database.model.User;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
@@ -46,13 +46,13 @@ public class GuildMemberJoinListener extends ListenerAdapter {
             logBuilder.setFooter("@" + member.getUser().getName() + "#" + member.getUser().getDiscriminator(), member.getUser().getEffectiveAvatarUrl());
             logBuilder.setThumbnail(member.getUser().getEffectiveAvatarUrl());
             logBuilder.appendDescription("Erstelldatum: " + event.getUser().getTimeCreated().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")) + "\n");
-            logBuilder.appendDescription("Standart Avatar: " + (member.getUser().getAvatarUrl() == null) + "\n");
+            logBuilder.appendDescription("Standard Avatar: " + (member.getUser().getAvatarUrl() == null) + "\n");
             channel.sendMessage(logBuilder.build()).queue();
         });
 
-        final CodebaseUser codebaseUser = bot.getDataManager().getUserData(guild.getId(), event.getUser().getId());
+        final User user = bot.getDatabase().getUserDao().getOrCreateUser(guild.getId(), event.getUser().getId());
         final List<Role> roles = new ArrayList<>();
-        codebaseUser.getRoles().forEach(roleName -> {
+        user.getRoles().forEach(roleName -> {
             final Role role = guild.getRoleById(roleName);
             if (role != null && PermissionUtil.canInteract(guild.getSelfMember(), role)) {
                 roles.add(role);
@@ -61,7 +61,7 @@ public class GuildMemberJoinListener extends ListenerAdapter {
         guild.modifyMemberRoles(member, roles, Collections.emptyList()).queue(success -> {
             final Role projectRole = event.getJDA().getRoleById(PROJECT_ROLE_ID);
             if (projectRole == null) return;
-            if (codebaseUser.getLevel() > 2 && !member.getRoles().contains(projectRole)) {
+            if (user.getLevel() > 2 && !member.getRoles().contains(projectRole)) {
                 guild.addRoleToMember(member, projectRole).queue();
             }
         });

@@ -27,7 +27,7 @@ public class UserinfoCommand extends Command {
         embedBuilder.addField("Rollen", String.valueOf(member.getRoles().size()), true);
         embedBuilder.addField("Beitritt", member.getTimeJoined().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")), true);
         embedBuilder.addField("Erstelldatum: ", member.getUser().getTimeCreated().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")), true);
-        embedBuilder.addField("Standart Avatar: ", String.valueOf(member.getUser().getAvatarUrl() == null), true);
+        embedBuilder.addField("Standard Avatar: ", String.valueOf(member.getUser().getAvatarUrl() == null), true);
 
 
         message.getTextChannel().sendMessage(embedBuilder.build()).queue();

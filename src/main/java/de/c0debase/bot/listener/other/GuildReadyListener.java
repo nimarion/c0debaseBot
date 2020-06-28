@@ -1,6 +1,6 @@
 package de.c0debase.bot.listener.other;
 
-import de.c0debase.bot.core.Codebase;
+import de.c0debase.bot.Codebase;
 import de.c0debase.bot.tempchannel.Tempchannel;
 import de.c0debase.bot.utils.InviteTracker;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -30,6 +30,8 @@ public class GuildReadyListener extends ListenerAdapter {
                 bot.getTempchannels().put(voiceChannel.getId(), tempchannel);
             }
         }
+
+        event.getGuild().loadMembers().onError(error -> error.printStackTrace());
 
         new InviteTracker(bot).start();
     }
