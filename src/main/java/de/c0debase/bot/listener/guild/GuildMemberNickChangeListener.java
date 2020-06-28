@@ -1,6 +1,6 @@
 package de.c0debase.bot.listener.guild;
 
-import de.c0debase.bot.core.Codebase;
+import de.c0debase.bot.Codebase;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.guild.member.update.GuildMemberUpdateNicknameEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
