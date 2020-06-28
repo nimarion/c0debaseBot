@@ -4,6 +4,7 @@ import de.c0debase.bot.commands.Command;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDAInfo;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
 
 import java.lang.management.ManagementFactory;
@@ -32,7 +33,7 @@ public class StatsCommand extends Command {
                         TimeUnit.MILLISECONDS.toMinutes(uptime) % 60 + "m " +
                         TimeUnit.MILLISECONDS.toSeconds(uptime) % 60 + "s"), true);
         embedBuilder.addField("Commands", String.valueOf(bot.getCommandManager().getAvailableCommands().size()), true);
-        embedBuilder.addField("Mitglieder", String.valueOf(jda.getUserCache().size()), true);
+        embedBuilder.addField("Mitglieder", String.valueOf(jda.getGuilds().stream().mapToInt(Guild::getMemberCount).sum()), true);
         embedBuilder.addField("Java Version", System.getProperty("java.runtime.version").replace("+", "_"), true);
         embedBuilder.addField("Betriebssystem", ManagementFactory.getOperatingSystemMXBean().getName(), true);
         embedBuilder.addField("CPU Threads",
