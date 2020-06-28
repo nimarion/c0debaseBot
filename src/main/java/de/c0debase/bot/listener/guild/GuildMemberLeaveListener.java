@@ -1,6 +1,6 @@
 package de.c0debase.bot.listener.guild;
 
-import de.c0debase.bot.Codebase;
+import de.c0debase.bot.core.Codebase;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRemoveEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;

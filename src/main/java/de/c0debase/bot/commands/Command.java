@@ -1,13 +1,12 @@
 package de.c0debase.bot.commands;
 
-import de.c0debase.bot.Codebase;
+import de.c0debase.bot.core.Codebase;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.User;
 
 public abstract class Command {
-    
     protected Codebase bot = null;
 
     private final String command;

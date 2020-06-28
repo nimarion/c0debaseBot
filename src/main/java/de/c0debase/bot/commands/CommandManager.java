@@ -1,6 +1,6 @@
 package de.c0debase.bot.commands;
 
-import de.c0debase.bot.Codebase;
+import de.c0debase.bot.core.Codebase;
 import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;

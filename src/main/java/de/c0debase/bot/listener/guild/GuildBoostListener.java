@@ -3,6 +3,7 @@ package de.c0debase.bot.listener.guild;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.c0debase.bot.core.Codebase;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
