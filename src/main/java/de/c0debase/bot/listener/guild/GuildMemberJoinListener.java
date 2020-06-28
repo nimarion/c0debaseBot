@@ -46,7 +46,7 @@ public class GuildMemberJoinListener extends ListenerAdapter {
             logBuilder.setFooter("@" + member.getUser().getName() + "#" + member.getUser().getDiscriminator(), member.getUser().getEffectiveAvatarUrl());
             logBuilder.setThumbnail(member.getUser().getEffectiveAvatarUrl());
             logBuilder.appendDescription("Erstelldatum: " + event.getUser().getTimeCreated().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")) + "\n");
-            logBuilder.appendDescription("Standart Avatar: " + (member.getUser().getAvatarUrl() == null) + "\n");
+            logBuilder.appendDescription("Standard Avatar: " + (member.getUser().getAvatarUrl() == null) + "\n");
             channel.sendMessage(logBuilder.build()).queue();
         });
 
