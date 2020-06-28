@@ -10,7 +10,6 @@ public class StringUtils {
     private static final List<Character> ESCAPE_CHARACTERS;
     private static final String URL_REGEX;
 
-
     static {
         ESCAPE_CHARACTERS = Arrays.asList('*', '_', '`', '~');
         URL_REGEX =  "((http:\\/\\/|https:\\/\\/)?(www.)?(([a-zA-Z0-9-]){2,}\\.){1,4}([a-zA-Z]){2,6}(\\/([a-zA-Z-_\\/\\.0-9#:?=&;,]*)?)?)";
@@ -40,6 +39,15 @@ public class StringUtils {
         final Pattern p = Pattern.compile(URL_REGEX);
         Matcher m = p.matcher(content);
         return m.find();
+    }
+
+    public static boolean isInteger(final String input){
+        try {
+            Integer.valueOf(input);
+            return true;
+        } catch (NumberFormatException ex){
+            return false;
+        }
     }
 
 }
