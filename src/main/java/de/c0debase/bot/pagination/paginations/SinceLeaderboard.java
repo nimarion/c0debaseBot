@@ -4,6 +4,7 @@ import com.vdurmont.emoji.EmojiManager;
 import de.c0debase.bot.pagination.Pagination;
 import de.c0debase.bot.utils.StringUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
@@ -52,22 +53,21 @@ public class SinceLeaderboard extends Pagination {
         }
 
         if (current > 0) {
-            buildList(embedBuilder, current, descending);
-            embedBuilder.setFooter("Seite: (" + current + "/" + max + ") Sortierung: " + (descending ? "absteigend" : "aufsteigend"), getBot().getGuild().getIconUrl());
+            buildList(embedBuilder, current, descending, success.getGuild());
+            embedBuilder.setFooter("Seite: (" + current + "/" + max + ") Sortierung: " + (descending ? "absteigend" : "aufsteigend"), success.getGuild().getIconUrl());
             success.editMessage(embedBuilder.build()).queue();
         }
     }
 
     @Override
     public void createFirst(boolean descending, TextChannel textChannel) {
-        descending = !descending;
         final EmbedBuilder embedBuilder = new EmbedBuilder();
-        embedBuilder.setColor(getBot().getGuild().getSelfMember().getColor());
+        embedBuilder.setColor(textChannel.getGuild().getSelfMember().getColor());
         embedBuilder.setTitle(getTitle());
 
-        buildList(embedBuilder, 1, descending);
+        buildList(embedBuilder, 1, descending, textChannel.getGuild());
 
-        embedBuilder.setFooter("Seite: (1/" + ((getBot().getGuild().getMembers().size() / getPageSize()) + 1) + ") Sortierung: " + (descending ? "absteigend" : "aufsteigend"), getBot().getGuild().getIconUrl());
+        embedBuilder.setFooter("Seite: (1/" + ((textChannel.getGuild().getMembers().size() / getPageSize()) + 1) + ") Sortierung: " + (descending ? "absteigend" : "aufsteigend"), textChannel.getGuild().getIconUrl());
 
         textChannel.sendMessage(embedBuilder.build()).queue((Message success) -> {
             success.addReaction(EmojiManager.getForAlias("arrow_left").getUnicode()).queue();
@@ -76,10 +76,9 @@ public class SinceLeaderboard extends Pagination {
     }
 
     @Override
-    public void buildList(EmbedBuilder embedBuilder, int page, boolean descending) {
-        final List<Member> users = getSortedMembers();
+    public void buildList(EmbedBuilder embedBuilder, int page, boolean descending, Guild guild) {
+        final List<Member> users = getSortedMembers(guild);
         if (!descending) Collections.reverse(users);
-        descending = !descending;
         for (Map.Entry<Integer, Member> entry : getPage(page, users, descending).entrySet()) {
             Member member = entry.getValue();
             int count = entry.getKey();
@@ -93,9 +92,9 @@ public class SinceLeaderboard extends Pagination {
         }
     }
 
-    private List<Member> getSortedMembers() {
+    private List<Member> getSortedMembers(final Guild guild) {
         final List<Member> members = new LinkedList<>();
-        getBot().getGuild().getMembers().forEach(member -> {
+        guild.getMembers().forEach(member -> {
             if(member.getTimeJoined().equals(member.getGuild().getTimeCreated()) && !member.isOwner()){
                 members.add(member.getGuild().retrieveMemberById(member.getId(), true).complete());
             } else {

@@ -2,6 +2,7 @@ package de.c0debase.bot.pagination;
 
 import de.c0debase.bot.Codebase;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -10,6 +11,9 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class Pagination {
+
+
+    private Codebase bot = null;
 
     private String title;
     private int pageSize;
@@ -23,14 +27,21 @@ public abstract class Pagination {
         this(title, 10);
     }
 
+    public void setInstance(final Codebase instance) {
+        if (bot != null) {
+            throw new IllegalStateException("Can only initialize once!");
+        }
+        bot = instance;
+    }
+
     public abstract void update(Message success, MessageEmbed messageEmbed, String emote);
 
     public abstract void createFirst(boolean descending, TextChannel textChannel);
 
-    public abstract void buildList(EmbedBuilder embedBuilder, int page, boolean descending);
+    public abstract void buildList(EmbedBuilder embedBuilder, int page, boolean descending, Guild guild);
 
     public Codebase getBot() {
-        return Codebase.getBot();
+        return bot;
     }
 
     public String getTitle() {

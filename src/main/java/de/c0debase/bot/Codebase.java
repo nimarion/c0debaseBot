@@ -19,15 +19,11 @@ import io.sentry.Sentry;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
-import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
-import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,9 +31,7 @@ public class Codebase {
 
     private static final Logger logger = LoggerFactory.getLogger(Codebase.class);
 
-    private static Codebase bot;
     private final JDA jda;
-    private Guild guild;
     private final Database database;
     private final CommandManager commandManager;
     private final PaginationManager paginationManager;
@@ -45,8 +39,6 @@ public class Codebase {
 
     public Codebase() throws Exception {
         final long startTime = System.currentTimeMillis();
-
-        bot = this;
 
         logger.info("Starting c0debase");
         tempchannels = new HashMap<>();
@@ -110,22 +102,12 @@ public class Codebase {
             jdaBuilder.setEnabledIntents(GatewayIntent.getIntents(GatewayIntent.ALL_INTENTS));
             jdaBuilder.setMemberCachePolicy(MemberCachePolicy.ALL);
             jdaBuilder.setActivity(Activity.playing("auf c0debase"));
-            jdaBuilder.addEventListeners(new ListenerAdapter() {
-                @Override
-                public void onGuildReady(@Nonnull GuildReadyEvent event) {
-                    guild = event.getGuild();
-                }
-            }, new GuildReadyListener(this), new GuildBoostListener());
+            jdaBuilder.addEventListeners(new GuildReadyListener(this), new GuildBoostListener());
             return jdaBuilder.build().awaitReady();
         } catch (Exception exception) {
             logger.error("Encountered exception while initializing JDA!");
             throw exception;
         }
-    }
-
-
-    public static Codebase getBot() {
-        return bot;
     }
 
     public Database getDatabase() {
@@ -146,10 +128,6 @@ public class Codebase {
 
     public Map<String, Tempchannel> getTempchannels() {
         return tempchannels;
-    }
-
-    public Guild getGuild() {
-        return guild;
     }
 
     public static void main(String... args) throws Exception {

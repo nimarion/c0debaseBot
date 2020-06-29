@@ -33,26 +33,12 @@ public class ServerBanner implements Runnable {
      * @param icon The new server banner.
      */
     public void setServerBanner(final Icon icon) {
-        if(bot.getGuild() == null) return;
-        if (!bot.getGuild().getFeatures().contains("BANNER")) {
-            throw new UnsupportedOperationException("Your guild can not have a banner!");
-        }
-        if (icon == null)
-            return;
-        bot.getGuild().getManager().setBanner(icon).queue();
-    }
-
-    /**
-     * Get the banner url of the provided guild.
-     *
-     * @return The banner url, if present. Otherwise null.
-     */
-    public String getBannerUrl() {
-        if(bot.getGuild() == null) return null;
-        if (!bot.getGuild().getFeatures().contains("BANNER")) {
-            throw new UnsupportedOperationException("Your guild can not have a banner!");
-        }
-        return bot.getGuild().getBannerUrl();
+        if (icon == null) return;
+        bot.getJDA().getGuilds().forEach(guild -> {
+            if (guild.getFeatures().contains("BANNER")) {
+                guild.getManager().setBanner(icon).queue();
+            }
+        });
     }
 
     /**
