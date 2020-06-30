@@ -3,7 +3,6 @@ package de.c0debase.bot.listener.guild;
 import de.c0debase.bot.Codebase;
 import de.c0debase.bot.database.model.User;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
@@ -28,41 +27,55 @@ public class GuildMemberJoinListener extends ListenerAdapter {
 
     @Override
     public void onGuildMemberJoin(final GuildMemberJoinEvent event) {
-        final EmbedBuilder embedBuilder = new EmbedBuilder();
-        final Guild guild = event.getGuild();
         final Member member = event.getMember();
+
+        sendWelcomeMessage(member);
+        sendLogMessage(member);
+        addRoles(member);
+    }
+
+    private void sendWelcomeMessage(final Member member){
+        if(System.getenv("BOTCHANNEL") == null){
+            return;
+        }
+        final boolean firstJoin = bot.getDatabase().getUserDao().getUser(member.getGuild().getId(), member.getId()) == null;
+        final EmbedBuilder embedBuilder = new EmbedBuilder();
+
         embedBuilder.setFooter("@" + member.getUser().getName() + "#" + member.getUser().getDiscriminator(), member.getUser().getEffectiveAvatarUrl());
-        embedBuilder.setColor(guild.getSelfMember().getColor());
+        embedBuilder.setColor(member.getGuild().getSelfMember().getColor());
         embedBuilder.setThumbnail(member.getUser().getEffectiveAvatarUrl());
-        embedBuilder.appendDescription("Willkommen auf c0debase " + member.getAsMention() + "\n");
+        embedBuilder.appendDescription("Willkommen " + (firstJoin ? "" : "zurück ") + "auf c0debase " + member.getAsMention() + "\n");
         embedBuilder.appendDescription("— Weise dir eine Rolle mit !role zu\n");
         embedBuilder.appendDescription("— Schaue dir die Regeln in #rules an");
 
+        member.getGuild().getTextChannelById(System.getenv("BOTCHANNEL")).sendMessage(embedBuilder.build()).queue();
+    }
 
-        guild.getTextChannelById(System.getenv("BOTCHANNEL")).sendMessage(embedBuilder.build()).queue();
-
-        guild.getTextChannelsByName("log", true).forEach(channel -> {
+    private void sendLogMessage(final Member member){
+        member.getGuild().getTextChannelsByName("log", true).forEach(channel -> {
             final EmbedBuilder logBuilder = new EmbedBuilder();
             logBuilder.setFooter("@" + member.getUser().getName() + "#" + member.getUser().getDiscriminator(), member.getUser().getEffectiveAvatarUrl());
             logBuilder.setThumbnail(member.getUser().getEffectiveAvatarUrl());
-            logBuilder.appendDescription("Erstelldatum: " + event.getUser().getTimeCreated().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")) + "\n");
+            logBuilder.appendDescription("Erstelldatum: " + member.getUser().getTimeCreated().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")) + "\n");
             logBuilder.appendDescription("Standard Avatar: " + (member.getUser().getAvatarUrl() == null) + "\n");
             channel.sendMessage(logBuilder.build()).queue();
         });
+    }
 
-        final User user = bot.getDatabase().getUserDao().getOrCreateUser(guild.getId(), event.getUser().getId());
+    private void addRoles(final Member member){
+        final User user = bot.getDatabase().getUserDao().getOrCreateUser(member.getGuild().getId(), member.getId());
         final List<Role> roles = new ArrayList<>();
         user.getRoles().forEach(roleName -> {
-            final Role role = guild.getRoleById(roleName);
-            if (role != null && PermissionUtil.canInteract(guild.getSelfMember(), role)) {
+            final Role role = member.getGuild().getRoleById(roleName);
+            if (role != null && PermissionUtil.canInteract(member.getGuild().getSelfMember(), role)) {
                 roles.add(role);
             }
         });
-        guild.modifyMemberRoles(member, roles, Collections.emptyList()).queue(success -> {
-            final Role projectRole = event.getJDA().getRoleById(PROJECT_ROLE_ID);
+        member.getGuild().modifyMemberRoles(member, roles, Collections.emptyList()).queue(success -> {
+            final Role projectRole = member.getJDA().getRoleById(PROJECT_ROLE_ID);
             if (projectRole == null) return;
             if (user.getLevel() > 2 && !member.getRoles().contains(projectRole)) {
-                guild.addRoleToMember(member, projectRole).queue();
+                member.getGuild().addRoleToMember(member, projectRole).queue();
             }
         });
     }

@@ -48,12 +48,12 @@ public class SinceCommand extends Command {
         final AtomicInteger atomicInteger = new AtomicInteger(0);
         guild.getMembers().forEach(member -> {
             if (member.hasTimeJoined() && ChronoUnit.DAYS.between(member.getTimeJoined(),
-                    LocalDateTime.now().atOffset(ZoneOffset.UTC)) > since) {
+                    LocalDateTime.now().atOffset(ZoneOffset.UTC)) >= since) {
                 atomicInteger.incrementAndGet();
             } else {
                 final Member requestedMember = guild.retrieveMemberById(member.getId(), true).complete();
                 if (ChronoUnit.DAYS.between(requestedMember.getTimeJoined(),
-                        LocalDateTime.now().atOffset(ZoneOffset.UTC)) > since) {
+                        LocalDateTime.now().atOffset(ZoneOffset.UTC)) >= since) {
                     atomicInteger.incrementAndGet();
                 }
             }

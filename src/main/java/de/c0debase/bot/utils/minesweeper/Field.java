@@ -12,7 +12,6 @@
 
 package de.c0debase.bot.utils.minesweeper;
 
-import org.jetbrains.annotations.Contract;
 
 /**
  *  @since 1.0
@@ -35,22 +34,18 @@ final class Field {
         this.y = y;
     }
 
-    @Contract(pure = true)
     boolean isBomb() {
         return bomb;
     }
 
-    @Contract(pure = true)
     int getX() {
         return x;
     }
 
-    @Contract(pure = true)
     int getY() {
         return y;
     }
 
-    @Contract(value = "null -> false", pure = true)
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof Field) {
