@@ -26,6 +26,7 @@ public class PaginationManager extends ListenerAdapter {
         for (Class<? extends Pagination> pgClass : classes) {
             try {
                 final Pagination pagination = pgClass.getDeclaredConstructor().newInstance();
+                pagination.setInstance(bot);
                 if (paginations.add(pagination)) {
                     logger.info("Registered " + pagination.getTitle() + " Pagination");
                 }

@@ -22,7 +22,7 @@ public class ChangeBannerCommand extends Command {
     @Override
     public void execute(String[] args, Message message) {
         if (this.serverBanner == null) return;
-        if (!bot.getGuild().getFeatures().contains("BANNER")) {
+        if (!message.getGuild().getFeatures().contains("BANNER")) {
             message.getTextChannel().sendMessage(
                     new EmbedBuilder()
                             .setDescription("Auf diesem Server kann aktuell kein Banner gesetzt werden!")

@@ -1,6 +1,7 @@
 package de.c0debase.bot.commands.general;
 
 import de.c0debase.bot.commands.Command;
+import de.c0debase.bot.utils.DiscordUtils;
 import de.c0debase.bot.utils.StringUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
@@ -26,10 +27,14 @@ public class SinceCommand extends Command {
         final Member member = message.getMentionedMembers().size() == 0 ? message.getMember()
                 : message.getMentionedMembers().get(0);
         final EmbedBuilder embedBuilder = getEmbed(message.getGuild(), message.getAuthor());
-        if (args.length > 0 && message.getMentionedMembers().isEmpty() && StringUtils.isInteger(args[0]) && message.getGuild().isLoaded()){
+        if (args.length > 0 && message.getMentionedMembers().isEmpty() && StringUtils.isInteger(args[0])
+                && message.getGuild().isLoaded()) {
             final Integer since = Integer.valueOf(args[0]);
-            if(since < 0){
-                embedBuilder.setDescription("!since [0-3000]");
+            if (since < 0) {
+                final Member oldestMember = DiscordUtils.getOldestMember(message.getGuild());
+                embedBuilder.setDescription("!since [0-" + ((oldestMember == null) ? "?]"
+                        : ChronoUnit.DAYS.between(member.getTimeJoined(), LocalDateTime.now().atOffset(ZoneOffset.UTC))
+                                + "]"));
             } else {
                 final Integer memberCount = getMemberCoundByDays(since, message.getGuild());
                 final float percentage = ((float) memberCount / (float) message.getGuild().getMemberCount()) * 100;
@@ -48,12 +53,12 @@ public class SinceCommand extends Command {
         final AtomicInteger atomicInteger = new AtomicInteger(0);
         guild.getMembers().forEach(member -> {
             if (member.hasTimeJoined() && ChronoUnit.DAYS.between(member.getTimeJoined(),
-                    LocalDateTime.now().atOffset(ZoneOffset.UTC)) > since) {
+                    LocalDateTime.now().atOffset(ZoneOffset.UTC)) >= since) {
                 atomicInteger.incrementAndGet();
             } else {
                 final Member requestedMember = guild.retrieveMemberById(member.getId(), true).complete();
                 if (ChronoUnit.DAYS.between(requestedMember.getTimeJoined(),
-                        LocalDateTime.now().atOffset(ZoneOffset.UTC)) > since) {
+                        LocalDateTime.now().atOffset(ZoneOffset.UTC)) >= since) {
                     atomicInteger.incrementAndGet();
                 }
             }

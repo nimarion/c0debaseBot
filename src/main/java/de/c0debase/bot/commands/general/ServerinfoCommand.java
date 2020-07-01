@@ -1,8 +1,10 @@
 package de.c0debase.bot.commands.general;
 
 import de.c0debase.bot.commands.Command;
+import de.c0debase.bot.utils.DiscordUtils;
 import de.c0debase.bot.utils.StringUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 
 import java.time.LocalDateTime;
@@ -19,6 +21,7 @@ public class ServerinfoCommand extends Command {
     @Override
     public void execute(final String[] args, final Message message) {
         final EmbedBuilder embedBuilder = getEmbed(message.getGuild(), message.getAuthor());
+        final Member oldestMember = DiscordUtils.getOldestMember(message.getGuild());
         embedBuilder.setTitle(message.getGuild().getName(), "https://c0debase.de");
         embedBuilder.setThumbnail(message.getGuild().getIconUrl());
         embedBuilder.addField("Erstellt am", message.getGuild().getTimeCreated().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")), true);
@@ -29,6 +32,9 @@ public class ServerinfoCommand extends Command {
         embedBuilder.addField("Voice Channels", String.valueOf(message.getGuild().getVoiceChannels().size()), true);
         embedBuilder.addField("Rollen", String.valueOf(message.getGuild().getRoles().size()), true);
         embedBuilder.addField("Owner", StringUtils.replaceCharacter(message.getGuild().getOwner().getUser().getName()) + "#" + message.getGuild().getOwner().getUser().getDiscriminator(), true);
+        if(oldestMember != null){
+            embedBuilder.addField("Ältestes Mitglied", StringUtils.replaceCharacter(oldestMember.getUser().getName()) + "#" + oldestMember.getUser().getDiscriminator(), true);
+        }
         embedBuilder.addField("Erstellt vor", ChronoUnit.DAYS.between(message.getGuild().getTimeCreated(), LocalDateTime.now().atOffset(ZoneOffset.UTC)) + " Tagen", true);
 
         message.getTextChannel().sendMessage(embedBuilder.build()).queue();
