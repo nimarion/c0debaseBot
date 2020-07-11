@@ -1,7 +1,10 @@
 package de.c0debase.bot.utils;
 
+import com.vdurmont.emoji.EmojiManager;
+
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.MessageReaction;
 
 public class DiscordUtils {
 
@@ -20,6 +23,14 @@ public class DiscordUtils {
             }
         }
         return oldestMember;
+    }
+
+    public static String getReaction(final MessageReaction.ReactionEmote emote) {
+        try {
+            return EmojiManager.getByUnicode(emote.getName()).getAliases().get(0);
+        } catch (Exception e) {
+            return emote.getName();
+        }
     }
     
 }
