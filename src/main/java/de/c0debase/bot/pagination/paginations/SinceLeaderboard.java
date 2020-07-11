@@ -95,7 +95,7 @@ public class SinceLeaderboard extends Pagination {
     private List<Member> getSortedMembers(final Guild guild) {
         final List<Member> members = new LinkedList<>();
         guild.getMembers().forEach(member -> {
-            if(member.getTimeJoined().equals(member.getGuild().getTimeCreated()) && !member.isOwner()){
+            if(!member.hasTimeJoined()){
                 members.add(member.getGuild().retrieveMemberById(member.getId(), true).complete());
             } else {
                 members.add(member);

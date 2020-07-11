@@ -1,14 +1,16 @@
 package de.c0debase.bot.listener.message;
 
-import com.vdurmont.emoji.EmojiManager;
 import de.c0debase.bot.Codebase;
-import net.dv8tion.jda.api.entities.MessageReaction;
+import de.c0debase.bot.utils.DiscordUtils;
 import net.dv8tion.jda.api.events.message.guild.react.GenericGuildMessageReactionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 public class MessageReactionListener extends ListenerAdapter {
 
+    private final Codebase bot;
+
     public MessageReactionListener(final Codebase bot) {
+        this.bot = bot;
         bot.getJDA().addEventListener(this);
     }
 
@@ -18,7 +20,7 @@ public class MessageReactionListener extends ListenerAdapter {
             return;
         }
         event.getChannel().retrieveMessageById(event.getMessageId()).queue(success -> {
-            final String emote = getReaction(event.getReactionEmote());
+            final String emote = DiscordUtils.getReaction(event.getReactionEmote());
             if (emote == null) {
                 return;
             }
@@ -28,13 +30,5 @@ public class MessageReactionListener extends ListenerAdapter {
             }
         });
     }
-
-    private String getReaction(final MessageReaction.ReactionEmote emote) {
-        try {
-            return EmojiManager.getByUnicode(emote.getName()).getAliases().get(0);
-        } catch (Exception e) {
-            return emote.getName();
-        }
-    }
+    
 }
-

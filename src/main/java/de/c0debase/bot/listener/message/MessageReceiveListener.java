@@ -4,15 +4,19 @@ import com.vdurmont.emoji.EmojiManager;
 import de.c0debase.bot.Codebase;
 import de.c0debase.bot.database.model.User;
 import de.c0debase.bot.utils.Constants;
+import de.c0debase.bot.utils.StringUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.jodah.expiringmap.ExpiringMap;
 
 import java.awt.*;
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -59,6 +63,10 @@ public class MessageReceiveListener extends ListenerAdapter {
 
         if (event.getChannel().getTopic() != null && event.getChannel().getTopic().contains("\uD83D\uDCCC")) {
             createPoll(event.getMessage());
+            return;
+        }
+
+        if(checkMemeMessage(event.getMessage())){
             return;
         }
 
@@ -116,6 +124,37 @@ public class MessageReceiveListener extends ListenerAdapter {
             user.setLastMessage(System.currentTimeMillis());
             bot.getDatabase().getUserDao().updateUser(user);
         }
+    }
+
+    /**
+     * 
+     * @param message
+     * @return if the message has been deleted
+     */
+    private boolean checkMemeMessage(final Message message){
+        if(!message.getTextChannel().getName().contains("meme")){
+            return false;
+        }
+        if(message.getTextChannel().getTopic() == null || !message.getTextChannel().getTopic().contains("test")){
+            return false;
+        }
+        final boolean containsURL = StringUtils.containtsURL(message.getContentStripped());
+        final boolean containsAttachment = !message.getAttachments().isEmpty();
+
+        if(!containsURL && !containsAttachment){
+           message.delete().queue(success -> {
+                final MessageEmbed messageEmbed = new EmbedBuilder().
+                setDescription("Deine Nachricht wurde gelöscht da sie kein Bild/Video oder Link enthält.").
+                setColor(message.getGuild().getSelfMember().getColor()).
+                build();
+                message.getChannel().sendMessage(messageEmbed)
+                .delay(Duration.ofSeconds(10))
+                .flatMap(Message::delete)
+                .queue(); 
+           });
+           return true;
+        } 
+        return false;
     }
 
 }
