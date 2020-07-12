@@ -7,7 +7,6 @@ import org.bson.json.JsonWriterSettings;
 
 import de.c0debase.bot.database.Database;
 import de.c0debase.bot.database.dao.LeaderboardDao;
-import de.c0debase.bot.database.dao.StarboardDao;
 import de.c0debase.bot.database.dao.UserDao;
 
 public class MongoDatabase implements Database {
@@ -17,7 +16,6 @@ public class MongoDatabase implements Database {
     // DAOs
     private final UserDao userDao;
     private final LeaderboardDao leaderboardDao;
-    private final StarboardDao starboardDao;
 
     public MongoDatabase(final String host, final int port) {
         mongoClient = new MongoClient(new ServerAddress(host, port));
@@ -27,7 +25,6 @@ public class MongoDatabase implements Database {
         // Init DAOs
         userDao = new UserImplMongo(mongoClient, jsonWriterSettings);
         leaderboardDao = new LeaderboardImplMongo(mongoClient, jsonWriterSettings);
-        starboardDao = new StarboardImplMongo(mongoClient, jsonWriterSettings);
     }
 
     @Override
@@ -43,11 +40,6 @@ public class MongoDatabase implements Database {
     @Override
     public void close() throws Exception {
         mongoClient.close();
-    }
-
-    @Override
-    public StarboardDao getStarboardDao() {
-        return starboardDao;
     }
    
 }

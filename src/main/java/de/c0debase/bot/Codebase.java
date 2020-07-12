@@ -10,7 +10,6 @@ import de.c0debase.bot.listener.guild.GuildMemberNickChangeListener;
 import de.c0debase.bot.listener.guild.GuildMemberRoleListener;
 import de.c0debase.bot.listener.message.MessageReactionListener;
 import de.c0debase.bot.listener.message.MessageReceiveListener;
-import de.c0debase.bot.listener.message.StarboardListener;
 import de.c0debase.bot.listener.message.TableFlipListener;
 import de.c0debase.bot.listener.other.GuildReadyListener;
 import de.c0debase.bot.listener.voice.GuildVoiceListener;
@@ -59,7 +58,6 @@ public class Codebase {
         new GuildVoiceListener(this);
 
         new MessageReactionListener(this);
-        new StarboardListener(this);
         new MessageReceiveListener(this);
         new TableFlipListener(this);
 
