@@ -20,7 +20,9 @@ public class GuildMemberNickChangeListener extends ListenerAdapter {
             logBuilder.setTitle("Nickname geändert");
             logBuilder.appendDescription("Neuer Nickname:" + event.getNewNickname() + "\n");
             logBuilder.appendDescription("Alter Nickname: " + event.getOldNickname());
-            logBuilder.setFooter("@" + event.getMember().getUser().getName() + "#" + event.getMember().getUser().getDiscriminator(), event.getMember().getUser().getEffectiveAvatarUrl());
+            logBuilder.setFooter(
+                    "@" + event.getMember().getUser().getName() + "#" + event.getMember().getUser().getDiscriminator(),
+                    event.getMember().getUser().getEffectiveAvatarUrl());
             channel.sendMessage(logBuilder.build()).queue();
         });
     }

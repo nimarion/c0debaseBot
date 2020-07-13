@@ -1,16 +1,16 @@
-version: '3'
+version: "3"
 services:
   bot:
     image: "biospheere/codebasebot"
     restart: always
     env_file: .env
     depends_on:
-    - db
+      - db
     links:
-    - db
+      - db
   db:
     image: "mongo"
     restart: always
     container_name: mongodb
     volumes:
-    - 'mongodb:/data/db'
+      - "mongodb:/data/db"

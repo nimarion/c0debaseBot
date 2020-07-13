@@ -12,15 +12,15 @@ public class SpongebobCommand extends Command {
 
     @Override
     public void execute(String[] args, Message message) {
-        if(args.length == 0){
+        if (args.length == 0) {
             message.getChannel().sendMessage(
                     getEmbed(message.getGuild(), message.getAuthor()).setDescription("!spongebob [msg]").build())
                     .queue();
         } else {
             StringBuilder builder = new StringBuilder();
 
-            for(char c : String.join(" ", args).toCharArray()){
-                if(Constants.RANDOM.nextBoolean()){
+            for (char c : String.join(" ", args).toCharArray()) {
+                if (Constants.RANDOM.nextBoolean()) {
                     builder.append(Character.toUpperCase(c));
                 } else {
                     builder.append(Character.toLowerCase(c));

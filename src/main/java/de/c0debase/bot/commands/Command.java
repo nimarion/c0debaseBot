@@ -7,7 +7,7 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.User;
 
 public abstract class Command {
-    
+
     protected Codebase bot = null;
 
     private final String command;
@@ -57,8 +57,7 @@ public abstract class Command {
     }
 
     public enum Category {
-        GENERAL("General", "one", "Öffentliche Commands"),
-        STAFF("Team", "two", "Commands für das Team");
+        GENERAL("General", "one", "Öffentliche Commands"), STAFF("Team", "two", "Commands für das Team");
 
         private String name;
         private String emote;

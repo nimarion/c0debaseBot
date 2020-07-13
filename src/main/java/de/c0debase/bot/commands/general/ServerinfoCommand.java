@@ -24,18 +24,22 @@ public class ServerinfoCommand extends Command {
         final Member oldestMember = DiscordUtils.getOldestMember(message.getGuild());
         embedBuilder.setTitle(message.getGuild().getName(), "https://c0debase.de");
         embedBuilder.setThumbnail(message.getGuild().getIconUrl());
-        embedBuilder.addField("Erstellt am", message.getGuild().getTimeCreated().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")), true);
+        embedBuilder.addField("Erstellt am",
+                message.getGuild().getTimeCreated().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")), true);
         embedBuilder.addField("Region", message.getGuild().getRegionRaw(), true);
         embedBuilder.addField("Mitglieder", String.valueOf(message.getGuild().getMemberCount()), true);
         embedBuilder.addField("Boosts", String.valueOf(message.getGuild().getBoostCount()), true);
         embedBuilder.addField("Text Channels", String.valueOf(message.getGuild().getTextChannels().size()), true);
         embedBuilder.addField("Voice Channels", String.valueOf(message.getGuild().getVoiceChannels().size()), true);
         embedBuilder.addField("Rollen", String.valueOf(message.getGuild().getRoles().size()), true);
-        embedBuilder.addField("Owner", StringUtils.replaceCharacter(message.getGuild().getOwner().getUser().getName()) + "#" + message.getGuild().getOwner().getUser().getDiscriminator(), true);
-        if(oldestMember != null){
-            embedBuilder.addField("Ältestes Mitglied", StringUtils.replaceCharacter(oldestMember.getUser().getName()) + "#" + oldestMember.getUser().getDiscriminator(), true);
+        embedBuilder.addField("Owner", StringUtils.replaceCharacter(message.getGuild().getOwner().getUser().getName())
+                + "#" + message.getGuild().getOwner().getUser().getDiscriminator(), true);
+        if (oldestMember != null) {
+            embedBuilder.addField("Ältestes Mitglied", StringUtils.replaceCharacter(oldestMember.getUser().getName())
+                    + "#" + oldestMember.getUser().getDiscriminator(), true);
         }
-        embedBuilder.addField("Erstellt vor", ChronoUnit.DAYS.between(message.getGuild().getTimeCreated(), LocalDateTime.now().atOffset(ZoneOffset.UTC)) + " Tagen", true);
+        embedBuilder.addField("Erstellt vor", ChronoUnit.DAYS.between(message.getGuild().getTimeCreated(),
+                LocalDateTime.now().atOffset(ZoneOffset.UTC)) + " Tagen", true);
 
         message.getTextChannel().sendMessage(embedBuilder.build()).queue();
     }

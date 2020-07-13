@@ -9,8 +9,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * @author finreinhard
- * Created on 21.10.2019.
+ * @author finreinhard Created on 21.10.2019.
  */
 public class SetColorCommand extends Command {
 
@@ -21,7 +20,9 @@ public class SetColorCommand extends Command {
     @Override
     public void execute(String[] args, Message message) {
         if (args.length > 1) {
-            message.getTextChannel().sendMessage("Du kannst nur eine Farbe auswählen, gib bitte daher auch nur ein Parameter an. Benutze !setColor <Farbe>").queue();
+            message.getTextChannel().sendMessage(
+                    "Du kannst nur eine Farbe auswählen, gib bitte daher auch nur ein Parameter an. Benutze !setColor <Farbe>")
+                    .queue();
             return;
         }
 
@@ -37,10 +38,8 @@ public class SetColorCommand extends Command {
             return;
         }
 
-        final List<Role> memberColorRoles = message.getMember().getRoles()
-                .stream()
-                .filter(role -> role.getName().startsWith("Color-"))
-                .collect(Collectors.toList());
+        final List<Role> memberColorRoles = message.getMember().getRoles().stream()
+                .filter(role -> role.getName().startsWith("Color-")).collect(Collectors.toList());
 
         message.getTextChannel().sendMessageFormat("Du hast jetzt die Farbe %s.", args[0]).queue();
         message.getGuild().modifyMemberRoles(message.getMember(), foundRoles, memberColorRoles).queue();
@@ -52,11 +51,9 @@ public class SetColorCommand extends Command {
 
         embedBuilder.appendDescription("__**Es gibt diese Farben:**__\n\n");
 
-        message.getGuild().getRoles()
-                .stream()
-                .map(Role::getName)
-                .filter(roleName -> roleName.startsWith("Color"))
-                .forEach(roleName -> embedBuilder.appendDescription(String.format("***%s***\n", roleName.replace("Color-", ""))));
+        message.getGuild().getRoles().stream().map(Role::getName).filter(roleName -> roleName.startsWith("Color"))
+                .forEach(roleName -> embedBuilder
+                        .appendDescription(String.format("***%s***\n", roleName.replace("Color-", ""))));
 
         message.getTextChannel().sendMessage(embedBuilder.build()).queue();
     }

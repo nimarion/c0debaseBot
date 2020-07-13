@@ -27,8 +27,7 @@ public class MessageReceiveListener extends ListenerAdapter {
 
     private final Codebase bot;
     private final Map<Member, String> lastMessage;
-    private final List<String> gifs = Arrays.asList(
-            "https://media.giphy.com/media/5VKbvrjxpVJCM/giphy.gif",
+    private final List<String> gifs = Arrays.asList("https://media.giphy.com/media/5VKbvrjxpVJCM/giphy.gif",
             "https://media.giphy.com/media/4cUCFvwICarHq/giphy.gif",
             "https://media.giphy.com/media/1ym5LJ17vp77BL8X5O/giphy.gif",
             "https://media.giphy.com/media/KI9oNS4JBemyI/giphy.gif",
@@ -41,8 +40,7 @@ public class MessageReceiveListener extends ListenerAdapter {
             "https://media.giphy.com/media/aLdiZJmmx4OVW/giphy.gif",
             "https://media.giphy.com/media/qPcX2mzk3NmjC/giphy.gif",
             "https://media.giphy.com/media/kjCFOUT3ZIlAA/giphy.gif",
-            "https://media.giphy.com/media/ZisaVxhbs1iDK/giphy.gif"
-    );
+            "https://media.giphy.com/media/ZisaVxhbs1iDK/giphy.gif");
 
     private static final long DISCUSSION_CHANNEL_ID = 361606003386613761L;
 
@@ -65,12 +63,14 @@ public class MessageReceiveListener extends ListenerAdapter {
             return;
         }
 
-        if(checkMemeMessage(event.getMessage())){
+        if (checkMemeMessage(event.getMessage())) {
             return;
         }
 
         final Member member = event.getMember();
-        if (lastMessage.containsKey(member) && lastMessage.get(member).equalsIgnoreCase(event.getMessage().getContentRaw()) && event.getMessage().getAttachments().isEmpty()) {
+        if (lastMessage.containsKey(member)
+                && lastMessage.get(member).equalsIgnoreCase(event.getMessage().getContentRaw())
+                && event.getMessage().getAttachments().isEmpty()) {
             event.getMessage().delete().queue();
             return;
         }
@@ -90,10 +90,11 @@ public class MessageReceiveListener extends ListenerAdapter {
         event.getChannel().sendMessage(embedBuilder.build()).queue();
     }
 
-    private void createPoll(final Message message){
+    private void createPoll(final Message message) {
         final EmbedBuilder embedBuilder = new EmbedBuilder();
         embedBuilder.setColor(Color.GREEN);
-        embedBuilder.setFooter("@" + message.getAuthor().getName() + "#" + message.getAuthor().getDiscriminator(), message.getAuthor().getEffectiveAvatarUrl());
+        embedBuilder.setFooter("@" + message.getAuthor().getName() + "#" + message.getAuthor().getDiscriminator(),
+                message.getAuthor().getEffectiveAvatarUrl());
         embedBuilder.setTitle("Poll");
         embedBuilder.setDescription(message.getContentDisplay());
         message.delete().queue();
@@ -103,21 +104,25 @@ public class MessageReceiveListener extends ListenerAdapter {
         });
     }
 
-    private void updateXP(final Message message){
-        final User user = bot.getDatabase().getUserDao().getOrCreateUser(message.getGuild().getId(), message.getAuthor().getId());
+    private void updateXP(final Message message) {
+        final User user = bot.getDatabase().getUserDao().getOrCreateUser(message.getGuild().getId(),
+                message.getAuthor().getId());
         final float time = (System.currentTimeMillis() - user.getLastMessage()) / 1000;
         if (time >= 50.0f) {
             if (user.addXP(50)) {
                 final EmbedBuilder levelUpEmbed = new EmbedBuilder();
                 final int newLevel = user.getLevel();
                 levelUpEmbed.appendDescription(message.getAuthor().getAsMention() + " ist nun Level " + newLevel);
-                if(message.getIdLong() != DISCUSSION_CHANNEL_ID){
+                if (message.getIdLong() != DISCUSSION_CHANNEL_ID) {
                     levelUpEmbed.setImage(gifs.get(Constants.RANDOM.nextInt(gifs.size())));
                 }
 
                 message.getTextChannel().sendMessage(levelUpEmbed.build()).queue();
-                if (newLevel > 2 && !message.getMember().getRoles().contains(message.getJDA().getRoleById(PROJECT_ROLE_ID))) {
-                    message.getGuild().addRoleToMember(message.getMember(), message.getJDA().getRoleById(PROJECT_ROLE_ID)).queue();
+                if (newLevel > 2
+                        && !message.getMember().getRoles().contains(message.getJDA().getRoleById(PROJECT_ROLE_ID))) {
+                    message.getGuild()
+                            .addRoleToMember(message.getMember(), message.getJDA().getRoleById(PROJECT_ROLE_ID))
+                            .queue();
                 }
             }
             user.setLastMessage(System.currentTimeMillis());
@@ -130,29 +135,26 @@ public class MessageReceiveListener extends ListenerAdapter {
      * @param message
      * @return if the message has been deleted
      */
-    private boolean checkMemeMessage(final Message message){
-        if(!message.getTextChannel().getName().contains("meme")){
+    private boolean checkMemeMessage(final Message message) {
+        if (!message.getTextChannel().getName().contains("meme")) {
             return false;
         }
-        if(message.getTextChannel().getTopic() == null || !message.getTextChannel().getTopic().contains("test")){
+        if (message.getTextChannel().getTopic() == null || !message.getTextChannel().getTopic().contains("test")) {
             return false;
         }
         final boolean containsURL = StringUtils.containtsURL(message.getContentStripped());
         final boolean containsAttachment = !message.getAttachments().isEmpty();
 
-        if(!containsURL && !containsAttachment){
-           message.delete().queue(success -> {
-                final MessageEmbed messageEmbed = new EmbedBuilder().
-                setDescription("Deine Nachricht wurde gelöscht da sie kein Bild/Video oder Link enthält.").
-                setColor(message.getGuild().getSelfMember().getColor()).
-                build();
-                message.getChannel().sendMessage(messageEmbed)
-                .delay(Duration.ofSeconds(10))
-                .flatMap(Message::delete)
-                .queue(); 
-           });
-           return true;
-        } 
+        if (!containsURL && !containsAttachment) {
+            message.delete().queue(success -> {
+                final MessageEmbed messageEmbed = new EmbedBuilder()
+                        .setDescription("Deine Nachricht wurde gelöscht da sie kein Bild/Video oder Link enthält.")
+                        .setColor(message.getGuild().getSelfMember().getColor()).build();
+                message.getChannel().sendMessage(messageEmbed).delay(Duration.ofSeconds(10)).flatMap(Message::delete)
+                        .queue();
+            });
+            return true;
+        }
         return false;
     }
 

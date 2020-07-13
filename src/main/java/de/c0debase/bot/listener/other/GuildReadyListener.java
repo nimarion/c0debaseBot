@@ -16,12 +16,12 @@ public class GuildReadyListener extends ListenerAdapter {
         this.bot = bot;
     }
 
-
     @Override
     public void onGuildReady(GuildReadyEvent event) {
         for (VoiceChannel voiceChannel : event.getGuild().getVoiceChannels()) {
             final String name = ("temp-" + voiceChannel.getName().toLowerCase()).replaceAll("\\s+", "-");
-            final TextChannel textChannel = voiceChannel.getGuild().getTextChannelsByName(name, true).isEmpty() ? null : voiceChannel.getGuild().getTextChannelsByName(name, true).get(0);
+            final TextChannel textChannel = voiceChannel.getGuild().getTextChannelsByName(name, true).isEmpty() ? null
+                    : voiceChannel.getGuild().getTextChannelsByName(name, true).get(0);
             if (textChannel == null) {
                 bot.getTempchannels().put(voiceChannel.getId(), new Tempchannel());
             } else {

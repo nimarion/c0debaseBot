@@ -12,7 +12,7 @@ public class StringUtils {
 
     static {
         ESCAPE_CHARACTERS = Arrays.asList('*', '_', '`', '~');
-        URL_REGEX =  "((http:\\/\\/|https:\\/\\/)?(www.)?(([a-zA-Z0-9-]){2,}\\.){1,4}([a-zA-Z]){2,6}(\\/([a-zA-Z-_\\/\\.0-9#:?=&;,]*)?)?)";
+        URL_REGEX = "((http:\\/\\/|https:\\/\\/)?(www.)?(([a-zA-Z0-9-]){2,}\\.){1,4}([a-zA-Z]){2,6}(\\/([a-zA-Z-_\\/\\.0-9#:?=&;,]*)?)?)";
     }
 
     /**
@@ -35,17 +35,17 @@ public class StringUtils {
      * @param content The message to check
      * @return If the given message contains a link
      */
-    public static boolean containtsURL(final String content){
+    public static boolean containtsURL(final String content) {
         final Pattern p = Pattern.compile(URL_REGEX);
         Matcher m = p.matcher(content);
         return m.find();
     }
 
-    public static boolean isInteger(final String input){
+    public static boolean isInteger(final String input) {
         try {
             Integer.valueOf(input);
             return true;
-        } catch (NumberFormatException ex){
+        } catch (NumberFormatException ex) {
             return false;
         }
     }

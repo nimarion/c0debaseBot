@@ -18,7 +18,6 @@ public class PaginationManager extends ListenerAdapter {
     private static final Logger logger = LoggerFactory.getLogger(PaginationManager.class);
     private Set<Pagination> paginations;
 
-
     public PaginationManager(final Codebase bot) {
         this.paginations = new HashSet<>();
         final Set<Class<? extends Pagination>> classes = new Reflections("de.c0debase.bot.pagination.paginations")
@@ -69,7 +68,9 @@ public class PaginationManager extends ListenerAdapter {
 
     public Pagination getPaginationByClass(Class<? extends Pagination> paginationClass) {
         for (Pagination pagination : paginations) {
-            if (pagination.getClass().equals(paginationClass)) return pagination;
+            if (pagination.getClass().equals(paginationClass)) {
+                return pagination;
+            }
         }
         return null;
     }

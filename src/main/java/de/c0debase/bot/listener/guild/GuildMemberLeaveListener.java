@@ -15,7 +15,9 @@ public class GuildMemberLeaveListener extends ListenerAdapter {
     public void onGuildMemberRemove(GuildMemberRemoveEvent event) {
         event.getGuild().getTextChannelsByName("log", true).forEach(channel -> {
             final EmbedBuilder embedBuilder = new EmbedBuilder();
-            embedBuilder.setFooter("@" + event.getMember().getUser().getName() + "#" + event.getMember().getUser().getDiscriminator(), event.getMember().getUser().getEffectiveAvatarUrl());
+            embedBuilder.setFooter(
+                    "@" + event.getMember().getUser().getName() + "#" + event.getMember().getUser().getDiscriminator(),
+                    event.getMember().getUser().getEffectiveAvatarUrl());
             embedBuilder.appendDescription(event.getMember().getEffectiveName() + " hat c0debase verlassen");
             channel.sendMessage(embedBuilder.build()).queue();
         });

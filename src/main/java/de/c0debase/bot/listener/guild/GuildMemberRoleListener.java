@@ -17,7 +17,8 @@ public class GuildMemberRoleListener extends ListenerAdapter {
 
     @Override
     public void onGuildMemberRoleAdd(final GuildMemberRoleAddEvent event) {
-        final User user = bot.getDatabase().getUserDao().getOrCreateUser(event.getGuild().getId(), event.getUser().getId());
+        final User user = bot.getDatabase().getUserDao().getOrCreateUser(event.getGuild().getId(),
+                event.getUser().getId());
         event.getRoles().forEach(role -> {
             if (role != null && !user.getRoles().contains(role.getId())) {
                 user.getRoles().add(role.getId());
@@ -28,7 +29,8 @@ public class GuildMemberRoleListener extends ListenerAdapter {
 
     @Override
     public void onGuildMemberRoleRemove(final GuildMemberRoleRemoveEvent event) {
-        final User user = bot.getDatabase().getUserDao().getOrCreateUser(event.getGuild().getId(), event.getUser().getId());
+        final User user = bot.getDatabase().getUserDao().getOrCreateUser(event.getGuild().getId(),
+                event.getUser().getId());
         event.getRoles().forEach(role -> {
             if (role != null) {
                 user.getRoles().remove(role.getId());

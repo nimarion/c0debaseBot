@@ -12,7 +12,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class Pagination {
 
-
     private Codebase bot = null;
 
     private String title;

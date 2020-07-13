@@ -28,7 +28,8 @@ public class SinceLeaderboard extends Pagination {
     @Override
     public void update(Message success, MessageEmbed messageEmbed, String emote) {
 
-        final String[] strings = messageEmbed.getFooter().getText().replace("Seite: (", "").replace(")", "").replace(" Sortierung: ", "/").split("/");
+        final String[] strings = messageEmbed.getFooter().getText().replace("Seite: (", "").replace(")", "")
+                .replace(" Sortierung: ", "/").split("/");
 
         int current = Integer.parseInt(strings[0]);
         if (emote.equalsIgnoreCase("arrow_left") && current == 1) {
@@ -40,7 +41,6 @@ public class SinceLeaderboard extends Pagination {
         final EmbedBuilder embedBuilder = new EmbedBuilder();
         embedBuilder.setColor(success.getGuild().getSelfMember().getColor());
         embedBuilder.setTitle(getTitle());
-
 
         if (max != current) {
             if (emote.equalsIgnoreCase("arrow_right")) {
@@ -54,7 +54,9 @@ public class SinceLeaderboard extends Pagination {
 
         if (current > 0) {
             buildList(embedBuilder, current, descending, success.getGuild());
-            embedBuilder.setFooter("Seite: (" + current + "/" + max + ") Sortierung: " + (descending ? "absteigend" : "aufsteigend"), success.getGuild().getIconUrl());
+            embedBuilder.setFooter(
+                    "Seite: (" + current + "/" + max + ") Sortierung: " + (descending ? "absteigend" : "aufsteigend"),
+                    success.getGuild().getIconUrl());
             success.editMessage(embedBuilder.build()).queue();
         }
     }
@@ -67,7 +69,8 @@ public class SinceLeaderboard extends Pagination {
 
         buildList(embedBuilder, 1, descending, textChannel.getGuild());
 
-        embedBuilder.setFooter("Seite: (1/" + ((textChannel.getGuild().getMembers().size() / getPageSize()) + 1) + ") Sortierung: " + (descending ? "absteigend" : "aufsteigend"), textChannel.getGuild().getIconUrl());
+        embedBuilder.setFooter("Seite: (1/" + ((textChannel.getGuild().getMembers().size() / getPageSize()) + 1)
+                + ") Sortierung: " + (descending ? "absteigend" : "aufsteigend"), textChannel.getGuild().getIconUrl());
 
         textChannel.sendMessage(embedBuilder.build()).queue((Message success) -> {
             success.addReaction(EmojiManager.getForAlias("arrow_left").getUnicode()).queue();
@@ -78,13 +81,20 @@ public class SinceLeaderboard extends Pagination {
     @Override
     public void buildList(EmbedBuilder embedBuilder, int page, boolean descending, Guild guild) {
         final List<Member> users = getSortedMembers(guild);
-        if (!descending) Collections.reverse(users);
+        if (!descending)
+            Collections.reverse(users);
         for (Map.Entry<Integer, Member> entry : getPage(page, users, descending).entrySet()) {
             Member member = entry.getValue();
             int count = entry.getKey();
             if (member != null) {
-                long days = ChronoUnit.DAYS.between(member.getTimeJoined(), LocalDateTime.now().atOffset(ZoneOffset.UTC));
-                embedBuilder.appendDescription("`" + count + ")` " + StringUtils.replaceCharacter(member.getEffectiveName()) + "#" + member.getUser().getDiscriminator() + " (Beitritt am " + member.getTimeJoined().toInstant().atOffset(ZoneOffset.UTC).format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")) + " / Seit " + days + " Tag" + (days == 1 ? "" : "en") + ")\n");
+                long days = ChronoUnit.DAYS.between(member.getTimeJoined(),
+                        LocalDateTime.now().atOffset(ZoneOffset.UTC));
+                embedBuilder
+                        .appendDescription("`" + count + ")` " + StringUtils.replaceCharacter(member.getEffectiveName())
+                                + "#" + member.getUser().getDiscriminator() + " (Beitritt am "
+                                + member.getTimeJoined().toInstant().atOffset(ZoneOffset.UTC)
+                                        .format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"))
+                                + " / Seit " + days + " Tag" + (days == 1 ? "" : "en") + ")\n");
             } else {
                 embedBuilder.appendDescription("`" + count + ")` undefined#0000\n");
             }
@@ -95,13 +105,14 @@ public class SinceLeaderboard extends Pagination {
     private List<Member> getSortedMembers(final Guild guild) {
         final List<Member> members = new LinkedList<>();
         guild.getMembers().forEach(member -> {
-            if(!member.hasTimeJoined()){
+            if (!member.hasTimeJoined()) {
                 members.add(member.getGuild().retrieveMemberById(member.getId(), true).complete());
             } else {
                 members.add(member);
             }
         });
-        members.sort((m1, m2) -> Long.compare(m2.getTimeJoined().toInstant().toEpochMilli(), m1.getTimeJoined().toInstant().toEpochMilli()));
+        members.sort((m1, m2) -> Long.compare(m2.getTimeJoined().toInstant().toEpochMilli(),
+                m1.getTimeJoined().toInstant().toEpochMilli()));
         return members;
     }
 }

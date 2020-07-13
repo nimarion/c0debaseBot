@@ -12,7 +12,7 @@ import de.c0debase.bot.database.dao.UserDao;
 public class MongoDatabase implements Database {
 
     private final MongoClient mongoClient;
-    
+
     // DAOs
     private final UserDao userDao;
     private final LeaderboardDao leaderboardDao;
@@ -34,12 +34,12 @@ public class MongoDatabase implements Database {
 
     @Override
     public LeaderboardDao getLeaderboardDao() {
-       return leaderboardDao;
+        return leaderboardDao;
     }
 
     @Override
     public void close() throws Exception {
         mongoClient.close();
     }
-   
+
 }

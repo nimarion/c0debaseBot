@@ -33,8 +33,8 @@ public class SinceCommand extends Command {
             if (since < 0) {
                 final Member oldestMember = DiscordUtils.getOldestMember(message.getGuild());
                 embedBuilder.setDescription("!since [0-" + ((oldestMember == null) ? "?]"
-                        : ChronoUnit.DAYS.between(oldestMember.getTimeJoined(), LocalDateTime.now().atOffset(ZoneOffset.UTC))
-                                + "]"));
+                        : ChronoUnit.DAYS.between(oldestMember.getTimeJoined(),
+                                LocalDateTime.now().atOffset(ZoneOffset.UTC)) + "]"));
             } else {
                 final Integer memberCount = getMemberCoundByDays(since, message.getGuild());
                 final float percentage = ((float) memberCount / (float) message.getGuild().getMemberCount()) * 100;

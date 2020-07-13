@@ -17,7 +17,10 @@ public class ClearCommand extends Command {
     public void execute(final String[] args, final Message message) {
         if (args.length == 0) {
             final EmbedBuilder embedBuilder = new EmbedBuilder();
-            embedBuilder.setFooter("@" + message.getMember().getUser().getName() + "#" + message.getMember().getUser().getDiscriminator(), message.getMember().getUser().getEffectiveAvatarUrl());
+            embedBuilder.setFooter(
+                    "@" + message.getMember().getUser().getName() + "#"
+                            + message.getMember().getUser().getDiscriminator(),
+                    message.getMember().getUser().getEffectiveAvatarUrl());
             embedBuilder.setColor(message.getGuild().getSelfMember().getColor());
             embedBuilder.appendDescription("!clear <Amount>");
             message.getTextChannel().sendMessage(embedBuilder.build()).queue();
@@ -33,7 +36,10 @@ public class ClearCommand extends Command {
             message.getTextChannel().deleteMessages(messages).queue();
 
             final EmbedBuilder embedBuilder = new EmbedBuilder();
-            embedBuilder.setFooter("@" + message.getMember().getUser().getName() + "#" + message.getMember().getUser().getDiscriminator(), message.getMember().getUser().getEffectiveAvatarUrl());
+            embedBuilder.setFooter(
+                    "@" + message.getMember().getUser().getName() + "#"
+                            + message.getMember().getUser().getDiscriminator(),
+                    message.getMember().getUser().getEffectiveAvatarUrl());
             embedBuilder.setColor(message.getGuild().getSelfMember().getColor());
             embedBuilder.appendDescription("Es wurden **" + (i) + "** Nachrichten gelöscht");
             message.getTextChannel().sendMessage(embedBuilder.build()).queue();

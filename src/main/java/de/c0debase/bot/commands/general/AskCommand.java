@@ -20,7 +20,8 @@ public class AskCommand extends Command {
         embedBuilder.appendDescription("3. Sei nicht sparsam und gib so viele Infos wie möglich.\n");
         embedBuilder.appendDescription("4. Schick Deinen Code ruhig mit.\n");
         embedBuilder.appendDescription("5. Lies Dir nochmal Deine Nachricht durch.\n\n");
-        embedBuilder.appendDescription("[Mehr zum Thema findest Du hier.](https://gist.github.com/finreinhard/b842b690255bb80d929f8a5467d75597)");
+        embedBuilder.appendDescription(
+                "[Mehr zum Thema findest Du hier.](https://gist.github.com/finreinhard/b842b690255bb80d929f8a5467d75597)");
 
         message.getTextChannel().sendMessage(embedBuilder.build()).queue();
     }

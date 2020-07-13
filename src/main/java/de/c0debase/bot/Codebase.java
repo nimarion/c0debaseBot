@@ -79,12 +79,14 @@ public class Codebase {
 
     /***
      * Connect to the database
+     * 
      * @return The {@link Database} instance
      * @throws Exception
      */
     private Database initializeDataManager() throws Exception {
         try {
-            return new MongoDatabase(System.getenv("MONGO_HOST") == null ? "localhost" : System.getenv("MONGO_HOST"), System.getenv("MONGO_PORT") == null ? 27017 : Integer.valueOf(System.getenv("MONGO_PORT")));
+            return new MongoDatabase(System.getenv("MONGO_HOST") == null ? "localhost" : System.getenv("MONGO_HOST"),
+                    System.getenv("MONGO_PORT") == null ? 27017 : Integer.valueOf(System.getenv("MONGO_PORT")));
         } catch (final Exception exception) {
             logger.error("Encountered exception while initializing Database-Connection!");
             throw exception;

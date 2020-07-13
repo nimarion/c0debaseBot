@@ -12,5 +12,5 @@ public interface LeaderboardDao {
      * @return A List with all User objects in the database sorted by level and xp
      */
     List<User> getLeaderboard(String guildId);
-    
+
 }

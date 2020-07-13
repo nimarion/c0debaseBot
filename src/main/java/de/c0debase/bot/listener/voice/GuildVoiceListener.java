@@ -20,19 +20,22 @@ public class GuildVoiceListener extends ListenerAdapter {
 
     @Override
     public void onGuildVoiceJoin(final GuildVoiceJoinEvent event) {
-        bot.getTempchannels().get(event.getChannelJoined().getId()).onTempchannelJoin(event.getChannelJoined(), event.getMember());
+        bot.getTempchannels().get(event.getChannelJoined().getId()).onTempchannelJoin(event.getChannelJoined(),
+                event.getMember());
     }
-
 
     @Override
     public void onGuildVoiceMove(final GuildVoiceMoveEvent event) {
-        bot.getTempchannels().get(event.getChannelJoined().getId()).onTempchannelJoin(event.getChannelJoined(), event.getMember());
-        bot.getTempchannels().get(event.getChannelLeft().getId()).onTempchannelLeave(event.getChannelLeft(), event.getMember());
+        bot.getTempchannels().get(event.getChannelJoined().getId()).onTempchannelJoin(event.getChannelJoined(),
+                event.getMember());
+        bot.getTempchannels().get(event.getChannelLeft().getId()).onTempchannelLeave(event.getChannelLeft(),
+                event.getMember());
     }
 
     @Override
     public void onGuildVoiceLeave(final GuildVoiceLeaveEvent event) {
-        bot.getTempchannels().get(event.getChannelLeft().getId()).onTempchannelLeave(event.getChannelLeft(), event.getMember());
+        bot.getTempchannels().get(event.getChannelLeft().getId()).onTempchannelLeave(event.getChannelLeft(),
+                event.getMember());
     }
 
     @Override

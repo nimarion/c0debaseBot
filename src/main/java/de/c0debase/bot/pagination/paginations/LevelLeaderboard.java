@@ -25,7 +25,8 @@ public class LevelLeaderboard extends Pagination {
     @Override
     public void update(Message success, MessageEmbed messageEmbed, String emote) {
 
-        final String[] strings = messageEmbed.getFooter().getText().replace("Seite: (", "").replace(")", "").replace(" Sortierung: ", "/").split("/");
+        final String[] strings = messageEmbed.getFooter().getText().replace("Seite: (", "").replace(")", "")
+                .replace(" Sortierung: ", "/").split("/");
 
         int current = Integer.parseInt(strings[0]);
         if (emote.equalsIgnoreCase("arrow_left") && current == 1) {
@@ -37,7 +38,6 @@ public class LevelLeaderboard extends Pagination {
         final EmbedBuilder embedBuilder = new EmbedBuilder();
         embedBuilder.setColor(success.getGuild().getSelfMember().getColor());
         embedBuilder.setTitle(getTitle());
-
 
         if (max != current) {
             if (emote.equalsIgnoreCase("arrow_right")) {
@@ -51,7 +51,9 @@ public class LevelLeaderboard extends Pagination {
 
         if (current > 0) {
             buildList(embedBuilder, current, descending, success.getGuild());
-            embedBuilder.setFooter("Seite: (" + current + "/" + max + ") Sortierung: " + (descending ? "absteigend" : "aufsteigend"), success.getGuild().getIconUrl());
+            embedBuilder.setFooter(
+                    "Seite: (" + current + "/" + max + ") Sortierung: " + (descending ? "absteigend" : "aufsteigend"),
+                    success.getGuild().getIconUrl());
             success.editMessage(embedBuilder.build()).queue();
         }
     }
@@ -64,7 +66,8 @@ public class LevelLeaderboard extends Pagination {
 
         buildList(embedBuilder, 1, descending, textChannel.getGuild());
 
-        embedBuilder.setFooter("Seite: (1/" + ((textChannel.getGuild().getMembers().size() / getPageSize()) + 1) + ") Sortierung: " + (descending ? "absteigend" : "aufsteigend"), textChannel.getGuild().getIconUrl());
+        embedBuilder.setFooter("Seite: (1/" + ((textChannel.getGuild().getMembers().size() / getPageSize()) + 1)
+                + ") Sortierung: " + (descending ? "absteigend" : "aufsteigend"), textChannel.getGuild().getIconUrl());
 
         textChannel.sendMessage(embedBuilder.build()).queue((Message success) -> {
             success.addReaction(EmojiManager.getForAlias("arrow_left").getUnicode()).queue();
@@ -75,15 +78,21 @@ public class LevelLeaderboard extends Pagination {
     @Override
     public void buildList(EmbedBuilder embedBuilder, int page, boolean descending, Guild guild) {
         final List<User> users = getBot().getDatabase().getLeaderboardDao().getLeaderboard(guild.getId());
-        if (!descending) Collections.reverse(users);
+        if (!descending) {
+            Collections.reverse(users);
+        }
         for (Map.Entry<Integer, User> entry : getPage(page, users, descending).entrySet()) {
             User user = entry.getValue();
             int count = entry.getKey();
             final Member member = guild.getMemberById(Long.valueOf(user.getUserID()));
             if (member != null) {
-                embedBuilder.appendDescription("`" + count + ")` " + StringUtils.replaceCharacter(member.getEffectiveName()) + "#" + member.getUser().getDiscriminator() + " (Lvl." + user.getLevel() + "/Xp." + user.getXp() + ")\n");
+                embedBuilder
+                        .appendDescription("`" + count + ")` " + StringUtils.replaceCharacter(member.getEffectiveName())
+                                + "#" + member.getUser().getDiscriminator() + " (Lvl." + user.getLevel() + "/Xp."
+                                + user.getXp() + ")\n");
             } else {
-                embedBuilder.appendDescription("`" + count + ")` undefined#0000 (Lvl." + user.getLevel() + "/Xp." + user.getXp() + ")\n");
+                embedBuilder.appendDescription(
+                        "`" + count + ")` undefined#0000 (Lvl." + user.getLevel() + "/Xp." + user.getXp() + ")\n");
             }
             count++;
         }

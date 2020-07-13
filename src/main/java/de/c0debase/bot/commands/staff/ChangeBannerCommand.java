@@ -11,7 +11,8 @@ import java.awt.*;
 
 public class ChangeBannerCommand extends Command {
 
-    // Somehow a bad workaround, I don't have any way to include them other than to extend the interface (which I didn't necessarily want)
+    // Somehow a bad workaround, I don't have any way to include them other than to
+    // extend the interface (which I didn't necessarily want)
     // or to create a static singleton instance ._.
     private ServerBanner serverBanner;
 
@@ -21,30 +22,29 @@ public class ChangeBannerCommand extends Command {
 
     @Override
     public void execute(String[] args, Message message) {
-        if (this.serverBanner == null) return;
+        if (this.serverBanner == null) {
+            return;
+        }
         if (!message.getGuild().getFeatures().contains("BANNER")) {
-            message.getTextChannel().sendMessage(
-                    new EmbedBuilder()
+            message.getTextChannel()
+                    .sendMessage(new EmbedBuilder()
                             .setDescription("Auf diesem Server kann aktuell kein Banner gesetzt werden!")
-                            .setColor(Color.RED)
-                            .build()
-            ).queue();
+                            .setColor(Color.RED).build())
+                    .queue();
             return;
         }
         this.serverBanner.run();
-        message.getTextChannel().sendMessage(
-                new EmbedBuilder()
-                        .setTitle("Erledigt!")
+        message.getTextChannel()
+                .sendMessage(new EmbedBuilder().setTitle("Erledigt!")
                         .setDescription("Force-Update des Banners wurde ausgeführt!")
-                        .setImage(message.getGuild().getBannerUrl())
-                        .setColor(Color.GREEN)
-                        .build()
-        ).queue();
+                        .setImage(message.getGuild().getBannerUrl()).setColor(Color.GREEN).build())
+                .queue();
     }
 
     /**
-     * Cannot initialize the {@link ServerBanner} in constructor, because {@link Command#getBot()} is null at this moment.
-     * So we override the setInstance method to initialize the banner service here.
+     * Cannot initialize the {@link ServerBanner} in constructor, because
+     * {@link Command#getBot()} is null at this moment. So we override the
+     * setInstance method to initialize the banner service here.
      *
      * @param instance {@link Codebase} instance.
      */

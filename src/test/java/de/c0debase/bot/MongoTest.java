@@ -17,19 +17,19 @@ public class MongoTest {
     private Database database;
 
     @Before
-    public void setUp(){
+    public void setUp() {
         database = new MongoDatabase("localhost", 27017);
     }
 
     @Test
-    public void testUserCreationWithGetter(){
+    public void testUserCreationWithGetter() {
         final User user = database.getUserDao().getOrCreateUser("123456789", "987654321");
         assertEquals(user.getLevel(), 0);
         assertEquals(user.getXp(), 0);
     }
 
     @Test
-    public void testXpAddition(){
+    public void testXpAddition() {
         final User user = database.getUserDao().getUser("123456789", "987654321");
         assertNotNull(user);
         user.addXP(100);
@@ -38,7 +38,7 @@ public class MongoTest {
     }
 
     @Test
-    public void testDeletion(){
+    public void testDeletion() {
         database.getUserDao().deleteUser("123456789", "987654321");
         assertNull(database.getUserDao().getUser("123456789", "987654321"));
     }

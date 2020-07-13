@@ -33,7 +33,9 @@ public class ServerBanner implements Runnable {
      * @param icon The new server banner.
      */
     public void setServerBanner(final Icon icon) {
-        if (icon == null) return;
+        if (icon == null) {
+            return;
+        }
         bot.getJDA().getGuilds().forEach(guild -> {
             if (guild.getFeatures().contains("BANNER")) {
                 guild.getManager().setBanner(icon).queue();
@@ -64,11 +66,14 @@ public class ServerBanner implements Runnable {
     }
 
     /**
-     * Method is called by {@link ServerBannerScheduler#start(ServerBanner)} to frequently update the guilds banner.
+     * Method is called by {@link ServerBannerScheduler#start(ServerBanner)} to
+     * frequently update the guilds banner.
      */
     @Override
     public void run() {
-        if (this.unsplashUrl == null) return;
+        if (this.unsplashUrl == null) {
+            return;
+        }
         this.setServerBanner(getRandomUnsplashPicture());
     }
 }

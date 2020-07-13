@@ -24,14 +24,15 @@ public class LeaderboardImplMongo implements LeaderboardDao {
 
     private final MongoCollection<Document> userCollection;
     private final JsonWriterSettings jsonWriterSettings;
-    
+
     private final Map<String, List<User>> leaderboardCache;
 
-    public LeaderboardImplMongo(final MongoClient mongoClient, final JsonWriterSettings jsonWriterSettings){
+    public LeaderboardImplMongo(final MongoClient mongoClient, final JsonWriterSettings jsonWriterSettings) {
         this.userCollection = mongoClient.getDatabase("codebase").getCollection("user");
         this.jsonWriterSettings = jsonWriterSettings;
 
-        leaderboardCache = ExpiringMap.builder().expiration(2, TimeUnit.MINUTES).expirationPolicy(ExpirationPolicy.ACCESSED).build();
+        leaderboardCache = ExpiringMap.builder().expiration(2, TimeUnit.MINUTES)
+                .expirationPolicy(ExpirationPolicy.ACCESSED).build();
     }
 
     @Override
@@ -40,23 +41,23 @@ public class LeaderboardImplMongo implements LeaderboardDao {
             return leaderboardCache.get(guildId);
         }
         final List<User> users = new ArrayList<>();
-        final FindIterable<Document> documentIterable = userCollection
-                .find(Filters.eq("guildID", guildId))
+        final FindIterable<Document> documentIterable = userCollection.find(Filters.eq("guildID", guildId))
                 .sort(Sorts.descending("level", "xp"));
 
         for (Document document : documentIterable) {
-                users.add(Constants.GSON.fromJson(document.toJson(jsonWriterSettings), User.class));
+            users.add(Constants.GSON.fromJson(document.toJson(jsonWriterSettings), User.class));
         }
         users.sort((o1, o2) -> {
             if (o1.getLevel() != o2.getLevel()) {
                 return Double.compare(o2.getLevel(), o1.getLevel());
             } else {
-                return Double.compare((o2.getXp() + o2.getLevel() + (1000 * o2.getLevel() * 1.2)), (o1.getXp() + o1.getLevel() + (1000 * o1.getLevel() * 1.2)));
+                return Double.compare((o2.getXp() + o2.getLevel() + (1000 * o2.getLevel() * 1.2)),
+                        (o1.getXp() + o1.getLevel() + (1000 * o1.getLevel() * 1.2)));
             }
         });
 
         leaderboardCache.put(guildId, users);
         return users;
     }
-    
+
 }

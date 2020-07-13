@@ -47,13 +47,14 @@ public class CommandManager extends ListenerAdapter {
             return;
         }
         final String content = event.getMessage().getContentRaw();
-        
-        if (content.startsWith("!") && (event.getChannel().getName().equals("bot") || content.startsWith("!clear") || content.startsWith("!ask") || content.startsWith("!tag"))) {
+
+        if (content.startsWith("!") && (event.getChannel().getName().equals("bot") || content.startsWith("!clear")
+                || content.startsWith("!ask") || content.startsWith("!tag"))) {
             final String[] arguments = content.split(" ");
             final String input = arguments[0].replaceFirst("!", "");
             for (Command command : this.availableCommands) {
-                if (command.getCategory().equals(Command.Category.STAFF) && !event.getMember().getRoles()
-                        .contains(event.getJDA().getRoleById(TEAM_ROLE_ID))) {
+                if (command.getCategory().equals(Command.Category.STAFF)
+                        && !event.getMember().getRoles().contains(event.getJDA().getRoleById(TEAM_ROLE_ID))) {
                     continue;
                 }
 
