@@ -12,10 +12,9 @@
 
 package de.c0debase.bot.utils.minesweeper;
 
-
 /**
- *  @since 1.0
- *  @author NurMarvin
+ * @since 1.0
+ * @author NurMarvin
  */
 final class Field {
     private final boolean bomb;
@@ -24,25 +23,26 @@ final class Field {
 
     /**
      * A field of the {@link Board}
+     * 
      * @param bomb Is the field a bomb?
-     * @param x The X coordinate of the field
-     * @param y The Y coordinate of the field
+     * @param x    The X coordinate of the field
+     * @param y    The Y coordinate of the field
      */
-    Field(boolean bomb, int x, int y) {
+    protected Field(boolean bomb, int x, int y) {
         this.bomb = bomb;
         this.x = x;
         this.y = y;
     }
 
-    boolean isBomb() {
+    protected boolean isBomb() {
         return bomb;
     }
 
-    int getX() {
+    protected int getX() {
         return x;
     }
 
-    int getY() {
+    protected int getY() {
         return y;
     }
 
