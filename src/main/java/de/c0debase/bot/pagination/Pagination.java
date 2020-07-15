@@ -59,6 +59,37 @@ public abstract class Pagination {
         this.pageSize = pageSize;
     }
 
+    public Integer getCurrentPage(final MessageEmbed messageEmbed) {
+        return Integer.parseInt(splitFooter(messageEmbed.getFooter().getText())[0]);
+    }
+
+    public Integer getMaxPages(final MessageEmbed messageEmbed) {
+        return Integer.parseInt(splitFooter(messageEmbed.getFooter().getText())[1]);
+    }
+
+    public boolean isDescending(final MessageEmbed messageEmbed) {
+        return splitFooter(messageEmbed.getFooter().getText())[2].equalsIgnoreCase("absteigend");
+    }
+
+    public EmbedBuilder getEmbed(final Guild guild) {
+        return new EmbedBuilder().setTitle(getTitle()).setColor(guild.getSelfMember().getColor());
+    }
+
+    public EmbedBuilder getEmbed(final Guild guild, final Integer currentPage, final Integer maxPages,
+            final boolean descending) {
+        final EmbedBuilder embedBuilder = getEmbed(guild);
+        embedBuilder.setFooter("Seite: (" + currentPage + "/" + maxPages + ") Sortierung: "
+                + (descending ? "absteigend" : "aufsteigend"), guild.getIconUrl());
+        return embedBuilder;
+    }
+
+    public EmbedBuilder getEmbed(final Guild guild, final boolean descending) {
+        final EmbedBuilder embedBuilder = getEmbed(guild);
+        embedBuilder.setFooter("Seite: (1/" + ((guild.getMembers().size() / getPageSize()) + 1) + ") Sortierung: "
+                + (descending ? "absteigend" : "aufsteigend"), guild.getIconUrl());
+        return embedBuilder;
+    }
+
     public <T> Map<Integer, T> getPage(int page, List<T> list, boolean descending) {
         if (pageSize <= 0 || page <= 0) {
             throw new IllegalArgumentException("Invalid page size: " + pageSize);
@@ -85,5 +116,9 @@ public abstract class Pagination {
 
     public <T> Map<Integer, T> getPage(int page, List<T> list) {
         return getPage(page, list, true);
+    }
+
+    private String[] splitFooter(final String footer) {
+        return footer.replace("Seite: (", "").replace(")", "").replace(" Sortierung: ", "/").split("/");
     }
 }

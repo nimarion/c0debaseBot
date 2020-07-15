@@ -24,20 +24,12 @@ public class LevelLeaderboard extends Pagination {
 
     @Override
     public void update(Message success, MessageEmbed messageEmbed, String emote) {
-
-        final String[] strings = messageEmbed.getFooter().getText().replace("Seite: (", "").replace(")", "")
-                .replace(" Sortierung: ", "/").split("/");
-
-        int current = Integer.parseInt(strings[0]);
+        int current = getCurrentPage(messageEmbed);
         if (emote.equalsIgnoreCase("arrow_left") && current == 1) {
             return;
         }
-        final int max = Integer.parseInt(strings[1]);
-        final boolean descending = strings[2].equalsIgnoreCase("absteigend");
-
-        final EmbedBuilder embedBuilder = new EmbedBuilder();
-        embedBuilder.setColor(success.getGuild().getSelfMember().getColor());
-        embedBuilder.setTitle(getTitle());
+        final int max = getMaxPages(messageEmbed);
+        final boolean descending = isDescending(messageEmbed);
 
         if (max != current) {
             if (emote.equalsIgnoreCase("arrow_right")) {
@@ -50,24 +42,17 @@ public class LevelLeaderboard extends Pagination {
         }
 
         if (current > 0) {
+            final EmbedBuilder embedBuilder = getEmbed(success.getGuild(), current, max, descending);
             buildList(embedBuilder, current, descending, success.getGuild());
-            embedBuilder.setFooter(
-                    "Seite: (" + current + "/" + max + ") Sortierung: " + (descending ? "absteigend" : "aufsteigend"),
-                    success.getGuild().getIconUrl());
             success.editMessage(embedBuilder.build()).queue();
         }
     }
 
     @Override
     public void createFirst(boolean descending, TextChannel textChannel) {
-        final EmbedBuilder embedBuilder = new EmbedBuilder();
-        embedBuilder.setColor(textChannel.getGuild().getSelfMember().getColor());
-        embedBuilder.setTitle(getTitle());
+        final EmbedBuilder embedBuilder = getEmbed(textChannel.getGuild(), descending);
 
         buildList(embedBuilder, 1, descending, textChannel.getGuild());
-
-        embedBuilder.setFooter("Seite: (1/" + ((textChannel.getGuild().getMembers().size() / getPageSize()) + 1)
-                + ") Sortierung: " + (descending ? "absteigend" : "aufsteigend"), textChannel.getGuild().getIconUrl());
 
         textChannel.sendMessage(embedBuilder.build()).queue((Message success) -> {
             success.addReaction(EmojiManager.getForAlias("arrow_left").getUnicode()).queue();
