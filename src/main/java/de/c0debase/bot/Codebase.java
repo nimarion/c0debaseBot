@@ -3,7 +3,6 @@ package de.c0debase.bot;
 import de.c0debase.bot.commands.CommandManager;
 import de.c0debase.bot.database.Database;
 import de.c0debase.bot.database.mongodb.MongoDatabase;
-import de.c0debase.bot.listener.guild.GuildBoostListener;
 import de.c0debase.bot.listener.guild.GuildMemberJoinListener;
 import de.c0debase.bot.listener.guild.GuildMemberLeaveListener;
 import de.c0debase.bot.listener.guild.GuildMemberNickChangeListener;
@@ -104,7 +103,7 @@ public class Codebase {
             jdaBuilder.setEnabledIntents(GatewayIntent.getIntents(GatewayIntent.ALL_INTENTS));
             jdaBuilder.setMemberCachePolicy(MemberCachePolicy.ALL);
             jdaBuilder.setActivity(Activity.playing("auf c0debase"));
-            jdaBuilder.addEventListeners(new GuildReadyListener(this), new GuildBoostListener());
+            jdaBuilder.addEventListeners(new GuildReadyListener(this));
             return jdaBuilder.build().awaitReady();
         } catch (Exception exception) {
             logger.error("Encountered exception while initializing JDA!");

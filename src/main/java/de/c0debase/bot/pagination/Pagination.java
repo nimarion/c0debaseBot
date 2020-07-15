@@ -10,6 +10,8 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import com.vdurmont.emoji.EmojiManager;
+
 public abstract class Pagination {
 
     private Codebase bot = null;
@@ -33,9 +35,41 @@ public abstract class Pagination {
         bot = instance;
     }
 
-    public abstract void update(Message success, MessageEmbed messageEmbed, String emote);
+    public void update(Message success, MessageEmbed messageEmbed, String emote) {
+        int current = getCurrentPage(messageEmbed);
+        if (emote.equalsIgnoreCase("arrow_left") && current == 1) {
+            return;
+        }
+        final int max = getMaxPages(messageEmbed);
+        final boolean descending = isDescending(messageEmbed);
 
-    public abstract void createFirst(boolean descending, TextChannel textChannel);
+        if (max != current) {
+            if (emote.equalsIgnoreCase("arrow_right")) {
+                current++;
+            } else if (emote.equalsIgnoreCase("arrow_left") && current > 1) {
+                current--;
+            }
+        } else if (emote.equalsIgnoreCase("arrow_left") && current > 1) {
+            current--;
+        }
+
+        if (current > 0) {
+            final EmbedBuilder embedBuilder = getEmbed(success.getGuild(), current, max, descending);
+            buildList(embedBuilder, current, descending, success.getGuild());
+            success.editMessage(embedBuilder.build()).queue();
+        }
+    }
+
+    public void createFirst(boolean descending, TextChannel textChannel) {
+        final EmbedBuilder embedBuilder = getEmbed(textChannel.getGuild(), descending);
+
+        buildList(embedBuilder, 1, descending, textChannel.getGuild());
+
+        textChannel.sendMessage(embedBuilder.build()).queue((Message success) -> {
+            success.addReaction(EmojiManager.getForAlias("arrow_left").getUnicode()).queue();
+            success.addReaction(EmojiManager.getForAlias("arrow_right").getUnicode()).queue();
+        });
+    }
 
     public abstract void buildList(EmbedBuilder embedBuilder, int page, boolean descending, Guild guild);
 
@@ -69,6 +103,15 @@ public abstract class Pagination {
 
     public boolean isDescending(final MessageEmbed messageEmbed) {
         return splitFooter(messageEmbed.getFooter().getText())[2].equalsIgnoreCase("absteigend");
+    }
+
+    public static boolean isDescending(final String... args) {
+        boolean descending = true;
+        if (args.length > 0 && (args[0].equalsIgnoreCase("asc") || args[0].equalsIgnoreCase("ascending")
+                || args[0].equalsIgnoreCase("aufsteigend"))) {
+            descending = false;
+        }
+        return descending;
     }
 
     public EmbedBuilder getEmbed(final Guild guild) {
