@@ -20,5 +20,5 @@ jobs:
         run: mvn -B package --file pom.xml
       - name: "Publish coverage report"
         run: bash <(curl -s https://codecov.io/bash)
-        with:
+        env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
