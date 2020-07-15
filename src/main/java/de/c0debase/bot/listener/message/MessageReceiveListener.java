@@ -4,6 +4,7 @@ import com.vdurmont.emoji.EmojiManager;
 import de.c0debase.bot.Codebase;
 import de.c0debase.bot.database.model.User;
 import de.c0debase.bot.utils.Constants;
+import de.c0debase.bot.utils.DiscordUtils;
 import de.c0debase.bot.utils.StringUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
@@ -91,10 +92,8 @@ public class MessageReceiveListener extends ListenerAdapter {
     }
 
     private void createPoll(final Message message) {
-        final EmbedBuilder embedBuilder = new EmbedBuilder();
+        final EmbedBuilder embedBuilder = DiscordUtils.getDefaultEmbed(message.getMember());
         embedBuilder.setColor(Color.GREEN);
-        embedBuilder.setFooter("@" + message.getAuthor().getName() + "#" + message.getAuthor().getDiscriminator(),
-                message.getAuthor().getEffectiveAvatarUrl());
         embedBuilder.setTitle("Poll");
         embedBuilder.setDescription(message.getContentDisplay());
         message.delete().queue();

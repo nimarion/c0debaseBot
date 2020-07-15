@@ -3,6 +3,7 @@ package de.c0debase.bot.listener.guild;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.c0debase.bot.utils.DiscordUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
@@ -53,9 +54,7 @@ public class GuildBoostListener extends ListenerAdapter {
         }
 
         event.getGuild().getTextChannelsByName("log", true).forEach(channel -> {
-            final EmbedBuilder logBuilder = new EmbedBuilder();
-            logBuilder.setFooter("@" + member.getUser().getName() + "#" + member.getUser().getDiscriminator(),
-                    member.getUser().getEffectiveAvatarUrl());
+            final EmbedBuilder logBuilder = DiscordUtils.getDefaultEmbed(member);
             logBuilder.setThumbnail(member.getUser().getEffectiveAvatarUrl());
             if (event.getNewBoostCount() < event.getOldBoostCount()) {
                 logBuilder.setDescription(member.getAsMention() + " hat seinen Boost entfernt");

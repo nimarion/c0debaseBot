@@ -30,7 +30,7 @@ public class RoleStatsCommand extends Command {
         final Guild guild = message.getGuild();
         final EmbedBuilder embedBuilder = getEmbed(guild, message.getAuthor()).setTitle("Rollen Statistiken");
         final Map<Role, Long> roles = guild.getMembers().stream()
-                .filter(role -> PermissionUtil.canInteract(guild.getSelfMember(), role)).map(Member::getRoles)
+                .filter(member -> PermissionUtil.canInteract(guild.getSelfMember(), member)).map(Member::getRoles)
                 .flatMap(Collection::stream).collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
         appendRoleStats(roles, embedBuilder);
         appendColorStats(roles, embedBuilder);

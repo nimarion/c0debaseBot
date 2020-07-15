@@ -1,8 +1,10 @@
 package de.c0debase.bot.commands;
 
 import de.c0debase.bot.Codebase;
+import de.c0debase.bot.utils.DiscordUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.User;
 
@@ -25,8 +27,11 @@ public abstract class Command {
     public abstract void execute(final String[] args, final Message message);
 
     protected EmbedBuilder getEmbed(final Guild guild, final User requester) {
-        return new EmbedBuilder().setFooter("@" + requester.getName() + "#" + requester.getDiscriminator(),
-                requester.getEffectiveAvatarUrl()).setColor(guild.getSelfMember().getColor());
+        return DiscordUtils.getDefaultEmbed(requester);
+    }
+
+    protected EmbedBuilder getEmbed(final Member member) {
+        return DiscordUtils.getDefaultEmbed(member);
     }
 
     public void setInstance(final Codebase instance) {
@@ -63,7 +68,7 @@ public abstract class Command {
         private String emote;
         private String description;
 
-        Category(String name, String emote, String description) {
+        Category(final String name, final String emote, final String description) {
             this.name = name;
             this.emote = emote;
             this.description = description;

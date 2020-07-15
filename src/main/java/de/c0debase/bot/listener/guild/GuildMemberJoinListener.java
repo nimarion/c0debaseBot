@@ -2,6 +2,7 @@ package de.c0debase.bot.listener.guild;
 
 import de.c0debase.bot.Codebase;
 import de.c0debase.bot.database.model.User;
+import de.c0debase.bot.utils.DiscordUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
@@ -40,10 +41,7 @@ public class GuildMemberJoinListener extends ListenerAdapter {
         }
         final boolean firstJoin = bot.getDatabase().getUserDao().getUser(member.getGuild().getId(),
                 member.getId()) == null;
-        final EmbedBuilder embedBuilder = new EmbedBuilder();
-
-        embedBuilder.setFooter("@" + member.getUser().getName() + "#" + member.getUser().getDiscriminator(),
-                member.getUser().getEffectiveAvatarUrl());
+        final EmbedBuilder embedBuilder = DiscordUtils.getDefaultEmbed(member);
         embedBuilder.setColor(member.getGuild().getSelfMember().getColor());
         embedBuilder.setThumbnail(member.getUser().getEffectiveAvatarUrl());
         embedBuilder.appendDescription(
@@ -56,9 +54,7 @@ public class GuildMemberJoinListener extends ListenerAdapter {
 
     private void sendLogMessage(final Member member) {
         member.getGuild().getTextChannelsByName("log", true).forEach(channel -> {
-            final EmbedBuilder logBuilder = new EmbedBuilder();
-            logBuilder.setFooter("@" + member.getUser().getName() + "#" + member.getUser().getDiscriminator(),
-                    member.getUser().getEffectiveAvatarUrl());
+            final EmbedBuilder logBuilder = DiscordUtils.getDefaultEmbed(member);
             logBuilder.setThumbnail(member.getUser().getEffectiveAvatarUrl());
             logBuilder.appendDescription("Erstelldatum: "
                     + member.getUser().getTimeCreated().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")) + "\n");
