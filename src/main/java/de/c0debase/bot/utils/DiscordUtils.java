@@ -9,11 +9,9 @@ import net.dv8tion.jda.api.entities.MessageReaction;
 public class DiscordUtils {
 
     public static Member getOldestMember(final Guild guild) {
-        Member oldestMember = null;
+        Member oldestMember = guild.getMembers().get(0);
         for (Member member : guild.getMembers()) {
-            if (oldestMember == null) {
-                oldestMember = member;
-            } else if (member.hasTimeJoined() && member.getTimeJoined().isBefore(oldestMember.getTimeJoined())) {
+            if (member.hasTimeJoined() && member.getTimeJoined().isBefore(oldestMember.getTimeJoined())) {
                 oldestMember = member;
             } else {
                 final Member requestedMember = guild.retrieveMemberById(member.getId(), true).complete();

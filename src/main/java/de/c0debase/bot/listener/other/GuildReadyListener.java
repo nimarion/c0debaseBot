@@ -3,6 +3,7 @@ package de.c0debase.bot.listener.other;
 import de.c0debase.bot.Codebase;
 import de.c0debase.bot.tempchannel.Tempchannel;
 import de.c0debase.bot.utils.InviteTracker;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.VoiceChannel;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
@@ -18,7 +19,13 @@ public class GuildReadyListener extends ListenerAdapter {
 
     @Override
     public void onGuildReady(GuildReadyEvent event) {
-        for (VoiceChannel voiceChannel : event.getGuild().getVoiceChannels()) {
+        initTempchannel(event.getGuild());
+        event.getGuild().loadMembers().onError(error -> error.printStackTrace());
+        new InviteTracker(bot).start();
+    }
+
+    private void initTempchannel(final Guild guild) {
+        for (VoiceChannel voiceChannel : guild.getVoiceChannels()) {
             final String name = ("temp-" + voiceChannel.getName().toLowerCase()).replaceAll("\\s+", "-");
             final TextChannel textChannel = voiceChannel.getGuild().getTextChannelsByName(name, true).isEmpty() ? null
                     : voiceChannel.getGuild().getTextChannelsByName(name, true).get(0);
@@ -30,10 +37,6 @@ public class GuildReadyListener extends ListenerAdapter {
                 bot.getTempchannels().put(voiceChannel.getId(), tempchannel);
             }
         }
-
-        event.getGuild().loadMembers().onError(error -> error.printStackTrace());
-
-        new InviteTracker(bot).start();
     }
 
 }
