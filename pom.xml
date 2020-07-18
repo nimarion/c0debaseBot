@@ -24,7 +24,7 @@
         <dependency>
             <groupId>net.dv8tion</groupId>
             <artifactId>JDA</artifactId>
-            <version>4.1.1_167</version>
+            <version>4.2.0_179</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
         <dependency>
@@ -54,7 +54,7 @@
         <dependency>
             <groupId>org.mongodb</groupId>
             <artifactId>mongo-java-driver</artifactId>
-            <version>3.12.5</version>
+            <version>3.12.6</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/net.jodah/expiringmap -->
         <dependency>
