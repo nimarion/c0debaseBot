@@ -20,10 +20,10 @@ public class LevelLeaderboard extends Pagination {
     @Override
     public void buildList(EmbedBuilder embedBuilder, int page, boolean descending, Guild guild) {
         final List<User> users = getBot().getDatabase().getLeaderboardDao().getLeaderboard(guild.getId());
-        if (!descending) {
+        if (descending) {
             Collections.reverse(users);
         }
-        for (Map.Entry<Integer, User> entry : getPage(page, users, descending).entrySet()) {
+        for (Map.Entry<Integer, User> entry : getPage(page, users, !descending).entrySet()) {
             User user = entry.getValue();
             int count = entry.getKey();
             final Member member = guild.getMemberById(Long.valueOf(user.getUserID()));

@@ -106,10 +106,10 @@ public abstract class Pagination {
     }
 
     public static boolean isDescending(final String... args) {
-        boolean descending = true;
-        if (args.length > 0 && (args[0].equalsIgnoreCase("asc") || args[0].equalsIgnoreCase("ascending")
-                || args[0].equalsIgnoreCase("aufsteigend"))) {
-            descending = false;
+        boolean descending = false;
+        if (args.length > 0 && (args[0].equalsIgnoreCase("desc") || args[0].equalsIgnoreCase("descending")
+                || args[0].equalsIgnoreCase("absteigend"))) {
+            descending = true;
         }
         return descending;
     }
