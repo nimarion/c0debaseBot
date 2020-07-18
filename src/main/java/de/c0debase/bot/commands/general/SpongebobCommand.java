@@ -11,22 +11,25 @@ public class SpongebobCommand extends Command {
     }
 
     @Override
-    public void execute(String[] args, Message message) {
-        if(args.length == 0){
+    public void execute(final String[] args, final Message message) {
+        if (args.length == 0) {
             message.getChannel().sendMessage(
                     getEmbed(message.getGuild(), message.getAuthor()).setDescription("!spongebob [msg]").build())
                     .queue();
         } else {
-            StringBuilder builder = new StringBuilder();
-
-            for(char c : String.join(" ", args).toCharArray()){
-                if(Constants.RANDOM.nextBoolean()){
-                    builder.append(Character.toUpperCase(c));
-                } else {
-                    builder.append(Character.toLowerCase(c));
-                }
-            }
-            message.getChannel().sendMessage(builder.toString()).queue();
+            message.getChannel().sendMessage(getSpongebobMessage(args)).queue();
         }
+    }
+
+    private String getSpongebobMessage(final String[] args) {
+        final StringBuilder builder = new StringBuilder();
+        for (final char c : String.join(" ", args).toCharArray()) {
+            if (Constants.RANDOM.nextBoolean()) {
+                builder.append(Character.toUpperCase(c));
+            } else {
+                builder.append(Character.toLowerCase(c));
+            }
+        }
+        return builder.toString();
     }
 }

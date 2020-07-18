@@ -12,8 +12,7 @@ import java.util.StringJoiner;
 
 public class YesNoCommand extends Command {
 
-    private final List<String> yesGifs = Arrays.asList(
-            "https://media.giphy.com/media/nFjDu1LjEADh6/giphy.gif",
+    private final List<String> yesGifs = Arrays.asList("https://media.giphy.com/media/nFjDu1LjEADh6/giphy.gif",
             "https://media.giphy.com/media/GCvktC0KFy9l6/giphy.gif",
             "https://media.giphy.com/media/1tHzw9PZCB3gY/giphy.gif",
             "https://media.giphy.com/media/1zSiX3p2XEZpe/giphy.gif",
@@ -26,11 +25,9 @@ public class YesNoCommand extends Command {
             "https://media.giphy.com/media/r1fDuPIcs18d2/giphy.gif",
             "https://media.giphy.com/media/CmQQsUxwjBEgU/giphy.gif",
             "https://media.giphy.com/media/JE6xHkcUPtYs0/giphy.gif",
-            "https://media.giphy.com/media/Y01jP8QeLOox2/giphy.gif"
-    );
+            "https://media.giphy.com/media/Y01jP8QeLOox2/giphy.gif");
 
-    private final List<String> noGifs = Arrays.asList(
-            "https://media.giphy.com/media/g69ZPJfLy7hD2/giphy.gif",
+    private final List<String> noGifs = Arrays.asList("https://media.giphy.com/media/g69ZPJfLy7hD2/giphy.gif",
             "https://media.giphy.com/media/12XMGIWtrHBl5e/giphy.gif",
             "https://media.giphy.com/media/nR4L10XlJcSeQ/giphy.gif",
             "https://media.giphy.com/media/6Q2KA5ly49368/giphy.gif",
@@ -40,8 +37,7 @@ public class YesNoCommand extends Command {
             "https://media.giphy.com/media/FEikw3bXVHdMk/giphy.gif",
             "https://media.giphy.com/media/wofftnAdDtx4s/giphy.gif",
             "https://media.giphy.com/media/vPN3zK9dNL236/giphy.gif",
-            "https://media.giphy.com/media/EriPNV1whwKac/giphy.gif"
-    );
+            "https://media.giphy.com/media/EriPNV1whwKac/giphy.gif");
 
     public YesNoCommand() {
         super("yn", "Answers to a question with \"yes\" or \"no\"", Category.GENERAL, "yesno", "jn", "janein");
@@ -55,17 +51,19 @@ public class YesNoCommand extends Command {
                 stringJoiner.add(args[i]);
             }
             final boolean yn = Constants.RANDOM.nextBoolean();
-            message.getTextChannel().sendMessage(
-                    new EmbedBuilder()
-                            .setTitle("Ja oder Nein?")
-                            .setDescription(
-                                    "Deine Frage: " + stringJoiner.toString() + "\n\n" +
-                                            "Meine Antwort: " + (yn ? "Ja" : "Nein") + "\n")
+            message.getTextChannel()
+                    .sendMessage(new EmbedBuilder().setTitle("Ja oder Nein?")
+                            .setDescription("Deine Frage: " + stringJoiner.toString() + "\n\n" + "Meine Antwort: "
+                                    + (yn ? "Ja" : "Nein") + "\n")
                             .setColor(yn ? Color.GREEN : Color.RED)
-                            .setImage(yn ? yesGifs.get(Constants.RANDOM.nextInt(yesGifs.size())) : noGifs.get(Constants.RANDOM.nextInt(noGifs.size()))).build()
-            ).queue();
+                            .setImage(yn ? yesGifs.get(Constants.RANDOM.nextInt(yesGifs.size()))
+                                    : noGifs.get(Constants.RANDOM.nextInt(noGifs.size())))
+                            .build())
+                    .queue();
         } else {
-            message.getTextChannel().sendMessage(getEmbed(message.getGuild(), message.getAuthor()).setDescription("!yn [Deine Frage]").build()).queue();
+            message.getTextChannel().sendMessage(
+                    getEmbed(message.getGuild(), message.getAuthor()).setDescription("!yn [Deine Frage]").build())
+                    .queue();
         }
     }
 }

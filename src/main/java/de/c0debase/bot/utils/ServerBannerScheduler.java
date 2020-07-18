@@ -12,10 +12,12 @@ public class ServerBannerScheduler {
     /**
      * Start the runnable for changing the server banner every 24 hours.
      *
-     * @param runnable The {@link ServerBanner} (or {@link Runnable} of the ServerBanner) which should call the update.
+     * @param runnable The {@link ServerBanner} (or {@link Runnable} of the
+     *                 ServerBanner) which should call the update.
      */
     public void start(ServerBanner runnable) {
-        Executors.newSingleThreadScheduledExecutor().scheduleWithFixedDelay(runnable, millisTillMidnight() / 1000, 86400, TimeUnit.SECONDS);
+        Executors.newSingleThreadScheduledExecutor().scheduleWithFixedDelay(runnable, millisTillMidnight() / 1000,
+                86400, TimeUnit.SECONDS);
     }
 
     /**
@@ -24,7 +26,8 @@ public class ServerBannerScheduler {
      * @return remaining time.
      */
     private long millisTillMidnight() {
-        return LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.MIDNIGHT).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli() - System.currentTimeMillis();
+        return LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.MIDNIGHT).atZone(ZoneId.systemDefault())
+                .toInstant().toEpochMilli() - System.currentTimeMillis();
     }
 
 }

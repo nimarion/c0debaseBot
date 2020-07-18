@@ -1,11 +1,5 @@
 package de.c0debase.bot.pagination.paginations;
 
-import de.c0debase.bot.pagination.Pagination;
-import de.c0debase.bot.utils.StringUtils;
-import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.Member;
-
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
@@ -14,28 +8,35 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
-public class SinceLeaderboard extends Pagination {
+import de.c0debase.bot.pagination.Pagination;
+import de.c0debase.bot.utils.StringUtils;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
 
-    public SinceLeaderboard() {
-        super("Since Leaderboard:");
+public class NitroLeaderboard extends Pagination {
+
+    public NitroLeaderboard() {
+        super("Nitro Leaderboard:");
     }
 
     @Override
     public void buildList(EmbedBuilder embedBuilder, int page, boolean descending, Guild guild) {
-        final List<Member> users = getSortedMembers(guild);
+        final List<Member> users = getSortedNitroBoosters(guild);
         if (!descending)
             Collections.reverse(users);
         for (Map.Entry<Integer, Member> entry : getPage(page, users, descending).entrySet()) {
             Member member = entry.getValue();
             int count = entry.getKey();
             if (member != null) {
-                long days = ChronoUnit.DAYS.between(member.getTimeJoined(),
+                long days = ChronoUnit.DAYS.between(member.getTimeBoosted(),
                         LocalDateTime.now().atOffset(ZoneOffset.UTC));
                 embedBuilder
                         .appendDescription("`" + count + ")` " + StringUtils.replaceCharacter(member.getEffectiveName())
                                 + "#" + member.getUser().getDiscriminator() + " (Beitritt am "
-                                + member.getTimeJoined().toInstant().atOffset(ZoneOffset.UTC)
+                                + member.getTimeBoosted().toInstant().atOffset(ZoneOffset.UTC)
                                         .format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"))
                                 + " / Seit " + days + " Tag" + (days == 1 ? "" : "en") + ")\n");
             } else {
@@ -45,17 +46,21 @@ public class SinceLeaderboard extends Pagination {
         }
     }
 
-    private List<Member> getSortedMembers(final Guild guild) {
+    @Override
+    public EmbedBuilder getEmbed(final Guild guild, final boolean descending) {
+        final EmbedBuilder embedBuilder = getEmbed(guild);
+        embedBuilder.setFooter("Seite: (1/" + ((getSortedNitroBoosters(guild).size() / getPageSize()) + 1)
+                + ") Sortierung: " + (descending ? "absteigend" : "aufsteigend"), guild.getIconUrl());
+        return embedBuilder;
+    }
+
+    public List<Member> getSortedNitroBoosters(final Guild guild) {
         final List<Member> members = new LinkedList<>();
-        guild.getMembers().forEach(member -> {
-            if (!member.hasTimeJoined()) {
-                members.add(member.getGuild().retrieveMemberById(member.getId(), true).complete());
-            } else {
-                members.add(member);
-            }
-        });
-        members.sort((m1, m2) -> Long.compare(m2.getTimeJoined().toInstant().toEpochMilli(),
-                m1.getTimeJoined().toInstant().toEpochMilli()));
+        members.addAll(guild.getMembers().stream().filter(member -> member.getTimeBoosted() != null)
+                .collect(Collectors.toList()));
+        members.sort((m1, m2) -> Long.compare(m2.getTimeBoosted().toInstant().toEpochMilli(),
+                m1.getTimeBoosted().toInstant().toEpochMilli()));
         return members;
     }
+
 }

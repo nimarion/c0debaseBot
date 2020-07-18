@@ -3,7 +3,6 @@ package de.c0debase.bot.commands.general;
 import de.c0debase.bot.commands.Command;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.internal.utils.PermissionUtil;
@@ -28,33 +27,28 @@ public class RoleStatsCommand extends Command {
     @Override
     public void execute(final String[] args, final Message message) {
         final Guild guild = message.getGuild();
-        final EmbedBuilder embedBuilder = getEmbed(guild, message.getAuthor());
-        embedBuilder.setTitle("Rollen Statistiken");
-        final Member selfMember = guild.getSelfMember();
-        final Map<Role, Long> roles = guild.getMembers()
-                .stream().map(Member::getRoles)
-                .flatMap(Collection::stream)
+        final EmbedBuilder embedBuilder = getEmbed(guild, message.getAuthor()).setTitle("Rollen Statistiken");
+        final Map<Role, Long> roles = guild.getMembers().stream()
+                .filter(member -> PermissionUtil.canInteract(guild.getSelfMember(), member))
+                .map(member -> member.getRoles())
+                .flatMap(stream -> stream.stream()
+                        .filter(role -> (!role.isManaged() && !FORBIDDEN.contains(role.getName()))))
                 .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+
         embedBuilder.appendDescription("\n__**Rollen:**__\n\n");
-        roles.entrySet()
-                .stream()
-                .sorted(Comparator.comparing(Map.Entry::getValue, Comparator.reverseOrder()))
-                .map(Map.Entry::getKey)
-                .filter(role -> !role.isManaged())
-                .filter(role -> !FORBIDDEN.contains(role.getName()))
-                .filter(role -> PermissionUtil.canInteract(selfMember, role)).filter(role -> !role.getName().startsWith("Color-"))
-                .map(role -> String.format(DESCRIPTION_PATTERN, role.getName(), roles.get(role)))
-                .forEach(embedBuilder::appendDescription);
+        appendStats(roles, embedBuilder, false);
         embedBuilder.appendDescription("\n__**Farb-Rollen:**__\n\n");
-        roles.entrySet()
-                .stream()
-                .sorted(Comparator.comparing(Map.Entry::getValue, Comparator.reverseOrder()))
-                .map(Map.Entry::getKey)
-                .filter(role -> !role.isManaged())
-                .filter(role -> !FORBIDDEN.contains(role.getName()))
-                .filter(role -> PermissionUtil.canInteract(selfMember, role)).filter(role -> role.getName().startsWith("Color-"))
-                .map(role -> String.format(DESCRIPTION_PATTERN, role.getName().replace("Color-", ""), roles.get(role)))
-                .forEach(embedBuilder::appendDescription);
+        appendStats(roles, embedBuilder, true);
         message.getTextChannel().sendMessage(embedBuilder.build()).queue();
     }
+
+    private void appendStats(final Map<Role, Long> roles, EmbedBuilder embedBuilder, final boolean color) {
+        roles.entrySet().stream().sorted(Comparator.comparing(Map.Entry::getValue, Comparator.reverseOrder()))
+                .map(Map.Entry::getKey)
+                .filter(role -> color ? role.getName().startsWith("Color-") : !role.getName().startsWith("Color-"))
+                .map(role -> String.format(DESCRIPTION_PATTERN,
+                        color ? role.getName().replace("Color-", "") : role.getName(), roles.get(role)))
+                .forEach(embedBuilder::appendDescription);
+    }
+
 }

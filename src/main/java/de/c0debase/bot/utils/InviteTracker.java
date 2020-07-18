@@ -23,23 +23,31 @@ public class InviteTracker {
      * See which invite has been used by a new member of a guild
      */
     public void start() {
-        Executors.newScheduledThreadPool(1).scheduleAtFixedRate(() -> bot.getJDA().getGuilds().get(0).retrieveInvites().queue(inviteList -> inviteList.forEach(invite -> {
-            if (inviteHashMap.containsKey(invite.getCode()) && invite.getUses() > inviteHashMap.get(invite.getCode()).getUses()) {
-                final User user = bot.getDatabase().getUserDao().getOrCreateUser(invite.getGuild().getId(), invite.getInviter().getId());
+        Executors.newScheduledThreadPool(1).scheduleAtFixedRate(() -> bot.getJDA().getGuilds().get(0).retrieveInvites()
+                .queue(inviteList -> inviteList.forEach(invite -> {
+                    if (inviteHashMap.containsKey(invite.getCode())
+                            && invite.getUses() > inviteHashMap.get(invite.getCode()).getUses()) {
+                        final User user = bot.getDatabase().getUserDao().getOrCreateUser(invite.getGuild().getId(),
+                                invite.getInviter().getId());
 
-                EmbedBuilder embedBuilder = new EmbedBuilder();
-                embedBuilder.setDescription(invite.getInviter().getAsMention() + " vielen Dank das du jemand neues auf c0debase gebracht hast [" + invite.getCode() + "]");
-                
-                bot.getJDA().getTextChannelById(System.getenv("BOTCHANNEL")).sendMessage(embedBuilder.build()).queue();
+                        EmbedBuilder embedBuilder = new EmbedBuilder();
+                        embedBuilder.setDescription(invite.getInviter().getAsMention()
+                                + " vielen Dank das du jemand neues auf c0debase gebracht hast [" + invite.getCode()
+                                + "]");
 
-                if (user.addXP(100)) {
-                    EmbedBuilder levelUpEmbed = new EmbedBuilder();
-                    levelUpEmbed.setDescription(invite.getInviter().getAsMention() + " ist nun Level " + user.getLevel());
-                    bot.getJDA().getTextChannelById(System.getenv("BOTCHANNEL")).sendMessage(levelUpEmbed.build()).queue();
-                }
-                bot.getDatabase().getUserDao().updateUser(user);
-            }
-            inviteHashMap.put(invite.getCode(), invite);
-        })), 5, 5, TimeUnit.SECONDS);
+                        bot.getJDA().getTextChannelById(System.getenv("BOTCHANNEL")).sendMessage(embedBuilder.build())
+                                .queue();
+
+                        if (user.addXP(100)) {
+                            EmbedBuilder levelUpEmbed = new EmbedBuilder();
+                            levelUpEmbed.setDescription(
+                                    invite.getInviter().getAsMention() + " ist nun Level " + user.getLevel());
+                            bot.getJDA().getTextChannelById(System.getenv("BOTCHANNEL"))
+                                    .sendMessage(levelUpEmbed.build()).queue();
+                        }
+                        bot.getDatabase().getUserDao().updateUser(user);
+                    }
+                    inviteHashMap.put(invite.getCode(), invite);
+                })), 5, 5, TimeUnit.SECONDS);
     }
 }

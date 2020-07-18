@@ -27,5 +27,5 @@ public class MessageReactionListener extends ListenerAdapter {
             }
         });
     }
-    
+
 }

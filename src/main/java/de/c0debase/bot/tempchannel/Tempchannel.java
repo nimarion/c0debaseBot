@@ -89,9 +89,11 @@ public class Tempchannel implements TempchannelEvents {
             }
             if (voiceChannel.getMembers().contains(member)) {
                 if (textChannel.getPermissionOverride(member) != null) {
-                    textChannel.getPermissionOverride(member).getManager().grant(Permission.MESSAGE_READ, Permission.MESSAGE_WRITE).queue();
+                    textChannel.getPermissionOverride(member).getManager()
+                            .grant(Permission.MESSAGE_READ, Permission.MESSAGE_WRITE).queue();
                 } else {
-                    textChannel.createPermissionOverride(member).setAllow(Permission.MESSAGE_READ, Permission.MESSAGE_WRITE).queue();
+                    textChannel.createPermissionOverride(member)
+                            .setAllow(Permission.MESSAGE_READ, Permission.MESSAGE_WRITE).queue();
                 }
             } else {
                 textChannel.getPermissionOverride(member).delete().queue();

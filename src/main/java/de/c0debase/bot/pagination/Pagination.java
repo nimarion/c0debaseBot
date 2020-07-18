@@ -10,8 +10,9 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public abstract class Pagination {
+import com.vdurmont.emoji.EmojiManager;
 
+public abstract class Pagination {
 
     private Codebase bot = null;
 
@@ -34,9 +35,41 @@ public abstract class Pagination {
         bot = instance;
     }
 
-    public abstract void update(Message success, MessageEmbed messageEmbed, String emote);
+    public void update(Message success, MessageEmbed messageEmbed, String emote) {
+        int current = getCurrentPage(messageEmbed);
+        if (emote.equalsIgnoreCase("arrow_left") && current == 1) {
+            return;
+        }
+        final int max = getMaxPages(messageEmbed);
+        final boolean descending = isDescending(messageEmbed);
 
-    public abstract void createFirst(boolean descending, TextChannel textChannel);
+        if (max != current) {
+            if (emote.equalsIgnoreCase("arrow_right")) {
+                current++;
+            } else if (emote.equalsIgnoreCase("arrow_left") && current > 1) {
+                current--;
+            }
+        } else if (emote.equalsIgnoreCase("arrow_left") && current > 1) {
+            current--;
+        }
+
+        if (current > 0) {
+            final EmbedBuilder embedBuilder = getEmbed(success.getGuild(), current, max, descending);
+            buildList(embedBuilder, current, descending, success.getGuild());
+            success.editMessage(embedBuilder.build()).queue();
+        }
+    }
+
+    public void createFirst(boolean descending, TextChannel textChannel) {
+        final EmbedBuilder embedBuilder = getEmbed(textChannel.getGuild(), descending);
+
+        buildList(embedBuilder, 1, descending, textChannel.getGuild());
+
+        textChannel.sendMessage(embedBuilder.build()).queue((Message success) -> {
+            success.addReaction(EmojiManager.getForAlias("arrow_left").getUnicode()).queue();
+            success.addReaction(EmojiManager.getForAlias("arrow_right").getUnicode()).queue();
+        });
+    }
 
     public abstract void buildList(EmbedBuilder embedBuilder, int page, boolean descending, Guild guild);
 
@@ -58,6 +91,46 @@ public abstract class Pagination {
 
     public void setPageSize(int pageSize) {
         this.pageSize = pageSize;
+    }
+
+    public Integer getCurrentPage(final MessageEmbed messageEmbed) {
+        return Integer.parseInt(splitFooter(messageEmbed.getFooter().getText())[0]);
+    }
+
+    public Integer getMaxPages(final MessageEmbed messageEmbed) {
+        return Integer.parseInt(splitFooter(messageEmbed.getFooter().getText())[1]);
+    }
+
+    public boolean isDescending(final MessageEmbed messageEmbed) {
+        return splitFooter(messageEmbed.getFooter().getText())[2].equalsIgnoreCase("absteigend");
+    }
+
+    public static boolean isDescending(final String... args) {
+        boolean descending = false;
+        if (args.length > 0 && (args[0].equalsIgnoreCase("desc") || args[0].equalsIgnoreCase("descending")
+                || args[0].equalsIgnoreCase("absteigend"))) {
+            descending = true;
+        }
+        return descending;
+    }
+
+    public EmbedBuilder getEmbed(final Guild guild) {
+        return new EmbedBuilder().setTitle(getTitle()).setColor(guild.getSelfMember().getColor());
+    }
+
+    public EmbedBuilder getEmbed(final Guild guild, final Integer currentPage, final Integer maxPages,
+            final boolean descending) {
+        final EmbedBuilder embedBuilder = getEmbed(guild);
+        embedBuilder.setFooter("Seite: (" + currentPage + "/" + maxPages + ") Sortierung: "
+                + (descending ? "absteigend" : "aufsteigend"), guild.getIconUrl());
+        return embedBuilder;
+    }
+
+    public EmbedBuilder getEmbed(final Guild guild, final boolean descending) {
+        final EmbedBuilder embedBuilder = getEmbed(guild);
+        embedBuilder.setFooter("Seite: (1/" + ((guild.getMembers().size() / getPageSize()) + 1) + ") Sortierung: "
+                + (descending ? "absteigend" : "aufsteigend"), guild.getIconUrl());
+        return embedBuilder;
     }
 
     public <T> Map<Integer, T> getPage(int page, List<T> list, boolean descending) {
@@ -86,5 +159,9 @@ public abstract class Pagination {
 
     public <T> Map<Integer, T> getPage(int page, List<T> list) {
         return getPage(page, list, true);
+    }
+
+    private String[] splitFooter(final String footer) {
+        return footer.replace("Seite: (", "").replace(")", "").replace(" Sortierung: ", "/").split("/");
     }
 }

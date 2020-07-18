@@ -1,8 +1,7 @@
 package de.c0debase.bot.commands;
 
 import de.c0debase.bot.Codebase;
-import net.dv8tion.jda.api.entities.ChannelType;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.reflections.Reflections;
 import org.slf4j.Logger;
@@ -39,21 +38,20 @@ public class CommandManager extends ListenerAdapter {
     }
 
     @Override
-    public void onMessageReceived(final MessageReceivedEvent event) {
+    public void onGuildMessageReceived(final GuildMessageReceivedEvent event) {
         if (event.getAuthor().isBot()) {
             return;
         }
-        if (!event.isFromType(ChannelType.TEXT)) {
-            return;
-        }
+
         final String content = event.getMessage().getContentRaw();
-        
-        if (content.startsWith("!") && (event.getChannel().getName().equals("bot") || content.startsWith("!clear") || content.startsWith("!ask") || content.startsWith("!tag"))) {
+
+        if (content.startsWith("!") && (event.getChannel().getName().equals("bot") || content.startsWith("!clear")
+                || content.startsWith("!ask") || content.startsWith("!tag"))) {
             final String[] arguments = content.split(" ");
             final String input = arguments[0].replaceFirst("!", "");
             for (Command command : this.availableCommands) {
-                if (command.getCategory().equals(Command.Category.STAFF) && !event.getMember().getRoles()
-                        .contains(event.getJDA().getRoleById(TEAM_ROLE_ID))) {
+                if (command.getCategory().equals(Command.Category.STAFF)
+                        && !event.getMember().getRoles().contains(event.getJDA().getRoleById(TEAM_ROLE_ID))) {
                     continue;
                 }
 

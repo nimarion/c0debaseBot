@@ -15,7 +15,7 @@ public class User {
     private long lastMessage;
     private List<String> roles;
 
-    public static User newUser(final String userId, final String guildId){
+    public static User newUser(final String userId, final String guildId) {
         final User user = new User();
         user.setUserID(userId);
         user.setGuildID(guildId);
@@ -27,7 +27,7 @@ public class User {
     }
 
     public boolean addXP(int xp) {
-        int morexp = Constants.RANDOM.nextInt(xp - 1 ) + 1;
+        int morexp = Constants.RANDOM.nextInt(xp - 1) + 1;
         this.xp += morexp;
         coins += morexp * 0.03;
         double reach = 1000 * level * 1.2;
