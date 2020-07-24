@@ -5,11 +5,6 @@ import de.c0debase.bot.pagination.Pagination;
 import de.c0debase.bot.pagination.paginations.LevelLeaderboard;
 import net.dv8tion.jda.api.entities.Message;
 
-/**
- * @author Biosphere
- * @date 23.01.18
- */
-
 public class LeaderboardCommand extends Command {
 
     public LeaderboardCommand() {

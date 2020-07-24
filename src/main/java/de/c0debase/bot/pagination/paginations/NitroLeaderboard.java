@@ -35,7 +35,7 @@ public class NitroLeaderboard extends Pagination {
                         LocalDateTime.now().atOffset(ZoneOffset.UTC));
                 embedBuilder
                         .appendDescription("`" + count + ")` " + StringUtils.replaceCharacter(member.getEffectiveName())
-                                + "#" + member.getUser().getDiscriminator() + " (Beitritt am "
+                                + "#" + member.getUser().getDiscriminator() + " (Boostet seit "
                                 + member.getTimeBoosted().toInstant().atOffset(ZoneOffset.UTC)
                                         .format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"))
                                 + " / Seit " + days + " Tag" + (days == 1 ? "" : "en") + ")\n");
