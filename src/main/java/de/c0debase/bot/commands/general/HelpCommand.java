@@ -47,11 +47,8 @@ public class HelpCommand extends Command {
             final EmbedBuilder embedBuilder) {
         final Optional<Command> optCommand = collection.stream()
                 .filter(command -> command.getCommand().equals(commandName)).findFirst();
-        if (optCommand.isPresent()) {
-            final Command command = optCommand.get();
+        optCommand.ifPresentOrElse(command -> {
             embedBuilder.addField(command.getCommand(), command.getDescription(), false);
-        } else {
-            embedBuilder.setDescription("**Command wurde nicht gefunden**");
-        }
+        }, () -> embedBuilder.setDescription("**Command wurde nicht gefunden**"));
     }
 }

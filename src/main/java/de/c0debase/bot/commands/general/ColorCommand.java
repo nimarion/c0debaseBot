@@ -3,7 +3,6 @@ package de.c0debase.bot.commands.general;
 import de.c0debase.bot.commands.Command;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.TextChannel;
 
 import java.util.regex.Pattern;
 
@@ -18,22 +17,19 @@ public class ColorCommand extends Command {
 
     @Override
     public void execute(final String[] args, final Message message) {
-        final TextChannel channel = message.getTextChannel();
+        final EmbedBuilder embedBuilder = getEmbed(message.getMember());
         if (args.length > 0) {
             if (VALID_HEX_CODE.matcher(args[0].replace("#", "")).matches()) {
-                channel.sendMessage(new EmbedBuilder().setTitle("Color-Code-Preview")
-                        .setDescription("Farbcode Vorschau für: " + args[0])
+                embedBuilder.setTitle("Color-Code-Preview").setDescription("Farbcode Vorschau für: " + args[0])
                         .setImage("https://dummyimage.com/250x250/" + args[0].replace("#", "") + "/"
-                                + args[0].replace("#", "") + ".png")
-                        .setColor(message.getGuild().getSelfMember().getColor()).build()).queue();
+                                + args[0].replace("#", "") + ".png");
             } else {
-                channel.sendMessage(getEmbed(message.getGuild(), message.getAuthor())
-                        .setDescription("Kein Hex Code gefunden :hushed:").build()).queue();
+                embedBuilder.setDescription("Kein Hex Code gefunden :hushed:");
             }
         } else {
-            channel.sendMessage(
-                    getEmbed(message.getGuild(), message.getAuthor()).setDescription("!color [code]").build()).queue();
+            embedBuilder.setDescription("!color [code]");
         }
+        message.getTextChannel().sendMessage(embedBuilder.build()).queue();
     }
 
 }

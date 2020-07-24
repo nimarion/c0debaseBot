@@ -109,7 +109,7 @@ public class MessageReceiveListener extends ListenerAdapter {
         final float time = (System.currentTimeMillis() - user.getLastMessage()) / 1000;
         if (time >= 50.0f) {
             if (user.addXP(50)) {
-                final EmbedBuilder levelUpEmbed = new EmbedBuilder();
+                final EmbedBuilder levelUpEmbed = DiscordUtils.getDefaultEmbed(message.getMember());
                 final int newLevel = user.getLevel();
                 levelUpEmbed.appendDescription(message.getAuthor().getAsMention() + " ist nun Level " + newLevel);
                 if (message.getIdLong() != DISCUSSION_CHANNEL_ID) {

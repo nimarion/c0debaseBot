@@ -19,7 +19,7 @@ public class UserinfoCommand extends Command {
         public void execute(final String[] args, final Message message) {
                 final Member member = DiscordUtils.getAddressedMember(message);
 
-                final EmbedBuilder embedBuilder = new EmbedBuilder();
+                final EmbedBuilder embedBuilder = getEmbed(message.getMember());
                 embedBuilder.setThumbnail(member.getUser().getAvatarUrl());
                 embedBuilder.addField("Name", StringUtils.replaceCharacter(member.getUser().getName()), true);
                 embedBuilder.addField("Nickname",
