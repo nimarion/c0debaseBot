@@ -12,6 +12,9 @@ factoryConfiguration.json
 ### dotenv ###
 .env
 
+*.iml
+.idea/
+
 ### Eclipse ###
 .metadata
 bin/
